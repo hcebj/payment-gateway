@@ -188,7 +188,7 @@ public class SCPFileUtils {
         	//InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
         	try {
         		Security.addProvider(new BouncyCastleProvider());
-				KeyBasedLargeFileProcessor.decryptFile(filePathEncod, "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
+        		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), filePathDecode);
 			} catch (NoSuchProviderException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
