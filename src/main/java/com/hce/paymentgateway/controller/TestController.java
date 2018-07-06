@@ -21,10 +21,13 @@ public class TestController {
 	public String testCommandLine() throws IOException, InterruptedException {
 		String cmd = "ps -ef|grep java|grep -v grep";
         Process process = Runtime.getRuntime().exec(cmd);
+        System.out.println("zzzzzzzz");
         process.waitFor();//阻塞，等待脚本执行完
         InputStream in = null;
         try {
+        	System.out.println("xxxxxxxxxx");
         	in = process.getInputStream();
+        	System.out.println("tttttttttttt");
         	byte[] buf = new byte[in.available()];
         	in.read(buf);
         	String result = new String(buf);
