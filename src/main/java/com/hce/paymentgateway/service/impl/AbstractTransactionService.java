@@ -71,7 +71,7 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
 
         String dbsData = headerValue + LINUX_LINE_BREAK
             + detailsValue + LINUX_LINE_BREAK
-            + trailerValue + LINUX_LINE_BREAK;
+            + trailerValue;
 
         return dbsData;
     }
