@@ -35,7 +35,7 @@ public class TestController {
         	for(int i=0;i<10;i++) {
         		if(!file.exists()) {
         			Thread.sleep(1000);
-        			System.out.println(i);
+        			log.info("================="+i);
         		} else {
         			success = true;
         			break;
