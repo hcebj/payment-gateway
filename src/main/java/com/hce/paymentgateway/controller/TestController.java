@@ -4,12 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/test")
 public class TestController {
+	@RequestMapping(value = "/test")
+	@ResponseBody
+	public String test() {
+		return "wwwwwwwwww";
+	}
+
 	@RequestMapping(value = "/commandline")
+	@ResponseBody
 	public String testCommandLine() throws IOException, InterruptedException {
 		String cmd = "ps -ef|grep java|grep -v grep";
         Process process = Runtime.getRuntime().exec(cmd);
