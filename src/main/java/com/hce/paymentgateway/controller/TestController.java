@@ -11,17 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/test")
 public class TestController {
-	@RequestMapping(value = "/test")
-	@ResponseBody
-	public String test() {
-		return "wwwwwwwwww";
-	}
-
 	@RequestMapping(value = "/commandline")
 	@ResponseBody
 	public String testCommandLine() throws IOException, InterruptedException {
 		String path = "/home/wsh/decryption2.txt";
-		String cmd = "sudo gpg -o "+path+" -d /tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp";
+		String cmd = "sleep 3;sudo gpg -o "+path+" -d /tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp";
         Process process = Runtime.getRuntime().exec(cmd);
         process.waitFor();//阻塞，等待脚本执行完
         InputStream in = null;
