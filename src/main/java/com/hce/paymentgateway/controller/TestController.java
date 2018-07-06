@@ -1,5 +1,6 @@
 package com.hce.paymentgateway.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(value = "/test")
 public class TestController {
@@ -22,19 +26,43 @@ public class TestController {
         InputStream fileIn = null;
         try {
         	in = process.getInputStream();
-        	fileIn = new FileInputStream(path);
         	byte[] buf = new byte[in.available()];
         	in.read(buf);
         	String result = new String(buf);
-        	System.out.println(in.available()+"---------------"+result);
-        	buf = new byte[fileIn.available()];
-        	fileIn.read(buf);
-        	return result+"\r\n"+new String(buf);
+        	log.info(in.available()+"---------------"+result);
+        	File file = new File(path);
+        	boolean success = false;
+        	for(int i=0;i<10;i++) {
+        		if(!file.exists()) {
+        			Thread.sleep(1000);
+        			System.out.println(i);
+        		} else {
+        			success = true;
+        			break;
+        		}
+        	}
+        	String content = null;
+        	if(success) {
+        		fileIn = new FileInputStream(path);
+            	buf = new byte[fileIn.available()];
+            	fileIn.read(buf);
+            	content = new String(buf);
+        	} else {
+        		content = "FAILURE";
+        	}
+        	return result+"\r\n"+content;
         } finally {
         	if(in!=null)
         		in.close();
         	if(fileIn!=null)
         		fileIn.close();
         }
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		File f = new File("D:/dbs/commandline.txt");
+		System.out.println(f.exists());
+		f.delete();
+		System.out.println(f.exists());
 	}
 }
