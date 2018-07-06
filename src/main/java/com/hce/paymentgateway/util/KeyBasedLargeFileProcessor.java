@@ -124,14 +124,13 @@ public class KeyBasedLargeFileProcessor {
         String test = "C:\\Users\\acer\\Desktop\\ceshi\\test.txt";
         String publicKey = "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP-PUB.asc";
         //String text = "Hello how are you";
-        //OutputStream out = new BufferedOutputStream(new FileOutputStream(encode));
-        //PGPPublicKey encKey = PGPExampleUtil.readPublicKey(publicKey);
-        //encryptFile(out, test, encKey, true, false);
-        //out.close();
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(encode));
+        PGPPublicKey encKey = PGPExampleUtil.readPublicKey(publicKey);
+        encryptFile(out, test, encKey, true, false);
+        out.close();
         //InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
        
-        
-        decryptFile("C:\\Users\\acer\\Desktop\\ceshi\\UFF1.STP.HKHCEH.HKHCEH.201807030001.txt.DHBKHKHH.D20180704T145806.ACK1.pgp", "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
+        decryptFile("C:\\Users\\acer\\Desktop\\ceshi\\encode.txt", "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
   
     }
 }

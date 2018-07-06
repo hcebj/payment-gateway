@@ -135,7 +135,7 @@ public class SCPFileUtils {
         log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
         
         //解密文件，
-        List<File> filesDecode = null;
+        List<File> filesDecode = new ArrayList<>();
         for(File file  : files){
         	
         	//获取文件的路径。
@@ -188,6 +188,7 @@ public class SCPFileUtils {
         	//InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
         	try {
         		Security.addProvider(new BouncyCastleProvider());
+        		log.info(String.format("privateKey:%s,EncrptFile:%s,decryptFile:%s", System.getProperty("user.home") + "/pgp/HCE-PGP.asc",filePathEncod,filePathDecode));
         		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), filePathDecode);
 			} catch (NoSuchProviderException | IOException e) {
 				// TODO Auto-generated catch block

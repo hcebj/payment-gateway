@@ -130,7 +130,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     private AckResult handleACK1(T transfer, List<File> resultFiles) throws Exception {
         AckResult ackResult = new AckResult();
-        File ack1File = getACK(resultFiles, "ACK1.PGP");
+        File ack1File = getACK(resultFiles, "ACK1");
         if(ack1File == null) return ackResult;
         ACK1Response ack1Response = parseFile(ack1File, ACK1Header.class, null, ACK1Response.class);
         if(ack1Response == null || ack1Response.getAck1Header() == null ||
@@ -143,7 +143,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     private AckResult handleACK2(T transfer, List<File> resultFiles) throws Exception {
         AckResult ackResult = new AckResult();
-        File ack2File = getACK(resultFiles, "ACK2.PGP");
+        File ack2File = getACK(resultFiles, "ACK2");
         if(ack2File == null) return ackResult;
         ACK2Response ack2Response = parseFile(ack2File, ACK2Header.class, ACK2Details.class, ACK2Response.class);
         if(ack2Response == null || ack2Response.getAck2Header() == null
@@ -157,7 +157,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     private AckResult handleACK3(T transfer, List<File> resultFiles) throws Exception {
         AckResult ackResult = new AckResult();
-        File ack3File = getACK(resultFiles, "ACK3.PGP");
+        File ack3File = getACK(resultFiles, "ACK3");
         if(ack3File == null) return ackResult;
         ACK3Response ack3Response = parseFile(ack3File, ACK3Header.class, ACK3Details.class, ACK3Response.class);
         if(ack3Response == null
