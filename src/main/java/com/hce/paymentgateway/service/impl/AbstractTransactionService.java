@@ -16,7 +16,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import static com.hce.paymentgateway.util.Constant.LINUX_LINE_BREAK;
@@ -40,10 +44,12 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
      */
     protected void ftpRequestDBS(TradeRequest request, BaseEntity details) {
         String dbsData = assembleData(details);
-        String fileName = FileNameGenerator.generateRequestFileName(request);
+        //String fileName = FileNameGenerator.generateRequestFileName(request);
+        String fileName = "/home/wsh/in/test/UFF1.STP.HKHCEH.HKHCEH.201807060025.txt.DHBKHKHH.pgp";
         log.info("\n[网关支付]组装DBS请求数据, 文件名 {}, 消息体\n{}", fileName, dbsData);
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(dbsData.getBytes());
+            //ByteArrayInputStream inputStream = new ByteArrayInputStream(dbsData.getBytes());
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(fileName));
             SCPFileUtils.uploadFileFromServer(fileName, inputStream);
         } catch (Throwable t) {
             log.error("[DBS服务]数据报文上送异常", t);
