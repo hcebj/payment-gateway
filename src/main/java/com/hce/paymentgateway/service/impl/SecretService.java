@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class SecretService {
 	public String pgp(String encryption, String decryption) throws IOException, InterruptedException {
-		String cmd = "sudo gpg -o "+decryption+" -d "+encryption;
+		String cmd = "sudo gpg --passphrase 12345678 -o "+decryption+" -d "+encryption;
 		File file = new File(decryption);
 		if(file.exists()) {
 			file.delete();
