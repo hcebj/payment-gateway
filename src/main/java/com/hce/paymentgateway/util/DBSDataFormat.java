@@ -17,17 +17,18 @@ public class DBSDataFormat {
             Field[] orderFields = orderFields(clazz);
 
             StringBuffer rb = new StringBuffer();
+            rb.append("\"");
             for (Field field : orderFields) {
                 field.setAccessible(true);
                 Object value = field.get(instr);
                 if (value == null) {
-                    rb.append(",");
+                    rb.append("\",\"");
                 } else {
-                    rb.append(value.toString()).append(",");
+                    rb.append(value.toString()).append("\",\"");
                 }
             }
             String result = rb.toString();
-            result = result.substring(0, result.length() - 1);
+            result = result.substring(0, result.length() - 2);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
