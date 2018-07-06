@@ -44,12 +44,12 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
      */
     protected void ftpRequestDBS(TradeRequest request, BaseEntity details) {
         String dbsData = assembleData(details);
-        //String fileName = FileNameGenerator.generateRequestFileName(request);
-        String fileName = "/home/wsh/in/test/UFF1.STP.HKHCEH.HKHCEH.201807060025.txt.DHBKHKHH.pgp";
+        String fileName = FileNameGenerator.generateRequestFileName(request);
+       
         log.info("\n[网关支付]组装DBS请求数据, 文件名 {}, 消息体\n{}", fileName, dbsData);
         try {
-            //ByteArrayInputStream inputStream = new ByteArrayInputStream(dbsData.getBytes());
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(fileName));
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(dbsData.getBytes());
+            //InputStream inputStream = new BufferedInputStream(new FileInputStream("/home/wsh/in/test/UFF1.STP.HKHCEH.HKHCEH.201807060025.txt.DHBKHKHH.pgp"));
             SCPFileUtils.uploadFileFromServer(fileName, inputStream);
         } catch (Throwable t) {
             log.error("[DBS服务]数据报文上送异常", t);
