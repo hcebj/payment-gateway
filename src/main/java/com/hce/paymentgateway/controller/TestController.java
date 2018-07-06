@@ -19,19 +19,16 @@ public class TestController {
 	@RequestMapping(value = "/commandline")
 	@ResponseBody
 	public String testCommandLine() throws IOException, InterruptedException {
-		String cmd = "ps -ef|grep java|grep -v grep";
+		String cmd = "sudo gpg -o /home/wsh/decryption2.txt -d /tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp";
         Process process = Runtime.getRuntime().exec(cmd);
-        System.out.println("zzzzzzzz");
         process.waitFor();//阻塞，等待脚本执行完
         InputStream in = null;
         try {
-        	System.out.println("xxxxxxxxxx");
         	in = process.getInputStream();
-        	System.out.println("tttttttttttt");
         	byte[] buf = new byte[in.available()];
         	in.read(buf);
         	String result = new String(buf);
-        	System.out.println("---------------"+result);
+        	System.out.println(in.available()+"---------------"+result);
         	return result;
         } finally {
         	if(in!=null)
