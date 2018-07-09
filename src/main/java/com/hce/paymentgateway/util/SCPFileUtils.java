@@ -283,8 +283,8 @@ public class SCPFileUtils {
     public List<File> testack (List<File> resultFiles){
     	
     	List<File> files = new ArrayList<>();
-		for(File temp : resultFiles){
-			String filePathEncod = temp.getAbsolutePath();//加密传入的文件路径
+		
+			//String filePathEncod = temp.getAbsolutePath();//加密传入的文件路径
         	String fileName = "UFF1.STP.HKHCEH.HKHCEH.201807090012.txt.DHBKHKHH.D20180709T151007.ACK1";
         	//String fileNameDecode = DecodeFiles(fileName);
         	String path = System.getProperty("user.home") + "/tempFile/";
@@ -295,7 +295,7 @@ public class SCPFileUtils {
         	}
         	
         	
-		}
+		
     	
     	
     	return files;
