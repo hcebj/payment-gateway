@@ -11,14 +11,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SCPFileUtils.class)
 public class PaymentGatewayApplicationTests {
-
     @Autowired
     private SCPFileUtils scpFileUtils;
 
@@ -31,9 +30,8 @@ public class PaymentGatewayApplicationTests {
     }
 
     @Test
-    public void testSCPDownloadFilesFromServer() throws SftpException, JSchException, FileNotFoundException {
+    public void testSCPDownloadFilesFromServer() throws SftpException, JSchException, IOException, InterruptedException {
         List<File> files = scpFileUtils.downloadFilesFromServer("UFF1.STP.HKGTSA.HKGTSA.IPE201704241740.TXT*");
         System.out.println("Done.");
     }
-
 }
