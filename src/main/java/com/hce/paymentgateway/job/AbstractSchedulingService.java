@@ -121,6 +121,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         String detailsValue = null, trailerValue = null;
         if(ack.size() == 2) {
             trailerValue = ack.get(1);
+        } else if(file.getName().contains("ACK1")){
+        	log.info("ACK1");
         } else {
             detailsValue = ack.get(1);
             trailerValue = ack.get(2);
