@@ -110,14 +110,20 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
         InputStream in = new FileInputStream(file);
         List<String> ack = IOUtils.readLines(in, Charsets.UTF_8.name());
+        log.info(String.valueOf(ack.size()));
         if(CollectionUtils.isEmpty(ack) || ack.size() > 3 || ack.size() < 2) {
-            log.error("[DBS服务]文件格式异常, fileName = " + file.getName());
-            return null;
+        	if(!file.getName().contains("ACK1")){
+        		log.error((!file.getName().contains("ACK1"))+"============"+file.getName());
+        		log.error("[DBS服务]文件格式异常, fileName = " + file.getName());
+                return null;
+        	}
         }
         String headerValue = ack.get(0);
         String detailsValue = null, trailerValue = null;
         if(ack.size() == 2) {
             trailerValue = ack.get(1);
+        } else if(file.getName().contains("ACK1")){
+        	log.info("ACK1");
         } else {
             detailsValue = ack.get(1);
             trailerValue = ack.get(2);
@@ -129,7 +135,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         if(responseClass.equals(ACK1Response.class)) {
             ACK1Response response = new ACK1Response();
             response.setAck1Header((ACK1Header) header);
-            response.setTrailer(trailer);
+            //response.setTrailer(trailer);
             return (R) response;
         } else if(responseClass.equals(ACK2Response.class)) {
             ACK2Response response = new ACK2Response();
