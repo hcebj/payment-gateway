@@ -27,6 +27,7 @@ import com.hce.paymentgateway.service.SecretService;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Logger;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
@@ -287,5 +288,19 @@ public class SCPFileUtils {
         } 
         return fileName; 
 
+    }
+    
+    public List<File> testack (List<File> resultFiles){
+    	List<File> files = new ArrayList<>();
+		//String filePathEncod = temp.getAbsolutePath();//加密传入的文件路径
+        String fileName = "UFF1.STP.HKHCEH.HKHCEH.201807090012.txt.DHBKHKHH.D20180709T151007.ACK1";
+        //String fileNameDecode = DecodeFiles(fileName);
+        String path = System.getProperty("user.home") + "/tempFile/";
+        log.info(path+fileName);
+        File file = new File(path,fileName);
+        if(file.exists()){
+        	files.add(file);
+        }
+    	return files;
     }
 }

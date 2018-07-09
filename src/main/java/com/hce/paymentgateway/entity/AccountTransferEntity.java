@@ -67,5 +67,10 @@ public class AccountTransferEntity extends BaseEntity implements Serializable {
     private String specificPaymentPurpose;
     private String taxFreeGoodsRelated;
     private String paymentNature;
+    private String chnlNo;
+    private String chnlDate;
+    private String chnlSn;
+    private String transactionStatus;
+    private String additionalInformation;
 
 }
