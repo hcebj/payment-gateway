@@ -96,8 +96,7 @@ public class SCPFileUtils {
 
     }
 
-    public List<File> downloadFilesFromServer(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
-        JSch jsch = new JSch();
+    public List<File> downloadFilesFromServer(String filenameRegex) throws JSchException, SftpException, FileNotFoundException {
         String privateKey;
         if(File.separator.equals("/")) {//Linux
         	privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
@@ -105,31 +104,43 @@ public class SCPFileUtils {
         	privateKey = System.getProperty("user.home") + "\\.ssh\\wsh\\id_rsa";
         }
         //String privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
+        JSch jsch = new JSch();
         jsch.addIdentity(privateKey);
-        Session session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
-        session.setConfig("StrictHostKeyChecking", "no");
-        log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
-        session.connect();
-        ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
-        channel.connect();
-        log.info("[{}]: Change to directory: {}", dbsHost, outboxDir);
-        channel.cd(outboxDir);
-        Vector<ChannelSftp.LsEntry> filesOnServer = channel.ls("*"+filenameRegex+"*");
-        log.info("[{}]: Found {} file(s) with expression: {}", dbsHost, filesOnServer.size(), filenameRegex);
-        List<File> files = new ArrayList<>();
-        for(ChannelSftp.LsEntry entry : filesOnServer) {
-            String name = entry.getFilename();
-            File targetFile = new File(localTempDir + "/" + name);
-            log.info("[{}]: Downloading server file: {} to local file: {} ...", dbsHost, name, targetFile.getAbsolutePath());
-            OutputStream os = new FileOutputStream(targetFile);
-            channel.get(name, os);
-            files.add(targetFile);
+        Session session = null;
+        ChannelSftp channel = null;
+        try {
+        	session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
+            session.setConfig("StrictHostKeyChecking", "no");
+            log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
+            session.connect();
+            channel = (ChannelSftp) session.openChannel("sftp");
+            channel.connect();
+            log.info("[{}]: Change to directory: {}", dbsHost, outboxDir);
+            channel.cd(outboxDir);
+            Vector<ChannelSftp.LsEntry> filesOnServer = channel.ls("*"+filenameRegex+"*");
+            log.info("[{}]: Found {} file(s) with expression: {}", dbsHost, filesOnServer.size(), filenameRegex);
+            List<File> files = new ArrayList<>();
+            for(ChannelSftp.LsEntry entry : filesOnServer) {
+                String name = entry.getFilename();
+                File targetFile = new File(localTempDir + "/" + name);
+                log.info("[{}]: Downloading server file: {} to local file: {} ...", dbsHost, name, targetFile.getAbsolutePath());
+                OutputStream os = new FileOutputStream(targetFile);
+                channel.get(name, os);
+                files.add(targetFile);
+            }
+            log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
+            return files;
+        } finally {
+        	if(channel!=null)
+        		channel.disconnect();
+        	if(session!=null)
+        		session.disconnect();
         }
-        channel.disconnect();
-        session.disconnect();
-        log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
-        //解密文件，
-        List<File> filesDecode = new ArrayList<>();
+    }
+
+    public List<File> downloadFilesFromServerAndDecrypt(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
+    	List<File> files = this.downloadFilesFromServer(filenameRegex);
+    	List<File> filesDecode = new ArrayList<>();
         for(File file:files) {
         	//获取文件的路径。
         	String filePathEncod = file.getAbsolutePath();//加密传入的文件路径
@@ -165,7 +176,6 @@ public class SCPFileUtils {
         	filesDecode.add(newFile);
         }
         return filesDecode;
-        //return files;
     }
     
     public String createFile(String fileName,InputStream inputStream) throws IOException{

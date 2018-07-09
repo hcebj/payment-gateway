@@ -31,7 +31,7 @@ public class PaymentGatewayApplicationTests {
 
     @Test
     public void testSCPDownloadFilesFromServer() throws SftpException, JSchException, IOException, InterruptedException {
-        List<File> files = scpFileUtils.downloadFilesFromServer("UFF1.STP.HKGTSA.HKGTSA.IPE201704241740.TXT*");
-        System.out.println("Done.");
+        List<File> files = scpFileUtils.downloadFilesFromServerAndDecrypt("UFF1.STP.HKGTSA.HKGTSA.IPE201704241740.TXT*");
+        System.out.println("Done: "+files.size());
     }
 }

@@ -3,11 +3,16 @@ package com.hce.paymentgateway.job;
 import com.google.common.base.Charsets;
 import com.hce.paymentgateway.api.dbs.*;
 import com.hce.paymentgateway.entity.BaseEntity;
+import com.hce.paymentgateway.service.AccountingService;
 import com.hce.paymentgateway.util.DBSDataFormat;
 import com.hce.paymentgateway.util.FileNameGenerator;
 import com.hce.paymentgateway.util.PaymentStatus;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -15,6 +20,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -24,12 +30,12 @@ import java.util.List;
  */
 @Slf4j
 public abstract class AbstractSchedulingService<T extends BaseEntity> {
-
-    //protected int init = 0;
     protected int interval = 1;
 
     @Resource(name = "SCPFileUtils")
     private com.hce.paymentgateway.util.SCPFileUtils SCPFileUtils;
+    @Autowired
+    private AccountingService accountingService;
 
     @Scheduled(cron = "0 0/1 * * * ?")
     public void queryTransactionStatus(){
@@ -44,6 +50,14 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
                 ++init;
             }
         }
+    }
+
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void process() throws FileNotFoundException, JSchException, SftpException {
+    	List<File> files = SCPFileUtils.downloadFilesFromServer("HKHCEH");//海云汇香港
+    	accountingService.process(files);
+    	files = SCPFileUtils.downloadFilesFromServer("HKBRHCEC");//海云汇国际
+    	accountingService.process(files);
     }
 
     /**
@@ -68,7 +82,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             if(!update) continue;
             // 2. 根据文件名查询FTP服务器数据
             String fileName = FileNameGenerator.generateAckFileName(transfer);
-            List<File> resultFiles = SCPFileUtils.downloadFilesFromServer(fileName);
+            List<File> resultFiles = SCPFileUtils.downloadFilesFromServerAndDecrypt(fileName);
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
             if(!ackResult.isNextHandler()) continue;
