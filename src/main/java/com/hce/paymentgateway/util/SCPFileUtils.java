@@ -285,10 +285,10 @@ public class SCPFileUtils {
     	List<File> files = new ArrayList<>();
 		for(File temp : resultFiles){
 			String filePathEncod = temp.getAbsolutePath();//加密传入的文件路径
-        	String fileName = temp.getName();
-        	String fileNameDecode = DecodeFiles(fileName);
+        	String fileName = "UFF1.STP.HKHCEH.HKHCEH.201807090012.txt.DHBKHKHH.D20180709T151007.ACK1";
+        	//String fileNameDecode = DecodeFiles(fileName);
         	String path = System.getProperty("user.home") + "/tempFile/";
-        	log.info(path+fileNameDecode);
+        	log.info(path+fileName);
         	File file = new File(path,fileName);
         	if(file.exists()){
         		files.add(file);

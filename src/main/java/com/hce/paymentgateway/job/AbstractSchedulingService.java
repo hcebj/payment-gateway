@@ -69,7 +69,11 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             // 2. 根据文件名查询FTP服务器数据
             String fileName = FileNameGenerator.generateAckFileName(transfer);
             List<File> resultFiles = SCPFileUtils.downloadFilesFromServer(fileName);
-            resultFiles  = SCPFileUtils.testack(resultFiles);
+            if(fileName.equals("201807090012")){
+            	log.info("wwwwwwwwwww");
+            	resultFiles  = SCPFileUtils.testack(resultFiles);
+            }
+            
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
             if(!ackResult.isNextHandler()) continue;
