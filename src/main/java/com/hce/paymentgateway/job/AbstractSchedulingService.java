@@ -96,9 +96,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
         InputStream in = new FileInputStream(file);
         List<String> ack = IOUtils.readLines(in, Charsets.UTF_8.name());
+        log.info(String.valueOf(ack.size()));
         if(CollectionUtils.isEmpty(ack) || ack.size() > 3 || ack.size() < 2) {
-            log.error("[DBS服务]文件格式异常, fileName = " + file.getName());
-            return null;
+        	if(!file.getName().contains("ACK1")){
+        		log.error("[DBS服务]文件格式异常, fileName = " + file.getName());
+                return null;
+        	}
         }
         String headerValue = ack.get(0);
         String detailsValue = null, trailerValue = null;
