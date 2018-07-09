@@ -134,7 +134,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         if(responseClass.equals(ACK1Response.class)) {
             ACK1Response response = new ACK1Response();
             response.setAck1Header((ACK1Header) header);
-            response.setTrailer(trailer);
+            //response.setTrailer(trailer);
             return (R) response;
         } else if(responseClass.equals(ACK2Response.class)) {
             ACK2Response response = new ACK2Response();
