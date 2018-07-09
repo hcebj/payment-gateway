@@ -81,7 +81,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
+        <!-- <repository>
             <id>hce-nexus</id>
             <url>http://172.16.80.12:8081/repository/maven-public/</url>
             <releases>
@@ -90,7 +90,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
+        </repository> -->
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
