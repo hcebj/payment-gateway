@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hce.paymentgateway.service.impl.SecretService;
+import com.hce.paymentgateway.service.impl.SecretServiceImpl;
 
 @RestController
 @RequestMapping(value = "/test")
 public class TestController {
 	@Autowired
-	private SecretService secretService;
+	private SecretServiceImpl secretService;
 
 	@RequestMapping(value = "/commandline")
 	@ResponseBody

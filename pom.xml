@@ -32,6 +32,8 @@
 				<hce.pgw.dbs.remote-server.inbox>/home/wsh/in</hce.pgw.dbs.remote-server.inbox>
 				<hce.pgw.dbs.remote-server.outbox>/home/wsh/out</hce.pgw.dbs.remote-server.outbox>
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
+				<secret.pgp.pwd>12345678</secret.pgp.pwd>
+				<secret.pubkey.dbs></secret.pubkey.dbs>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -50,6 +52,8 @@
 				<hce.pgw.dbs.remote-server.inbox>/Outbox</hce.pgw.dbs.remote-server.inbox>
 				<hce.pgw.dbs.remote-server.outbox>/Inbox</hce.pgw.dbs.remote-server.outbox>
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
+				<secret.pgp.pwd>12345678</secret.pgp.pwd>
+				<secret.pubkey.dbs></secret.pubkey.dbs>
 			</properties>
 		</profile>
 	</profiles>
