@@ -25,6 +25,7 @@ public class TestController {
 	@RequestMapping(value = "/test")
 	@ResponseBody
 	public String test() throws NoSuchProviderException, IOException {
-		return "DECRYPTION: "+secretService.test("/tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp", "/tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1");
+//		return "DECRYPTION: "+secretService.test("/tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp", "/tmp/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1");
+		return "DECRYPTION: "+secretService.test("D:/dbs/UFF1.STP.HKHCEH.HKHCEH.201807060012.txt.DHBKHKHH.D20180706T153341.ACK1.pgp", "D:/dbs/decryption.txt");
 	}
 }
