@@ -70,6 +70,11 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	public String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
+		File f = new File(filePathDecode);
+		if(f.exists()) {
+			f.delete();
+		}
+		f.createNewFile();
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/12_private.asc", secretPwd.toCharArray(), filePathDecode);
 		InputStream in = null;
