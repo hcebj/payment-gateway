@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.Constant;
@@ -15,12 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@PropertySource("classpath:application.properties")
 public class SecretServiceImpl implements SecretService {
 	private final static int loops = 10;
 	private final static int interval = 1000;
-	@Value("secret.pgp.pwd")
+	@Value("${secret.pgp.pwd}")
 	private String secretPwd;
-	@Value("secret.pubkey.dbs")
+	@Value("${secret.pubkey.dbs}")
 	private String dbsPubKey;
 
 	public String pgp(String encryption, String decryption) throws IOException, InterruptedException {
