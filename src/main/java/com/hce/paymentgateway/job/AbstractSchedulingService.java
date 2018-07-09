@@ -112,7 +112,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         log.info(String.valueOf(ack.size()));
         if(CollectionUtils.isEmpty(ack) || ack.size() > 3 || ack.size() < 2) {
         	if(!file.getName().contains("ACK1")){
-        		log.error(file.getName());
+        		log.error((!file.getName().contains("ACK1"))+"============"+file.getName());
         		log.error("[DBS服务]文件格式异常, fileName = " + file.getName());
                 return null;
         	}
