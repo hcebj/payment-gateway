@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchProviderException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.service.SecretService;
+import com.hce.paymentgateway.util.KeyBasedLargeFileProcessor;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,5 +66,19 @@ public class SecretServiceImpl implements SecretService {
 
 	public String getDBSPubKey() {
 		return this.dbsPubKey;
+	}
+
+	public String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
+		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/12_private.asc", secretPwd.toCharArray(), filePathDecode);
+		InputStream in = null;
+		try {
+			in = new FileInputStream(filePathDecode);
+			byte[] buf = new byte[in.available()];
+			in.read(buf);
+			return new String(buf);
+		} finally {
+			if(in!=null)
+				in.close();
+		}
 	}
 }
