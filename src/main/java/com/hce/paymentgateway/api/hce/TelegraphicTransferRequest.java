@@ -21,7 +21,7 @@ public class TelegraphicTransferRequest extends TradeRequest {
     @DBSData(maxLength = 3, dateType = DataType.A, message = "originatingAccountCurrency 格式不符合规则.")
     private String originatingAccountCurrency;
 
-    @DBSData(maxLength = 3, dateType = DataType.A, canBeNull = true, message = "customerOrBatchReference 格式不符合规则.")
+    @DBSData(maxLength = 16, dateType = DataType.S, canBeNull = true, message = "customerOrBatchReference 格式不符合规则.")
     private String customerOrBatchReference;
 
     @DBSData(maxLength = 3, dateType = DataType.A, message = "paymentCurrency 格式不符合规则.")
