@@ -25,6 +25,7 @@ public class SecretServiceImpl implements SecretService {
 
 	public String pgp(String encryption, String decryption) throws IOException, InterruptedException {
 		String cmd = "sudo gpg --passphrase "+secretPwd+" -o "+decryption+" -d "+encryption;
+		log.info("COMMAND_LINE: "+cmd);
 		File file = new File(decryption);
 		if(file.exists()) {
 			file.delete();
