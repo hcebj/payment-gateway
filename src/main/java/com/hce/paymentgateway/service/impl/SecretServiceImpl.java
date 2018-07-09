@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchProviderException;
+import java.security.Security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -69,6 +70,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	public String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/12_private.asc", secretPwd.toCharArray(), filePathDecode);
 		InputStream in = null;
 		try {
