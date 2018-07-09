@@ -136,7 +136,9 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     private AckResult handleACK1(T transfer, List<File> resultFiles) throws Exception {
         AckResult ackResult = new AckResult();
         File ack1File = getACK(resultFiles, "ACK1");
+        log.info("qqqqqqqqq");
         if(ack1File == null) return ackResult;
+        log.info("sssssssss");
         ACK1Response ack1Response = parseFile(ack1File, ACK1Header.class, null, ACK1Response.class);
         log.info("aaaaaaaaaa");
         if(ack1Response == null || ack1Response.getAck1Header() == null ||
