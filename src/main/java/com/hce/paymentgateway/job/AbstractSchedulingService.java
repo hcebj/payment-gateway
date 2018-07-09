@@ -138,8 +138,10 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         File ack1File = getACK(resultFiles, "ACK1");
         if(ack1File == null) return ackResult;
         ACK1Response ack1Response = parseFile(ack1File, ACK1Header.class, null, ACK1Response.class);
+        log.info("aaaaaaaaaa");
         if(ack1Response == null || ack1Response.getAck1Header() == null ||
             StringUtils.isEmpty(ack1Response.getAck1Header().getGroupStatus())) {
+        	log.info("vvvvvvv");
             return ackResult;
         }
         getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
@@ -234,6 +236,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
 
         if(paymentStatus.equals(PaymentStatus.FAILED)) {
+        	log.info("zzzzzzzzzzzzzzzz");
             updatePaymentStatus(transfer, paymentStatus,"RJCT",additionalInformation);
             ackResult.setNextHandler(false);
         } else if(paymentStatus.equals(PaymentStatus.PROCESSING)) {
