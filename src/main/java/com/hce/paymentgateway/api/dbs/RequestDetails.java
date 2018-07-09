@@ -144,7 +144,7 @@ public class RequestDetails implements Instr {
     private String clientReference3;
     @Order(order = 68)
     private String clientReference4;
-    @Order(order = 69)
+    /*@Order(order = 69)
     private String specificPaymentPurpose;
     @Order(order = 70)
     private String taxFreeGoodsRelated;
@@ -187,6 +187,6 @@ public class RequestDetails implements Instr {
     @Order(order = 89)
     private String remarks;
     @Order(order = 90)
-    private String customsDeclarationWithNoGoods;
+    private String customsDeclarationWithNoGoods;*/
 
 }
