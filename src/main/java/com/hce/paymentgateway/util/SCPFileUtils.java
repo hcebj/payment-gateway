@@ -27,6 +27,7 @@ import com.hce.paymentgateway.service.SecretService;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Logger;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
@@ -128,7 +129,7 @@ public class SCPFileUtils {
         channel.disconnect();
         session.disconnect();
         log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
-        //解密文件，
+       /* //解密文件，
         List<File> filesDecode = new ArrayList<>();
         for(File file:files) {
         	//获取文件的路径。
@@ -164,8 +165,8 @@ public class SCPFileUtils {
         	secretService.pgp(filePathEncod, filePathDecode);
         	filesDecode.add(newFile);
         }
-        return filesDecode;
-        //return files;
+        return filesDecode;*/
+        return files;
     }
     
     public String createFile(String fileName,InputStream inputStream) throws IOException{
@@ -277,5 +278,27 @@ public class SCPFileUtils {
         } 
         return fileName; 
 
+    }
+    
+    public List<File> testack (List<File> resultFiles){
+    	
+    	List<File> files = new ArrayList<>();
+		for(File temp : resultFiles){
+			String filePathEncod = temp.getAbsolutePath();//加密传入的文件路径
+        	String fileName = temp.getName();
+        	String fileNameDecode = DecodeFiles(fileName);
+        	String path = System.getProperty("user.home") + "/tempFile/";
+        	log.info(path+fileNameDecode);
+        	File file = new File(path,fileName);
+        	if(file.exists()){
+        		files.add(file);
+        	}
+        	
+        	
+		}
+    	
+    	
+    	return files;
+    	
     }
 }

@@ -28,7 +28,8 @@ public interface AccountTransferDao extends JpaRepository<AccountTransferEntity,
                                  @Param("newQueryCount") Integer newQueryCount, @Param("modifyTime") Date modifyTime);
 
     @Modifying
-    @Query(value = "update AccountTransferEntity set status = :status, modifyTime = :modifyTime where id = :id")
-    int updateStatusById(@Param("id") Long id, @Param("status") Integer status, @Param("modifyTime") Date modifyTime);
+    @Query(value = "update AccountTransferEntity set status = :status, modifyTime = :modifyTime, transactionStatus = :transactionStatus, additionalInformation = :additionalInformation where id = :id")
+    int updateStatusById(@Param("id") Long id, @Param("status") Integer status, @Param("modifyTime") Date modifyTime ,
+    		@Param("transactionStatus") String transactionStatus, @Param("additionalInformation") String additionalInformation);
 
 }
