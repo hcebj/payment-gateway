@@ -18,10 +18,12 @@ import java.util.Vector;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import com.hce.paymentgateway.service.SecretService;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -37,24 +39,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @PropertySource("classpath:application.properties")
 public class SCPFileUtils {
-
     @Value("${hce.pgw.dbs.remote-server.host}")
     private String dbsHost;
-
     @Value("${hce.pgw.dbs.remote-server.username}")
     private String dbsUsername;
-
     @Value("${hce.pgw.dbs.remote-server.port}")
     private String dbsPort;
-
     @Value("${hce.pgw.dbs.remote-server.inbox}")
     private String inboxDir;
-
     @Value("${hce.pgw.dbs.remote-server.outbox}")
     private String outboxDir;
-
     @Value("${hce.pgw.dbs.local.file.location}")
     private String localTempDir;
+    @Autowired
+    private SecretService secretService;
 
 
     public void uploadFileFromServer(String filename, InputStream inputStream)
@@ -98,23 +96,20 @@ public class SCPFileUtils {
 
     }
 
-    public List<File> downloadFilesFromServer(String filenameRegex) throws JSchException, SftpException, FileNotFoundException {
-
+    public List<File> downloadFilesFromServer(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
         JSch jsch = new JSch();
         String privateKey;
-        if(File.separator.equals("/")){//Linux
+        if(File.separator.equals("/")) {//Linux
         	privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
-        }else{//windows
+        } else {//windows
         	privateKey = System.getProperty("user.home") + "\\.ssh\\wsh\\id_rsa";
         }
         //String privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
         jsch.addIdentity(privateKey);
-
         Session session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
         session.setConfig("StrictHostKeyChecking", "no");
         log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
         session.connect();
-
         ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
         channel.connect();
         log.info("[{}]: Change to directory: {}", dbsHost, outboxDir);
@@ -122,7 +117,7 @@ public class SCPFileUtils {
         Vector<ChannelSftp.LsEntry> filesOnServer = channel.ls("*"+filenameRegex+"*");
         log.info("[{}]: Found {} file(s) with expression: {}", dbsHost, filesOnServer.size(), filenameRegex);
         List<File> files = new ArrayList<>();
-        for (ChannelSftp.LsEntry entry : filesOnServer) {
+        for(ChannelSftp.LsEntry entry : filesOnServer) {
             String name = entry.getFilename();
             File targetFile = new File(localTempDir + "/" + name);
             log.info("[{}]: Downloading server file: {} to local file: {} ...", dbsHost, name, targetFile.getAbsolutePath());
@@ -133,76 +128,42 @@ public class SCPFileUtils {
         channel.disconnect();
         session.disconnect();
         log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
-        
         //解密文件，
         List<File> filesDecode = new ArrayList<>();
-        for(File file  : files){
-        	
+        for(File file:files) {
         	//获取文件的路径。
-        	
         	String filePathEncod = file.getAbsolutePath();//加密传入的文件路径
-        	
         	String fileName = file.getName();
-        	
         	InputStream  InputStream = new FileInputStream(filePathEncod);//加密传输的输入流
-        	
         	//创建加密后的文件路径，和文件名。
         	//1、去掉pgp 后缀
-        	String fileNameDecode = null;
-        	
-        	fileNameDecode = DecodeFiles(fileName);
-        	
-        	
-        	
-        	
+        	String fileNameDecode = DecodeFiles(fileName);
         	//2、新建解密后文件
         	String filePathDecode;
         	String path;
-        	
-        	if(File.separator.equals("/")){//Linux
+        	if(File.separator.equals("/")) {//Linux
         		path = System.getProperty("user.home") + "/tempFile/";
-            }else{//windows
+            } else {//windows
             	path = System.getProperty("user.home") + "\\tempFile\\";
             }
-        	
         	File f = new File(path);
-        	if(!f.exists()){
-        	f.mkdirs();
+        	if(!f.exists()) {
+        		f.mkdirs();
         	} 
-        	
-        	
-        	File newFile = new File(f,fileNameDecode);
+        	File newFile = new File(f, fileNameDecode);
         	if(!newFile.exists()){
-        		try {
-        			newFile.createNewFile();
-        			
-        		} catch (IOException e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
+        		newFile.createNewFile();
         	}
-        	
         	filePathDecode = newFile.getAbsolutePath();
-        	
         	//进行解密
         	//InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
-        	try {
-        		Security.addProvider(new BouncyCastleProvider());
-        		log.info(String.format("privateKey:%s,EncrptFile:%s,decryptFile:%s", System.getProperty("user.home") + "/pgp/HCE-PGP.asc",filePathEncod,filePathDecode));
-        		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), filePathDecode);
-			} catch (NoSuchProviderException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				
-				
-			}
-        	
-        	
+        	Security.addProvider(new BouncyCastleProvider());
+//        	log.info(String.format("privateKey:%s,EncrptFile:%s,decryptFile:%s", System.getProperty("user.home") + "/pgp/HCE-PGP.asc",filePathEncod,filePathDecode));
+//        	KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), filePathDecode);
+        	log.info(filePathEncod+"----------"+filePathDecode);
+        	secretService.pgp(filePathEncod, filePathDecode);
         	filesDecode.add(newFile);
-        
-        	
         }
-
         return filesDecode;
         //return files;
     }
