@@ -34,6 +34,7 @@
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
 				<secret.pgp.pwd>12345678</secret.pgp.pwd>
 				<secret.pubkey.dbs></secret.pubkey.dbs>
+				<cmd.decrypt>/home/wsh/decrypt.sh</cmd.decrypt>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -54,6 +55,7 @@
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
 				<secret.pgp.pwd>12345678</secret.pgp.pwd>
 				<secret.pubkey.dbs></secret.pubkey.dbs>
+				<cmd.decrypt></cmd.decrypt>
 			</properties>
 		</profile>
 	</profiles>

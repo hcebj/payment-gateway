@@ -27,9 +27,12 @@ public class SecretServiceImpl implements SecretService {
 	private String secretPwd;
 	@Value("${secret.pubkey.dbs}")
 	private String dbsPubKey;
+	@Value("${cmd.decrypt}")
+	private String decryptionCmd;
 
 	public String pgp(String encryption, String decryption) throws IOException, InterruptedException {
-		String cmd = "sudo gpg --passphrase "+secretPwd+" -o "+decryption+" -d "+encryption;
+		String cmd = decryptionCmd+" "+decryption+" "+encryption;
+//		String cmd = "sudo gpg --passphrase "+secretPwd+" -o "+decryption+" -d "+encryption;
 //		String cmd = "echo \""+secretPwd+"\"|sudo gpg --batch --passphrase-fd 0 -o "+decryption+" -d "+encryption;
 		log.info("COMMAND_LINE: "+cmd);
 		File file = new File(decryption);
