@@ -16,6 +16,8 @@ import com.csvreader.CsvReader;
 import com.hce.paymentgateway.dao.DBSVAReportDao;
 import com.hce.paymentgateway.entity.DBSVAReportEntity;
 import com.hce.paymentgateway.service.AccountingService;
+import com.prowidesoftware.swift.model.mt.AbstractMT;
+import com.prowidesoftware.swift.model.mt.mt1xx.MT103;
 
 @Service
 public class AccountingServiceImpl implements AccountingService {
@@ -89,6 +91,9 @@ public class AccountingServiceImpl implements AccountingService {
 				}
 			} else if(file.getName().endsWith(".xls")||file.getName().endsWith(".xlsx")) {//VA Setup Instruction
 				
+			} else if(file.getName().endsWith(".txt")) {//MT94*
+//				AbstractMT.parse("")
+//				MT103.parse("")
 			}
 			file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 		}
@@ -124,7 +129,7 @@ public class AccountingServiceImpl implements AccountingService {
 		int index = 0;
 		for(int i=first;i<=last;i++) {
 			byte b = buf[i];
-			if(b>0) {
+			if(b!=0) {
 				newBuf[index++] = b;
 			}
 		}
