@@ -34,7 +34,7 @@ public class SecretServiceImpl implements SecretService {
 		String cmd = decryptionCmd+" "+decryption+" "+encryption;
 //		String cmd = "sudo gpg --passphrase "+secretPwd+" -o "+decryption+" -d "+encryption;
 //		String cmd = "echo \""+secretPwd+"\"|sudo gpg --batch --passphrase-fd 0 -o "+decryption+" -d "+encryption;
-		log.info("COMMAND_LINE: "+decryptionCmd+"---"+secretPwd+"----"+cmd);
+		log.info("COMMAND_LINE: "+cmd);
 		File file = new File(decryption);
 		if(file.exists()) {
 			file.delete();
