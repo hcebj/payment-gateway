@@ -188,14 +188,18 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         AckResult ackResult = new AckResult();
         File ack3File = getACK(resultFiles, "ACK3");
         if(ack3File == null) return ackResult;
+        log.info("there will be assignment!");
         ACK3Response ack3Response = parseFile(ack3File, ACK3Header.class, ACK3Details.class, ACK3Response.class);
         if(ack3Response == null
             || ack3Response.getAck3Header() == null || StringUtils.isEmpty(ack3Response.getAck3Header().getGroupStatus())
             || ack3Response.getAck3Details() == null || StringUtils.isEmpty(ack3Response.getAck3Details().getTransactionStatus())) {
+        	log.info("Data is incomplete !");
             return ackResult;
         }
+        log.info("there will be getting paymenStastus!");
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack3Response.getAck3Header().getGroupStatus(), ack3Response.getAck3Details().getTransactionStatus(),ack3Response.getAck3Details().getAdditionalInformation());
         // 成功、失败、处理中 都需要更新数据库状态
+        log.info("there will be updatting paymentStatus!");
         updatePaymentStatus(transfer, paymentStatus, ack3Response.getAck3Details().getTransactionStatus(),ack3Response.getAck3Details().getAdditionalInformation());
         return ackResult;
     }
@@ -234,12 +238,16 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         } else {
             String headerStatusUpper = headerStatus.toUpperCase();
             if(headerStatusUpper.equals("ACTC") || headerStatusUpper.equals("ACCP")
-                || headerStatusUpper.equals("ACWC") || headerStatusUpper.equals("PART")) {
+                || headerStatusUpper.equals("ACWC") || headerStatusUpper.equals("PART")
+                || headerStatusUpper.equals("ACSP")) {
+            	log.info("paymentStatus:" + headerStatusUpper);
                 paymentStatus = PaymentStatus.SUCCESS;
             } else if(headerStatusUpper.equals("RJCT")) {
+            	log.info("paymentStatus:" + headerStatusUpper);
                 paymentStatus = PaymentStatus.FAILED;
             } else {
                 // 只有ACK3有该值
+            	log.info("paymentStatus:" + headerStatusUpper);
                 paymentStatus = PaymentStatus.PROCESSING;
             }
         }
@@ -247,11 +255,14 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             if(paymentStatus.equals(PaymentStatus.SUCCESS)) {
                 String transactionStatusUpper = transactionStatus.toUpperCase();
                 if(transactionStatusUpper.equals("ACCP") || transactionStatusUpper.equals("ACWC")) {
+                	log.info("transactionStatusUpper:" + transactionStatusUpper);
                     paymentStatus = PaymentStatus.SUCCESS;
                 } else if(transactionStatusUpper.equals("RJCT")) {
+                	log.info("transactionStatusUpper:" + transactionStatusUpper);
                     paymentStatus = PaymentStatus.FAILED;
                 } else {
                     // 只有ACK3有该值
+                	log.info("transactionStatusUpper:" + transactionStatusUpper);
                     paymentStatus = PaymentStatus.PROCESSING;
                 }
             }

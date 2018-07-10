@@ -48,6 +48,7 @@ public class AccountTransferScheduling extends AbstractSchedulingService<Account
 
     @Override
     protected void updatePaymentStatus(AccountTransferEntity transfer, PaymentStatus paymentStatus, String errorCode, String errorMsg) {
+    	log.info(String.format("id:%s,pamentStatus:%s,errorcode:%s,errorMsg:%s", transfer.getId(),paymentStatus.getStatus(),errorCode, errorMsg));
         accountTransferDao.updateStatusById(transfer.getId(), paymentStatus.getStatus(), new Date(), errorCode, errorMsg);
     }
 }
