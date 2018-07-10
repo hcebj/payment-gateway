@@ -24,6 +24,7 @@ public class AccountTransferEntity extends BaseEntity implements Serializable {
     private String originatingAccountNumber;
     private String originatingAccountCurrency;
     private String customerOrBatchReference;
+    private String batchID;
     private String paymentCurrency;
     private String paymentDate;
     private String bankCharges;//cts
