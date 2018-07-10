@@ -20,9 +20,9 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -53,8 +53,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
     }
 
-    @Scheduled(cron = "0 0/5 * * * ?")
-    public void process() throws JSchException, SftpException, IOException {
+//    @Scheduled(cron = "0 0/5 * * * ?")
+    public void process() throws JSchException, SftpException, IOException, ParseException {
     	List<File> files = SCPFileUtils.downloadFilesFromServer("HKHCEH");//海云汇香港
     	accountingService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer("HKBRHCEC");//海云汇国际

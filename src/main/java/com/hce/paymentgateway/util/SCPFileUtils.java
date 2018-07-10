@@ -27,12 +27,10 @@ import com.hce.paymentgateway.service.SecretService;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Logger;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 import lombok.extern.slf4j.Slf4j;
-
 /**
  * Created by zonga on 2018/5/24.
  */
@@ -141,15 +139,18 @@ public class SCPFileUtils {
 
     public List<File> downloadFilesFromServerAndDecrypt(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = this.downloadFilesFromServer(filenameRegex);
-    	List<File> filesDecode = new ArrayList<>();
+    	List<File> filesDecode = new ArrayList<File>(files.size());
+    	log.info("XXX---------size: "+files.size());
         for(File file:files) {
         	//获取文件的路径。
         	String filePathEncod = file.getAbsolutePath();//加密传入的文件路径
         	String fileName = file.getName();
-        	InputStream  InputStream = new FileInputStream(filePathEncod);//加密传输的输入流
+//        	InputStream  InputStream = new FileInputStream(filePathEncod);//加密传输的输入流
+        	log.info("XXX---------path: "+filePathEncod);
         	//创建加密后的文件路径，和文件名。
         	//1、去掉pgp 后缀
         	String fileNameDecode = DecodeFiles(fileName);
+        	log.info("XXX---------fileNameDecode: "+fileNameDecode);
         	//2、新建解密后文件
         	String filePathDecode;
         	String path;
@@ -167,6 +168,7 @@ public class SCPFileUtils {
         		newFile.createNewFile();
         	}
         	filePathDecode = newFile.getAbsolutePath();
+        	log.info("XXX---------filePathDecode: "+filePathDecode);
         	//进行解密
         	//InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
         	Security.addProvider(new BouncyCastleProvider());
@@ -174,6 +176,7 @@ public class SCPFileUtils {
 //        	KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), filePathDecode);
         	log.info(filePathEncod+"----------"+filePathDecode);
         	secretService.pgp(filePathEncod, filePathDecode);
+        	log.info("XXX---------Finished");
         	filesDecode.add(newFile);
         }
         return filesDecode;

@@ -1,5 +1,6 @@
 package com.hce.paymentgateway.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,42 +23,45 @@ public class DBSVAReportEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	@Column(name="type")
+	private int type;//1VA Report (End-Of-Day); 2VA Report (30-min interval)
+	@CreatedDate
 	@Column(name="creation_time")
-	private Date creationTime;
-	@Column(name="transaction_date")
-	private Date transactionDate;
-	@Column(name="value_date")
-	private Date valueDate;
+	private Date creationTime;//创建创建时间
 	@Column(name="sno")
-	private String sno;
+	private String sno;//序号
 	@Column(name="va_number")
-	private String vaNumber;
+	private String vaNumber;//VA编号
 	@Column(name="bank_account_number")
-	private String bankAccountNumber;
+	private String bankAccountNumber;//银行帐号
 	@Column(name="beneficiary_name")
-	private String beneficiaryName;
+	private String beneficiaryName;//收款人姓名
 	@Column(name="va_name")
-	private String vaName;
+	private String vaName;//VA名称
 	@Column(name="remitter_name")
-	private String remitterName;
+	private String remitterName;//汇款人姓名
 	@Column(name="remitter_details")
-	private String remitterDetails;
+	private String remitterDetails;//汇款人详情
 	@Column(name="remitter_bank_code")
-	private String remitterBankCode;
+	private String remitterBankCode;//汇款银行代码
 	@Column(name="remit_currency")
-	private String remitCurrency;
+	private String remitCurrency;//汇款货币
 	@Column(name="remit_amount")
-	private String remitAmount;
+	private BigDecimal remitAmount;//汇款金额
 	@Column(name="credit_currency")
-	private String creditCurrency;
+	private String creditCurrency;//入帐货币
 	@Column(name="credit_amount")
-	private String creditAmount;
+	private BigDecimal creditAmount;//入帐金额
 	@Column(name="sender_s_reference")
-	private String sendersReference;
+	private String sendersReference;//发件人的参考
 	@Column(name="transaction_detail")
-	private String transactionDetail;
+	private String transactionDetail;//交易明细
 	@Column(name="bank_reference")
-	private String bankReference;
+	private String bankReference;//银行参考
+	@Column(name="transaction_date")
+	private Date transactionDate;//交易日期
+	@Column(name="value_date")
+	private Date valueDate;//价值日期
 	@Column(name="channel_id")
-	private String channelId;
+	private String channelId;//频道ID
 }
