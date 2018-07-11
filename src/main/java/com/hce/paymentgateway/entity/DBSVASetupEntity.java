@@ -19,12 +19,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "dbs_va_setup_response")
+@Table(name = "dbs_va_setup")
 @EntityListeners(AuditingEntityListener.class)
-public class DBSVASetupResponseEntity {
+public class DBSVASetupEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	@Column(name="file")
+	private String file;//所在文件名
 	@Column(name="corp")
 	private String corp;//PARENT ID, 海云汇香港、海云汇国际
 	@CreatedDate
