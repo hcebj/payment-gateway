@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 
 import com.csvreader.CsvReader;
 import com.hce.paymentgateway.dao.DBSVAReportDao;
-import com.hce.paymentgateway.dao.DBSVASetupDao;
+import com.hce.paymentgateway.dao.DBSVASetupResponseDao;
 import com.hce.paymentgateway.entity.DBSVAReportEntity;
-import com.hce.paymentgateway.entity.DBSVASetupEntity;
+import com.hce.paymentgateway.entity.DBSVASetupResponseEntity;
 import com.hce.paymentgateway.service.AccountingService;
 import com.prowidesoftware.swift.model.mt.AbstractMT;
 import com.prowidesoftware.swift.model.mt.mt1xx.MT103;
@@ -34,7 +34,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Autowired
 	private DBSVAReportDao dbsVAReportDao;
 	@Autowired
-	private DBSVASetupDao dbsVASetupDao;
+	private DBSVASetupResponseDao dbsVASetupResponseDao;
 
 	public void process(List<File> files) throws IOException, ParseException {
 		File historyDir = new File(localTempDir+"/history");
@@ -118,21 +118,21 @@ public class AccountingServiceImpl implements AccountingService {
 						if(action.length()==0) {
 							break;
 						}
-						DBSVASetupEntity vasetup = new DBSVASetupEntity();
-						vasetup.setCorp("HKHCEH");
-						vasetup.setAction(action);
+						DBSVASetupResponseEntity vaSetupResponse = new DBSVASetupResponseEntity();
+						vaSetupResponse.setCorp("HKHCEH");
+						vaSetupResponse.setAction(action);
 						row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
-						vasetup.setCorpCode(row.getCell(1).getStringCellValue());
-						vasetup.setRemitterPayerName(row.getCell(2).getStringCellValue());
+						vaSetupResponse.setCorpCode(row.getCell(1).getStringCellValue());
+						vaSetupResponse.setRemitterPayerName(row.getCell(2).getStringCellValue());
 						row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
-						vasetup.setMasterAC(row.getCell(3).getStringCellValue());
+						vaSetupResponse.setMasterAC(row.getCell(3).getStringCellValue());
 						row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
-						vasetup.setErpCode(row.getCell(4).getStringCellValue());
+						vaSetupResponse.setErpCode(row.getCell(4).getStringCellValue());
 						row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
-						vasetup.setStaticVASequenceNumber(row.getCell(5).getStringCellValue());
-						vasetup.setStatus(row.getCell(6).getStringCellValue());
-						vasetup.setFailureReason(row.getCell(7).getStringCellValue());
-						dbsVASetupDao.save(vasetup);
+						vaSetupResponse.setStaticVASequenceNumber(row.getCell(5).getStringCellValue());
+						vaSetupResponse.setStatus(row.getCell(6).getStringCellValue());
+						vaSetupResponse.setFailureReason(row.getCell(7).getStringCellValue());
+						dbsVASetupResponseDao.save(vaSetupResponse);
 					}
 					workbook.close();
 				} finally {

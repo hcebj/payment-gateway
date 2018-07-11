@@ -19,9 +19,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "dbs_va_setup")
+@Table(name = "dbs_va_setup_response")
 @EntityListeners(AuditingEntityListener.class)
-public class DBSVASetupEntity {
+public class DBSVASetupResponseEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
