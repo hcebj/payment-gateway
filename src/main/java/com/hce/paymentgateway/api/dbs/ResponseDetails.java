@@ -17,7 +17,7 @@ public class ResponseDetails implements Instr {
     @Order(order = 4)
     private String customerOrBatchReference;
     @Order(order = 5)
-    private String batchID;
+    private String batchId;
     @Order(order = 6)
     private String paymentDate;
     @Order(order = 7)

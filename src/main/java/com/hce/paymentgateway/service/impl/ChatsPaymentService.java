@@ -41,6 +41,7 @@ public class ChatsPaymentService extends AbstractTransactionService<ChatsPayment
         AccountTransferEntity transfer = new AccountTransferEntity();
         BeanUtils.copyProperties(tradeRequest, transfer);
         transfer.setStatus(PROCESSING.getStatus());
+        transfer.setTransactionStatus("SEND");
         accountTransferDao.save(transfer);
         log.info("[网关支付]数据入库成功, id = {}, transId= {}", transfer.getId(), transfer.getTransId());
         ftpRequestDBS(tradeRequest, transfer);

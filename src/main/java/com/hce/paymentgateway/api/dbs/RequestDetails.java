@@ -21,7 +21,7 @@ public class RequestDetails implements Instr {
     @Order(order = 6)
     private String paymentCurrency;
     @Order(order = 7)
-    private String batchID;
+    private String batchId;
     @Order(order = 8)
     private String paymentDate;
     @Order(order = 9)
