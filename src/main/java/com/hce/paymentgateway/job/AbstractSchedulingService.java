@@ -172,9 +172,11 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     private AckResult handleACK2(T transfer, List<File> resultFiles) throws Exception {
+    	log.info("handleACK2 begin");
         AckResult ackResult = new AckResult();
         File ack2File = getACK(resultFiles, "ACK2");
         if(ack2File == null) return ackResult;
+        log.info("handleACK2 continue");
         ACK2Response ack2Response = parseFile(ack2File, ACK2Header.class, ACK2Details.class, ACK2Response.class);
         if(ack2Response == null || ack2Response.getAck2Header() == null
             || StringUtils.isEmpty(ack2Response.getAck2Header().getGroupStatus())
@@ -186,6 +188,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     private AckResult handleACK3(T transfer, List<File> resultFiles) throws Exception {
+    	log.info("handleACK3 begin");
         AckResult ackResult = new AckResult();
         File ack3File = getACK(resultFiles, "ACK3");
         if(ack3File == null) return ackResult;
