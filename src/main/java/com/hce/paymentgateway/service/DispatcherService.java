@@ -1,7 +1,6 @@
 package com.hce.paymentgateway.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
@@ -28,11 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.security.NoSuchProviderException;
 import java.util.List;
@@ -187,7 +182,7 @@ public class DispatcherService {
     	path += fileName;
     	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
     	CsvWriter csvWriter = null;
-    	InputStream in = null;
+    	log.info("\r\nVA_SETUP: 0");
     	try {
     		csvWriter = new CsvWriter(path);
         	for(JSONObject obj:vasetups) {
@@ -205,13 +200,12 @@ public class DispatcherService {
         		csvWriter.writeRecord(row);
         	}
         	csvWriter.close();
-        	in = new FileInputStream(path);
+        	log.info("\r\nVA_SETUP: 1");
         	SCPFileUtils.uploadFileFromServer(fileName, null, path);
+        	log.info("\r\nVA_SETUP: 2");
     	} finally {
     		if(csvWriter!=null)
     			csvWriter.close();
-    		if(in!=null)
-    			in.close();
     	}
     }
 }

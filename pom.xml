@@ -32,9 +32,9 @@
 				<hce.pgw.dbs.remote-server.inbox>/home/wsh/in</hce.pgw.dbs.remote-server.inbox>
 				<hce.pgw.dbs.remote-server.outbox>/home/wsh/out</hce.pgw.dbs.remote-server.outbox>
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
+				<secret.cmd.decrypt></secret.cmd.decrypt>
 				<secret.pgp.pwd>12345678</secret.pgp.pwd>
 				<secret.pubkey.dbs></secret.pubkey.dbs>
-				<secret.cmd.decrypt>/home/wsh/decrypt.sh</secret.cmd.decrypt>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -53,9 +53,9 @@
 				<hce.pgw.dbs.remote-server.inbox>/Outbox</hce.pgw.dbs.remote-server.inbox>
 				<hce.pgw.dbs.remote-server.outbox>/Inbox</hce.pgw.dbs.remote-server.outbox>
 				<hce.pgw.dbs.local.file.location>/tmp</hce.pgw.dbs.local.file.location>
+				<secret.cmd.decrypt>/home/wsh/decrypt.sh</secret.cmd.decrypt>
 				<secret.pgp.pwd>12345678</secret.pgp.pwd>
 				<secret.pubkey.dbs></secret.pubkey.dbs>
-				<secret.cmd.decrypt>/home/wsh/decrypt.sh</secret.cmd.decrypt>
 			</properties>
 		</profile>
 	</profiles>
