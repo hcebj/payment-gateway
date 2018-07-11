@@ -1,6 +1,7 @@
 package com.hce.paymentgateway.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -8,11 +9,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
-	public void process(List<File> files) throws IOException, ParseException, InvalidFormatException {
+	public void process(List<File> files) throws IOException, ParseException {
 		File historyDir = new File(localTempDir+"/history");
 		if(!historyDir.exists()) {
 			historyDir.mkdirs();
@@ -101,14 +102,16 @@ public class AccountingServiceImpl implements AccountingService {
 						csvReader.close();
 				}
 			} else if(file.getName().indexOf("_DSG_VAHKL_RESP_")>0&&(file.getName().endsWith(".xls")||file.getName().endsWith(".xlsx"))) {//VA Setup Instruction
-				XSSFWorkbook workbook = null;
+				Workbook workbook = null;
 				try {
-					workbook = new XSSFWorkbook(file);
-					XSSFSheet sheet = workbook.getSheetAt(0);
+					workbook = new HSSFWorkbook(new FileInputStream(file));
+					Sheet sheet = workbook.getSheetAt(0);
 					int cursor = 1;
 					while(true) {
-						XSSFRow row = sheet.getRow(cursor++);
-						XSSFCell actionCell = row.getCell(0);
+						Row row = sheet.getRow(cursor++);
+						if(row==null)
+							break;
+						Cell actionCell = row.getCell(0);
 						if(actionCell==null)
 							break;
 						String action = actionCell.getStringCellValue().trim();
@@ -118,10 +121,14 @@ public class AccountingServiceImpl implements AccountingService {
 						DBSVASetupEntity vasetup = new DBSVASetupEntity();
 						vasetup.setCorp("HKHCEH");
 						vasetup.setAction(action);
-						vasetup.setCorp(row.getCell(1).getStringCellValue());
+						row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+						vasetup.setCorpCode(row.getCell(1).getStringCellValue());
 						vasetup.setRemitterPayerName(row.getCell(2).getStringCellValue());
+						row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
 						vasetup.setMasterAC(row.getCell(3).getStringCellValue());
+						row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
 						vasetup.setErpCode(row.getCell(4).getStringCellValue());
+						row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
 						vasetup.setStaticVASequenceNumber(row.getCell(5).getStringCellValue());
 						vasetup.setStatus(row.getCell(6).getStringCellValue());
 						vasetup.setFailureReason(row.getCell(7).getStringCellValue());
