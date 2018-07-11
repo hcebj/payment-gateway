@@ -24,9 +24,9 @@ public class DBSPaymentController {
     @RequestMapping(value = "/accountTransfer", method = RequestMethod.POST,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TradeResponse accountTransfer(@RequestBody AccountTransferRequest request) {
+//    public TradeResponse accountTransfer(@RequestBody AccountTransferRequest request) {
+    public TradeResponse accountTransfer(@RequestBody String request) {
         TradeResponse response = dispatcherService.dispatcher(request);
         return response;
     }
-
 }

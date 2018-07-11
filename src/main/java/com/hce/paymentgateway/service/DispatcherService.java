@@ -30,17 +30,14 @@ import java.util.List;
 @Slf4j
 @Service("dispatcherService")
 public class DispatcherService {
-
-    @Resource
+	@Autowired
     private ScanService scanService;
-
     @Autowired
     private AccountInfoDao accountInfoDao;
 
     public TradeResponse dispatcher(String json) {
         log.info("\n[网关支付]接收到交易请求 \n{}", json);
         TradeResponse response = new TradeResponse();
-
         // 付款类型校验
         TradeRequest tradeRequest = JsonUtil.parseObject(json, TradeRequest.class);
         ServiceWrapper serviceWrapper = scanService.getTransactionService(tradeRequest.getProductType());
@@ -49,7 +46,6 @@ public class DispatcherService {
             response.setMessage("付款类型参数异常");
             return response;
         }
-
         // 静态参数格式校验
         TradeRequest actualRequest = JsonUtil.parseObject(json, serviceWrapper.getParameterType());
         ValidatorResult validatorResult = ValidatorUtil.validate(actualRequest);
@@ -57,28 +53,21 @@ public class DispatcherService {
             addError(validatorResult, response);
             return response;
         }
-
         // 动态数据校验
         validatorResult = dynamicValidate(actualRequest);
         if(!validatorResult.isAvailable()) {
             addError(validatorResult, response);
             return response;
         }
-
         // 处理请求
         TransactionService transactionService = serviceWrapper.getTransactionService();
         try {
             response = transactionService.handle(actualRequest);
         } catch (Exception e) {
             response.setCode(ResponseCode.FAILED.name());
-            log.error("[网关支付]失败, 异常信息如下 \n", e);
+            log.error("[网关支付]失败, 异常信息如下\r\n"+json+"\r\n", e);
         }
         return response;
-    }
-
-    public TradeResponse dispatcher(TradeRequest tradeRequest) {
-        String json = JsonUtil.toJson(tradeRequest);
-        return dispatcher(json);
     }
 
     private void addError(ValidatorResult validatorResult, TradeResponse response) {
