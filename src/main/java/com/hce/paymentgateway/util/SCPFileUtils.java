@@ -120,7 +120,7 @@ public class SCPFileUtils {
             channel.cd(outboxDir);
             Vector<ChannelSftp.LsEntry> filesOnServer = channel.ls("*"+filenameRegex+"*");
             log.info("[{}]: Found {} file(s) with expression: {}", dbsHost, filesOnServer.size(), filenameRegex);
-            List<File> files = new ArrayList<>();
+            List<File> files = new ArrayList<File>(filesOnServer.size());
             for(ChannelSftp.LsEntry entry : filesOnServer) {
                 String name = entry.getFilename();
                 File targetFile = new File(localTempDir + "/" + name);

@@ -38,6 +38,9 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     @Autowired
     private AccountingService accountingService;
 
+    /**
+     * 处理ACK1、ACK2、ACK3
+     */
     @Scheduled(cron = "0 0/1 * * * ?")
     public void queryTransactionStatus(){
     	int init = 0;
@@ -53,11 +56,21 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
     }
 
-//    @Scheduled(cron = "0 0/5 * * * ?")
-    public void process() throws JSchException, SftpException, IOException, ParseException {
-    	List<File> files = SCPFileUtils.downloadFilesFromServer("HKHCEH");//海云汇香港
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void processResponse() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt("_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	accountingService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServer("HKBRHCEC");//海云汇国际
+    	files = SCPFileUtils.downloadFilesFromServer(".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
+    	accountingService.process(files);
+    	files = SCPFileUtils.downloadFilesFromServer(".CBHK_MT942.D");//MT942
+    	accountingService.process(files);
+    }
+
+    @Scheduled(cron = "0 30 9 * * ?")
+    public void processDaily() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
+    	accountingService.process(files);
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".CBHK_MT940.D");//MT940
     	accountingService.process(files);
     }
 
