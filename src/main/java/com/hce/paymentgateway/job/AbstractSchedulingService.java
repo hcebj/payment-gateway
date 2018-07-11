@@ -155,6 +155,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     private AckResult handleACK1(T transfer, List<File> resultFiles) throws Exception {
+    	log.info("handleACK1 begin");
         AckResult ackResult = new AckResult();
         File ack1File = getACK(resultFiles, "ACK1");
         log.info("qqqqqqqqq");
