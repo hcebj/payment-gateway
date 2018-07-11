@@ -54,45 +54,42 @@ public class SCPFileUtils {
     private SecretService secretService;
 
 
-    public void uploadFileFromServer(String filename, InputStream inputStream)
-        throws Exception {
-
-        JSch jsch = new JSch();
-        String privateKey ="";
+    public void uploadFileFromServer(String filename, InputStream inputStream) throws JSchException, IOException, SftpException, NoSuchProviderException, PGPException {
+        String privateKey = "";
         if(File.separator.equals("/")){//Linux
         	privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
         }else{//windows
         	privateKey = System.getProperty("user.home") + "\\.ssh\\wsh\\id_rsa";
         }
+        JSch jsch = new JSch();
+        jsch.addIdentity(privateKey);
         //文件加密
         InputStream inputStream1 = null;
-        try {
-			String fileNameTemp = createFile(filename, inputStream);
-			inputStream1=pgpEncrpt(fileNameTemp, filename);
-			
-		} catch (IOException | NoSuchProviderException | PGPException e) {
-			
-			e.printStackTrace();
-			throw e;
+        Session session = null;
+        ChannelSftp channel = null;
+        String fileNameTemp;
+		try {
+			fileNameTemp = createFile(filename, inputStream);
+			inputStream1 = pgpEncrpt(fileNameTemp, filename);
+	        session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
+	        session.setConfig("StrictHostKeyChecking", "no");
+	        log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
+	        session.connect();
+	        channel = (ChannelSftp) session.openChannel("sftp");
+	        channel.connect();
+	        log.info("[{}]: Change directory: {}", dbsHost, inboxDir);
+	        channel.cd(inboxDir);
+	        log.info("[{}]: Upload file with name: {}", dbsHost, filename);
+	        channel.put(inputStream1, filename);
+		} finally {
+			if(inputStream1!=null)
+				inputStream1.close();
+			if(channel!=null)
+				channel.disconnect();
+			if(session!=null)
+				session.disconnect();
+	        log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
 		}
-        
-        jsch.addIdentity(privateKey);
-
-        Session session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
-        session.setConfig("StrictHostKeyChecking", "no");
-        log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
-        session.connect();
-        
-        ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
-        channel.connect();
-        log.info("[{}]: Change directory: {}", dbsHost, inboxDir);
-        channel.cd(inboxDir);
-        log.info("[{}]: Upload file with name: {}", dbsHost, filename);
-        channel.put(inputStream1, filename);
-        channel.disconnect();
-        session.disconnect();
-        log.info("Disconnect to remote server: {}@{}", dbsUsername, dbsHost);
-
     }
 
     public List<File> downloadFilesFromServer(String filenameRegex) throws JSchException, SftpException, FileNotFoundException {
@@ -182,8 +179,7 @@ public class SCPFileUtils {
         return filesDecode;
     }
     
-    public String createFile(String fileName,InputStream inputStream) throws IOException{
-    	
+    public String createFile(String fileName, InputStream inputStream) throws IOException {
     	fileName = fileName+".txt";
     	//path表示你所创建文件的路径
     	String path;
@@ -192,7 +188,6 @@ public class SCPFileUtils {
         }else{//windows
         	path = System.getProperty("user.home") + "\\tempFile\\";
         }
-    	
     	File f = new File(path);
     	if(!f.exists()){
     	f.mkdirs();
@@ -209,26 +204,24 @@ public class SCPFileUtils {
     			e.printStackTrace();
     		}
     	}
-    	
-    	OutputStream  outputStream = new FileOutputStream(path+fileName);  
-    	  
-    	int bytesWritten = 0;  
-    	int byteCount = 0;  
-    	  
-    	byte[] bytes = new byte[1024];  
-    	  
-    	while ((byteCount = inputStream.read(bytes)) != -1)  
-    	{  
-    	          outputStream.write(bytes, bytesWritten, byteCount);  
-    	           bytesWritten += byteCount;  
-    	}  
-    	inputStream.close();  
-    	outputStream.close();  
-    	
-    	return path+fileName;
+    	int bytesWritten = 0;
+    	int byteCount = 0;
+    	byte[] bytes = new byte[1024];
+    	OutputStream  outputStream = null;
+    	try {
+			outputStream = new FileOutputStream(path+fileName);
+			while((byteCount = inputStream.read(bytes)) != -1) {  
+	    		outputStream.write(bytes, bytesWritten, byteCount);  
+	    		bytesWritten += byteCount;  
+	    	}
+	    	return path+fileName;
+		} finally {
+			if(outputStream!=null)
+				outputStream.close();
+		}
     }
     
-    public InputStream pgpEncrpt(String fileNameTemp,String fileName) throws IOException, PGPException, NoSuchProviderException{
+    public InputStream pgpEncrpt(String fileNameTemp,String fileName) throws NoSuchProviderException, IOException, PGPException {
     	String path;
     	if(File.separator.equals("/")){//Linux
     		path = System.getProperty("user.home") + "/tempFile/";
@@ -243,15 +236,8 @@ public class SCPFileUtils {
     	//String fileName="test.txt";
     	File file = new File(f,fileName);
     	if(!file.exists()){
-    		try {
-    			file.createNewFile();
-    			
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
+    		file.createNewFile();
     	}
-    	
     	//加密过程
     	Security.addProvider(new BouncyCastleProvider());
         String encode = path + fileName;//"C:\\Users\\acer\\Desktop\\ceshi\\encode.txt";
@@ -265,20 +251,21 @@ public class SCPFileUtils {
         }
         //publicKey = "C:\\Users\\acer\\Desktop\\ceshi\\test.asc";
         //String text = "Hello how are you";
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(encode));
         PGPPublicKey encKey = PGPExampleUtil.readPublicKey(publicKey);
-        KeyBasedLargeFileProcessor.encryptFile(out, fileNameTemp, encKey, true, false);
-        out.close();
-		
-        
+        OutputStream out = null;
+        try {
+			out = new BufferedOutputStream(new FileOutputStream(encode));
+			KeyBasedLargeFileProcessor.encryptFile(out, fileNameTemp, encKey, true, false);
+		} finally {
+			if(out!=null)
+				out.close();
+		}
         //将加密后的文件读出
         InputStream keyIn = new BufferedInputStream(new FileInputStream(encode));
         return keyIn;
-       
     }
-    
-//将下载下的文件的名后缀。pgp去掉。然后进行解密
-    
+
+    //将下载下的文件的名后缀。pgp去掉。然后进行解密
     public String DecodeFiles (String fileNames){
 		
     	String fileName = fileNames;

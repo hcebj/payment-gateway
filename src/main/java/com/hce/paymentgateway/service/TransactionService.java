@@ -14,6 +14,6 @@ public interface TransactionService<T extends TradeRequest> {
      * @param tradeRequest
      * @return
      */
-    TradeResponse handle(T tradeRequest);
+    TradeResponse handle(T tradeRequest) throws Exception;
 
 }

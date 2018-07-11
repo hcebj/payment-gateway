@@ -144,7 +144,6 @@ public class AccountingServiceImpl implements AccountingService {
 						vasetup.setFailureReason(row.getCell(7).getStringCellValue());
 						dbsVASetupDao.save(vasetup);*/
 					}
-					workbook.close();
 				} finally {
 					if(workbook!=null)
 						workbook.close();

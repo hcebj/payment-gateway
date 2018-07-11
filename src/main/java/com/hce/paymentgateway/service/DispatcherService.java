@@ -1,11 +1,15 @@
 package com.hce.paymentgateway.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
 import com.hce.paymentgateway.dao.AccountInfoDao;
+import com.hce.paymentgateway.dao.DBSVASetupDao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
+import com.hce.paymentgateway.entity.DBSVASetupEntity;
 import com.hce.paymentgateway.util.JsonUtil;
 import com.hce.paymentgateway.util.ResponseCode;
+import com.hce.paymentgateway.util.SCPFileUtils;
 import com.hce.paymentgateway.util.ServiceWrapper;
 import com.hce.paymentgateway.validate.ConditionalMandatory;
 import com.hce.paymentgateway.validate.ValidatorResult;
@@ -158,4 +162,23 @@ public class DispatcherService {
         return result;
     }
 
+    @Resource(name = "SCPFileUtils")
+    private SCPFileUtils SCPFileUtils;
+    @Autowired
+    private DBSVASetupDao dbsVASetupDao;
+
+    public void processVASetup(String json) {
+    	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
+    	for(JSONObject obj:vasetups) {
+    		DBSVASetupEntity vasetup = new DBSVASetupEntity();
+    		vasetup.setCorp("HKHCEH");
+    		vasetup.setAction(obj.getString("action"));
+    		vasetup.setCorpCode(obj.getString("corpCode"));
+    		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
+    		vasetup.setMasterAC(obj.getString("masterAC"));
+    		vasetup.setErpCode(obj.getString("erpCode"));
+    		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
+        	dbsVASetupDao.save(vasetup);
+    	}
+    }
 }

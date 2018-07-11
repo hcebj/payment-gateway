@@ -12,7 +12,6 @@ import javax.annotation.Resource;
  */
 @Component
 public class IdealConnectionListener {
-
     @Resource
     private DispatcherService dispatcherService;
 
@@ -21,4 +20,8 @@ public class IdealConnectionListener {
         dispatcherService.dispatcher(message);
     }
 
+    @JmsListener(destination = "pgw_va_setup")
+    public void listenVASetup(String message) {
+        dispatcherService.processVASetup(message);
+    }
 }

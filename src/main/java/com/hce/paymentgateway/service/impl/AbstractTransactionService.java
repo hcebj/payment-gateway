@@ -11,7 +11,12 @@ import com.hce.paymentgateway.service.TransactionService;
 import com.hce.paymentgateway.util.DBSDataFormat;
 import com.hce.paymentgateway.util.FileNameGenerator;
 import com.hce.paymentgateway.util.SCPFileUtils;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +25,9 @@ import javax.annotation.Resource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchProviderException;
 import java.util.List;
 
 import static com.hce.paymentgateway.util.Constant.LINUX_LINE_BREAK;
@@ -41,18 +48,24 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
     /**
      * 请求报文以FTP形式发送到服务器
      * @param request
+     * @throws PGPException 
+     * @throws SftpException 
+     * @throws IOException 
+     * @throws JSchException 
+     * @throws NoSuchProviderException 
      */
-    protected void ftpRequestDBS(TradeRequest request, BaseEntity details) {
+    protected void ftpRequestDBS(TradeRequest request, BaseEntity details) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException {
         String dbsData = assembleData(details);
         String fileName = FileNameGenerator.generateRequestFileName(request);
-       
         log.info("\n[网关支付]组装DBS请求数据, 文件名 {}, 消息体\n{}", fileName, dbsData);
+        ByteArrayInputStream inputStream = null;
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(dbsData.getBytes());
+            inputStream = new ByteArrayInputStream(dbsData.getBytes());
             //InputStream inputStream = new BufferedInputStream(new FileInputStream("/home/wsh/in/test/UFF1.STP.HKHCEH.HKHCEH.201807060025.txt.DHBKHKHH.pgp"));
             SCPFileUtils.uploadFileFromServer(fileName, inputStream);
-        } catch (Throwable t) {
-            log.error("[DBS服务]数据报文上送异常", t);
+        } finally {
+        	if(inputStream!=null)
+        		inputStream.close();
         }
     }
 

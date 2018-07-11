@@ -6,7 +6,12 @@ import com.hce.paymentgateway.dao.AccountTransferDao;
 import com.hce.paymentgateway.entity.AccountTransferEntity;
 import com.hce.paymentgateway.util.Constant;
 import com.hce.paymentgateway.util.ServiceParameter;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
+
+import java.io.IOException;
+import java.security.NoSuchProviderException;
 
 /**
  * @Author Heling.Yao
@@ -23,13 +31,12 @@ import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
 @Service("accountTransferService")
 @ServiceParameter(productType = Constant.ACCOUNT_TRANSFER)
 public class AccountTransferService extends AbstractTransactionService<AccountTransferRequest> {
-
     @Resource(name = "accountTransferDao")
     private AccountTransferDao accountTransferDao;
 
     @Transactional
     @Override
-    public TradeResponse handle(AccountTransferRequest tradeRequest) {
+    public TradeResponse handle(AccountTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException {
         AccountTransferEntity transfer = new AccountTransferEntity();
         BeanUtils.copyProperties(tradeRequest, transfer);
         transfer.setStatus(PROCESSING.getStatus());
@@ -40,5 +47,4 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
         BeanUtils.copyProperties(tradeRequest, response);
         return response;
     }
-
 }
