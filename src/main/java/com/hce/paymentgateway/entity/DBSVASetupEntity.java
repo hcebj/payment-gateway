@@ -25,8 +25,6 @@ public class DBSVASetupEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name="file")
-	private String file;//所在文件名
 	@Column(name="corp")
 	private String corp;//PARENT ID, 海云汇香港、海云汇国际
 	@CreatedDate
@@ -44,6 +42,8 @@ public class DBSVASetupEntity {
 	private String erpCode;//
 	@Column(name="static_va_sequence_number")
 	private String staticVASequenceNumber;//VA前缀
+	@Column(name="response_file")
+	private String responseFile;//响应结果所在文件名
 	@Column(name="status")
 	private String status;//状态
 	@Column(name="failure_reason")

@@ -22,11 +22,13 @@ import com.csvreader.CsvReader;
 import com.hce.paymentgateway.dao.DBSVAReportDao;
 import com.hce.paymentgateway.dao.DBSVASetupDao;
 import com.hce.paymentgateway.entity.DBSVAReportEntity;
-import com.hce.paymentgateway.entity.DBSVASetupEntity;
 import com.hce.paymentgateway.service.AccountingService;
 import com.prowidesoftware.swift.model.mt.AbstractMT;
 import com.prowidesoftware.swift.model.mt.mt1xx.MT103;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class AccountingServiceImpl implements AccountingService {
 	@Value("${hce.pgw.dbs.local.file.location}")
@@ -66,7 +68,7 @@ public class AccountingServiceImpl implements AccountingService {
 						String vaNumber = normalize(csvReader.get(1));
 						if(vaNumber!=null&&vaNumber.length()>0) {
 							DBSVAReportEntity vareport = new DBSVAReportEntity();
-							vareport.setFile(file.getName());
+							vareport.setResponseFile(file.getName());
 							vareport.setCorp(parentId);
 							vareport.setType(type);
 //			                vareport.setSno(normalize(csvReader.get(0)));
@@ -119,8 +121,13 @@ public class AccountingServiceImpl implements AccountingService {
 						if(action.length()==0) {
 							break;
 						}
-						DBSVASetupEntity vasetup = new DBSVASetupEntity();
-						vasetup.setFile(file.getName());
+						row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
+						String vaNumber = row.getCell(3).getStringCellValue();
+						int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), row.getCell(6).getStringCellValue(), row.getCell(7).getStringCellValue());
+						if(effected==0) {
+							log.error("\r\nVA_SETUP_ERROR_RESPONSE_NOT_FOUND: "+vaNumber+"--------------"+file.getName());
+						}
+						/*DBSVASetupEntity vasetup = new DBSVASetupEntity();
 						vasetup.setCorp("HKHCEH");
 						vasetup.setAction(action);
 						row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
@@ -132,9 +139,10 @@ public class AccountingServiceImpl implements AccountingService {
 						vasetup.setErpCode(row.getCell(4).getStringCellValue());
 						row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
 						vasetup.setStaticVASequenceNumber(row.getCell(5).getStringCellValue());
+						vasetup.setResponseFile(file.getName());
 						vasetup.setStatus(row.getCell(6).getStringCellValue());
 						vasetup.setFailureReason(row.getCell(7).getStringCellValue());
-						dbsVASetupDao.save(vasetup);
+						dbsVASetupDao.save(vasetup);*/
 					}
 					workbook.close();
 				} finally {
