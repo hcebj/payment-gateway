@@ -27,7 +27,7 @@ public class AccountTransferEntity extends BaseEntity implements Serializable {
     private String customerOrBatchReference; //支付号
     private String originatingAccountNumber; //付款人账号
     private String originatingAccountCurrency; //付款人币种
-    private BigDecimal amount ; //付款金额
+    private String amount ; //付款金额
     private String paymentCurrency; //付款币种
     private String paymentDate; //付款日期
     private String bankCharges;// 手续费类型

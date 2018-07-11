@@ -33,8 +33,8 @@ public class BaseEntity {
     private Integer queryCount = 0;
     private String paymentOrgId; //支付机构代码
     private Integer status;
-    private String transFileName;
-    private BigDecimal amount;
+    //private String transFileName;
+    private String amount;
    
 
 }

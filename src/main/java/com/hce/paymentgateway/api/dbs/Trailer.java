@@ -17,6 +17,6 @@ public class Trailer implements Instr {
     @Order(order = 2)
     private String totalTransactionNo = "1";
     @Order(order = 3)
-    private BigDecimal totalTransactionAmount;
+    private String totalTransactionAmount;
 
 }
