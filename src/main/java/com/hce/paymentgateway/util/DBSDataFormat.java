@@ -1,5 +1,6 @@
 package com.hce.paymentgateway.util;
 
+import com.esotericsoftware.minlog.Log;
 import com.hce.paymentgateway.api.dbs.Instr;
 import org.apache.commons.lang.StringUtils;
 
@@ -45,6 +46,7 @@ public class DBSDataFormat {
             T instr = clazz.newInstance();
             Field[] orderFields = orderFields(clazz);
             for (int i = 0; i < fv.length; i++) {
+            	Log.info(""+ i);
                 orderFields[i].setAccessible(true);
                 orderFields[i].set(instr, fv[i]);
             }
