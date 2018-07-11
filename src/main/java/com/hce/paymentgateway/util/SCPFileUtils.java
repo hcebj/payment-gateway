@@ -53,8 +53,13 @@ public class SCPFileUtils {
     @Autowired
     private SecretService secretService;
 
-
-    public void uploadFileFromServer(String filename, InputStream inputStream) throws JSchException, IOException, SftpException, NoSuchProviderException, PGPException {
+    /**
+     * @param filename: 上传到SFTP的文件名
+     * @param inputStream: 要加密的流
+     * @param originFileAbsPath: 要加密文件绝对路径
+     * inputStream、originFileAbsPath二选一: 如果不传绝对路径，会自动将流创建txt临时文件
+     */
+    public void uploadFileFromServer(String filename, InputStream inputStream, String originFileAbsPath) throws JSchException, IOException, SftpException, NoSuchProviderException, PGPException {
         String privateKey = "";
         if(File.separator.equals("/")){//Linux
         	privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
@@ -67,10 +72,10 @@ public class SCPFileUtils {
         InputStream inputStream1 = null;
         Session session = null;
         ChannelSftp channel = null;
-        String fileNameTemp;
+        String fileNameTemp;//明文绝对路径
 		try {
-			fileNameTemp = createFile(filename, inputStream);
-			inputStream1 = pgpEncrpt(fileNameTemp, filename);
+			fileNameTemp = originFileAbsPath==null||originFileAbsPath.trim().length()==0?createFile(filename, inputStream):originFileAbsPath;
+			inputStream1 = pgpEncrpt(fileNameTemp, filename);//对明文加密，输出到文件filename中
 	        session = jsch.getSession(dbsUsername, dbsHost, Integer.valueOf(dbsPort));
 	        session.setConfig("StrictHostKeyChecking", "no");
 	        log.info("Connecting to remote server: {}@{} ...", dbsUsername, dbsHost);
@@ -179,7 +184,7 @@ public class SCPFileUtils {
         return filesDecode;
     }
     
-    public String createFile(String fileName, InputStream inputStream) throws IOException {
+    private String createFile(String fileName, InputStream inputStream) throws IOException {
     	fileName = fileName+".txt";
     	//path表示你所创建文件的路径
     	String path;

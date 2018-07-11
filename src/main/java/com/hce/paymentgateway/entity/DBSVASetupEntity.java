@@ -42,6 +42,8 @@ public class DBSVASetupEntity {
 	private String erpCode;//
 	@Column(name="static_va_sequence_number")
 	private String staticVASequenceNumber;//VA前缀
+	@Column(name="request_file")
+	private String requestFile;//请求果所在文件名
 	@Column(name="response_file")
 	private String responseFile;//响应结果所在文件名
 	@Column(name="status")

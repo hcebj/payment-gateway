@@ -22,11 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.NoSuchProviderException;
 import java.util.List;
 
@@ -62,7 +59,7 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
         try {
             inputStream = new ByteArrayInputStream(dbsData.getBytes());
             //InputStream inputStream = new BufferedInputStream(new FileInputStream("/home/wsh/in/test/UFF1.STP.HKHCEH.HKHCEH.201807060025.txt.DHBKHKHH.pgp"));
-            SCPFileUtils.uploadFileFromServer(fileName, inputStream);
+            SCPFileUtils.uploadFileFromServer(fileName, inputStream, null);
         } finally {
         	if(inputStream!=null)
         		inputStream.close();
@@ -100,5 +97,4 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
         header.setOrganizationId(accountInfoList.get(0).getOrganizationId());
         header.setSenderName(accountInfoList.get(0).getSenderName());
     }
-
 }

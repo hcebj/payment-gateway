@@ -1,6 +1,9 @@
 package com.hce.paymentgateway.controller;
 
 import com.hce.paymentgateway.service.DispatcherService;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +13,7 @@ import javax.annotation.Resource;
  * @Author Heling.Yao
  * @Date 15:48 2018/6/6
  */
+@Slf4j
 @Component
 public class IdealConnectionListener {
     @Resource
@@ -22,6 +26,10 @@ public class IdealConnectionListener {
 
     @JmsListener(destination = "pgw_va_setup")
     public void listenVASetup(String message) {
-        dispatcherService.processVASetup(message);
+        try {
+			dispatcherService.processVASetup(message);
+		} catch (Exception e) {
+			log.error("VA_SETUP_ERROR: \r\n", e);
+		}
     }
 }

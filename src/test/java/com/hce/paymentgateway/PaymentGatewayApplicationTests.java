@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchProviderException;
@@ -32,7 +31,7 @@ public class PaymentGatewayApplicationTests {
         InputStream is = null;
         try {
 			is = new FileInputStream(localFile);
-			scpFileUtils.uploadFileFromServer(fileName, is);
+			scpFileUtils.uploadFileFromServer(fileName, is, null);
 		} finally {
 			if(is!=null)
 				is.close();

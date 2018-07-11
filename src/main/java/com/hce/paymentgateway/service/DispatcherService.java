@@ -1,6 +1,8 @@
 package com.hce.paymentgateway.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
 import com.hce.paymentgateway.dao.AccountInfoDao;
@@ -14,14 +16,27 @@ import com.hce.paymentgateway.util.ServiceWrapper;
 import com.hce.paymentgateway.validate.ConditionalMandatory;
 import com.hce.paymentgateway.validate.ValidatorResult;
 import com.hce.paymentgateway.validate.ValidatorUtil;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.security.NoSuchProviderException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author Heling.Yao
@@ -156,18 +171,47 @@ public class DispatcherService {
     @Autowired
     private DBSVASetupDao dbsVASetupDao;
 
-    public void processVASetup(String json) {
+    public void processVASetup(String json) throws IOException, NoSuchProviderException, JSchException, SftpException, PGPException {
+    	String fileName = "DSG_VAHKL."+UUID.randomUUID().toString().replace("-", "").toUpperCase()+".csv";
+    	String path;
+    	if(File.separator.equals("/")) {//Linux
+    		path = System.getProperty("user.home") + "/tempFile/";
+        } else {//windows
+        	path = System.getProperty("user.home") + "\\tempFile\\";
+        }
+    	path += "vasetup";//明文csv位置
+    	File dir = new File(path);
+    	if(!dir.exists())
+    		dir.mkdirs();
+    	path += File.separator;
+    	path += fileName;
     	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
-    	for(JSONObject obj:vasetups) {
-    		DBSVASetupEntity vasetup = new DBSVASetupEntity();
-    		vasetup.setCorp("HKHCEH");
-    		vasetup.setAction(obj.getString("action"));
-    		vasetup.setCorpCode(obj.getString("corpCode"));
-    		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
-    		vasetup.setMasterAC(obj.getString("masterAC"));
-    		vasetup.setErpCode(obj.getString("erpCode"));
-    		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
-        	dbsVASetupDao.save(vasetup);
+    	CsvWriter csvWriter = null;
+    	InputStream in = null;
+    	try {
+    		csvWriter = new CsvWriter(path);
+        	for(JSONObject obj:vasetups) {
+        		DBSVASetupEntity vasetup = new DBSVASetupEntity();
+        		vasetup.setRequestFile(fileName);
+        		vasetup.setCorp("HKHCEH");
+        		vasetup.setAction(obj.getString("action"));
+        		vasetup.setCorpCode(obj.getString("corpCode"));
+        		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
+        		vasetup.setMasterAC(obj.getString("masterAC"));
+        		vasetup.setErpCode(obj.getString("erpCode"));
+        		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
+        		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
+            	dbsVASetupDao.save(vasetup);
+        		csvWriter.writeRecord(row);
+        	}
+        	csvWriter.close();
+        	in = new FileInputStream(path);
+        	SCPFileUtils.uploadFileFromServer(fileName, null, path);
+    	} finally {
+    		if(csvWriter!=null)
+    			csvWriter.close();
+    		if(in!=null)
+    			in.close();
     	}
     }
 }
