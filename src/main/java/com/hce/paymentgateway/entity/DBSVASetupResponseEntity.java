@@ -4,12 +4,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,15 +19,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "dbs_va_setup")
-public class DBSVASetupEntity {
+@Table(name = "dbs_va_setup_response")
+@EntityListeners(AuditingEntityListener.class)
+public class DBSVASetupResponseEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	@Column(name="corp")
 	private String corp;//PARENT ID, 海云汇香港、海云汇国际
-	@Column(name="type")
-	private int type;//1VA Report (End-Of-Day); 2VA Report (30-min interval)
 	@CreatedDate
 	@Column(name="creation_time")
 	private Date creationTime;//创建创建时间
