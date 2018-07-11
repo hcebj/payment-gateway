@@ -118,7 +118,7 @@ public class KeyBasedLargeFileProcessor {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         String encode = "C:\\Users\\acer\\Desktop\\ceshi\\encode.txt";
         String test = "C:\\Users\\acer\\Desktop\\ceshi\\test.txt";
@@ -132,5 +132,5 @@ public class KeyBasedLargeFileProcessor {
        
         decryptFile("C:\\Users\\acer\\Desktop\\ceshi\\encode.txt", "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
   
-    }
+    }*/
 }

@@ -3,7 +3,7 @@ package com.hce.paymentgateway.job;
 import com.google.common.base.Charsets;
 import com.hce.paymentgateway.api.dbs.*;
 import com.hce.paymentgateway.entity.BaseEntity;
-import com.hce.paymentgateway.service.AccountingService;
+import com.hce.paymentgateway.service.ResponseProcessService;
 import com.hce.paymentgateway.util.DBSDataFormat;
 import com.hce.paymentgateway.util.FileNameGenerator;
 import com.hce.paymentgateway.util.PaymentStatus;
@@ -12,7 +12,6 @@ import com.jcraft.jsch.SftpException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -35,8 +34,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     @Resource(name = "SCPFileUtils")
     private com.hce.paymentgateway.util.SCPFileUtils SCPFileUtils;
-    @Autowired
-    private AccountingService accountingService;
+    @Resource(name = "vaSetupResponseProcessServiceImpl")
+    private ResponseProcessService vasetupResponseProcessService;
+    @Resource(name = "vaReportResponseProcessServiceImpl")
+    private ResponseProcessService vareportResponseProcessService;
+    @Resource(name = "mt94xResponseProcessServiceImpl")
+    private ResponseProcessService mt94xResponseProcessService;
 
     /**
      * 处理ACK1、ACK2、ACK3
@@ -59,19 +62,19 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     @Scheduled(cron = "0 0/5 * * * ?")
     public void processResponse() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt("_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
-    	accountingService.process(files);
+    	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer(".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
-    	accountingService.process(files);
+    	vareportResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer(".CBHK_MT942.D");//MT942
-    	accountingService.process(files);
+    	mt94xResponseProcessService.process(files);
     }
 
     @Scheduled(cron = "0 30 9 * * ?")
     public void processDaily() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
-    	accountingService.process(files);
+    	vareportResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".CBHK_MT940.D");//MT940
-    	accountingService.process(files);
+    	mt94xResponseProcessService.process(files);
     }
 
     /**
