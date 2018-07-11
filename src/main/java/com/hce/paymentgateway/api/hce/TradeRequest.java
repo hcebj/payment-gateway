@@ -25,7 +25,7 @@ public class TradeRequest {
     private Date transTime;
 
     @NotNull(message = "应用ID")
-    private String applicationId;
+    private String transCode;
 
     @DBSData(maxLength = 3, dateType = DataType.AN, enumValue = {"ACT","CTS","TT"}, message = "productType 格式不符合规则.")
     private String productType;

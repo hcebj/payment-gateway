@@ -43,7 +43,7 @@ public class SimpleTest {
         }
         request.setTransId(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
         request.setTransTime(new Date());
-        request.setApplicationId("HCE");
+        //request.setApplicationId("HCE");
         request.setProductType("ACT");
         request.setPaymentOrgId("123");
 

@@ -139,13 +139,5 @@ public class ChatsPaymentRequest extends TradeRequest {
     @DBSData(maxLength = 40, dateType = DataType.ANY, canBeNull = true, message = "clientReference4 格式不符合规则.")
     private String clientReference4;
     
-    @DBSData(maxLength = 4, dateType = DataType.S, canBeNull = true, message = "chnlNo 格式不符合规则.")
-    private String chnlNo;
-    
-    @DBSData(maxLength = 16, dateType = DataType.S, canBeNull = true, message = "chnlSn 格式不符合规则.")
-    private String chnlSn;
-    
-    @DBSData(maxLength = 12, dateType = DataType.S, canBeNull = true, message = "chnlDate 格式不符合规则.")
-    private String chnlDate;
 
 }
