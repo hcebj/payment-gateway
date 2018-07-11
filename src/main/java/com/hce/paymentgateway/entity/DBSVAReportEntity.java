@@ -26,6 +26,8 @@ public class DBSVAReportEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	@Column(name="file")
+	private String file;//所在文件名
 	@Column(name="corp")
 	private String corp;//PARENT ID, 海云汇香港、海云汇国际
 	@Column(name="type")
