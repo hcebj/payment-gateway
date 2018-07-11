@@ -90,9 +90,10 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             }
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
-            if(!ackResult.isNextHandler()) continue;
+            log.info(""+!ackResult.isNextHandler());
+            //if(!ackResult.isNextHandler()) continue;
             ackResult = handleACK2(transfer, resultFiles);
-            if(!ackResult.isNextHandler()) continue;
+            //if(!ackResult.isNextHandler()) continue;
             handleACK3(transfer, resultFiles);
         };
         return isContinue;
@@ -154,6 +155,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     private AckResult handleACK1(T transfer, List<File> resultFiles) throws Exception {
+    	log.info("handleACK1 begin");
         AckResult ackResult = new AckResult();
         File ack1File = getACK(resultFiles, "ACK1");
         log.info("qqqqqqqqq");
@@ -166,7 +168,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         	log.info("vvvvvvv");
             return ackResult;
         }
-        getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
+        PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
+        updatePaymentStatus(transfer, paymentStatus, ack1Response.getAck1Header().getGroupStatus(),ack1Response.getAck1Header().getAdditionalInformation());
         return ackResult;
     }
 
@@ -182,7 +185,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             || StringUtils.isEmpty(ack2Response.getAck2Details().getTransactionStatus())) {
             return ackResult;
         }
-        getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
+        PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
+        updatePaymentStatus(transfer, paymentStatus, ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
         return ackResult;
     }
 
