@@ -12,6 +12,7 @@ import com.jcraft.jsch.SftpException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
@@ -54,7 +55,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
 //    @Scheduled(cron = "0 0/5 * * * ?")
-    public void process() throws JSchException, SftpException, IOException, ParseException {
+    public void process() throws JSchException, SftpException, IOException, ParseException, InvalidFormatException {
     	List<File> files = SCPFileUtils.downloadFilesFromServer("HKHCEH");//海云汇香港
     	accountingService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer("HKBRHCEC");//海云汇国际

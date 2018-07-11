@@ -23,6 +23,8 @@ public class DBSVAReportEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	@Column(name="corp")
+	private String corp;//PARENT ID, 海云汇香港、海云汇国际
 	@Column(name="type")
 	private int type;//1VA Report (End-Of-Day); 2VA Report (30-min interval)
 	@CreatedDate
