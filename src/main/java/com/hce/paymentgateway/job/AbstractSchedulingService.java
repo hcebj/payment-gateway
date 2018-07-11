@@ -90,6 +90,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             }
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
+            log.info(""+!ackResult.isNextHandler());
             if(!ackResult.isNextHandler()) continue;
             ackResult = handleACK2(transfer, resultFiles);
             if(!ackResult.isNextHandler()) continue;
