@@ -174,12 +174,7 @@ public class DispatcherService {
         } else {//windows
         	path = System.getProperty("user.home") + "\\tempFile\\";
         }
-    	path += "vasetup";//明文csv位置
-    	File dir = new File(path);
-    	if(!dir.exists())
-    		dir.mkdirs();
-    	path += File.separator;
-    	path += fileName;
+    	path += fileName;//明文csv位置
     	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
     	CsvWriter csvWriter = null;
     	log.info("\r\nVA_SETUP: "+fileName);
@@ -201,7 +196,7 @@ public class DispatcherService {
         	}
         	csvWriter.close();
         	log.info("\r\nVA_SETUP: 1");
-        	SCPFileUtils.uploadFileFromServer(fileName, null, path);
+        	SCPFileUtils.uploadFileFromServer(fileName+".pgp", null, path);
         	log.info("\r\nVA_SETUP: 2");
     	} finally {
     		if(csvWriter!=null)
