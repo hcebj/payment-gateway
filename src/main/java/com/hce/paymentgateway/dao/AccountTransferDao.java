@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,6 +20,7 @@ import com.hce.paymentgateway.entity.AccountTransferEntity;
  * @Date 10:20 2018/5/25
  */
 @Repository
+@Transactional
 public interface AccountTransferDao extends JpaRepository<AccountTransferEntity, Long> {
 
     List<AccountTransferEntity> findByStatusAndQueryCountLessThan(Integer status, Integer queryCount, Pageable pageable);

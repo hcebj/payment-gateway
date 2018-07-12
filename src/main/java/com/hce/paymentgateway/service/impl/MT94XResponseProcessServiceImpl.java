@@ -39,9 +39,9 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		File file = new File(path);
 		InputStream in = new FileInputStream(file);
 		
-		byte[] buf = new byte[in.available()];
+		/*byte[] buf = new byte[in.available()];
 		in.read(buf);
-		/*IConversionService srv = new ConversionService();
+		IConversionService srv = new ConversionService();
 		SwiftMessage msg = srv.getMessageFromFIN(new String(buf));
 		SwiftBlock4 b4 = msg.getBlock4();
 		
