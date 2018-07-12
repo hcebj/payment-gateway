@@ -139,5 +139,8 @@ public class TelegraphicTransferRequest extends TradeRequest {
     @DBSData(maxLength = 40, dateType = DataType.ANY, canBeNull = true, message = "clientReference4 格式不符合规则.")
     private String clientReference4;
     
+    //中转行行号
+    @DBSData(maxLength = 11, dateType = DataType.ANY, canBeNull = true, message = "intermediaryBankSwiftBic 格式不符合规则.")
+    private String intermediaryBankSwiftBic;
 
 }

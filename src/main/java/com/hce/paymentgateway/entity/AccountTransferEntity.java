@@ -41,17 +41,18 @@ public class AccountTransferEntity extends BaseEntity implements Serializable {
     private String beneficiaryBankName;//收款银行名称
     private String beneficiaryBankAddress;//收款银行地址
     private String beneficiaryBankCountry;//收款银行国家
-    private String amountCurrency;
-    private String fxContractReference1;
-    private String amounttobeUtilized1;
-    private String fxContractReference2;
-    private String amounttobeUtilized2;
-    private String paymentDetails;
-    private String beneficiaryCategory;
-    private String payeeRole;
+    private String intermediaryBankSwiftBic; //中转行号
+    private String amountCurrency;//购汇币种
+    private String fxContractReference1;//外汇合约号1
+    private String amounttobeUtilized1;//外汇合约1项下使用金额
+    private String fxContractReference2;//外汇合约号2
+    private String amounttobeUtilized2;//外汇合约2项下使用金额
+    private String paymentDetails;//付款明细
+    private String beneficiaryCategory;//收款人类别
+    /*private String payeeRole;
     private String purposeofPayment;
-    private String supplementaryInfo;
-    private String deliveryMode;
+    private String supplementaryInfo;*/
+    private String deliveryMode;//递送方式
     private String email1;
     private String email2;
     private String email3;
@@ -62,14 +63,14 @@ public class AccountTransferEntity extends BaseEntity implements Serializable {
     private String phoneNumber3;
     private String phoneNumber4;
     private String phoneNumber5;
-    private String invoiceDetails;
-    private String clientReference1;
+    private String invoiceDetails;//发票详情
+    private String clientReference1;//客户参考号1
     private String clientReference2;
     private String clientReference3;
     private String clientReference4;
-    private String specificPaymentPurpose;
+    /*private String specificPaymentPurpose;
     private String taxFreeGoodsRelated;
-    private String paymentNature;
+    private String paymentNature;*/
     private String ackFileType; //ACK1 ACK2 ACK3
     private String transactionStatus; //ack res
     private String additionalInformation; //ack res
