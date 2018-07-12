@@ -47,7 +47,7 @@ public class FileNameGenerator {
      * e.g. UFF1.STP.HKGTSA.HKGTSA.23461.txt.DBSSHKHH.D20150703T160201121.ACK3.pgp
      */
     public static String generateAckFileName(BaseEntity baseEntity) {
-        return baseEntity.getTransId();
+        return baseEntity.getPaymentId();
     }
 
 
