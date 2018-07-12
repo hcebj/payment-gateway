@@ -60,7 +60,7 @@ public class AccountTransferScheduling extends AbstractSchedulingService<Account
     		filName1 = fileName;
     	}else{
     		Optional<AccountTransferEntity> transfer1 = accountTransferDao.findById(transfer.getId());
-    		filName1 = transfer1.get().getFileName1() + "/" + fileName;
+    		filName1 = transfer1.get().getFileName1() + "|" + fileName;
     	}
     	//= transfer.getFileName1() + "/" + fileName;
     	accountTransferDao.updateFileName1ById(transfer.getId(), filName1, ackFileType, new Date());
