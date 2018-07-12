@@ -19,7 +19,19 @@ import com.prowidesoftware.swift.model.mt.AbstractMT;
 public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
 	@Override
 	protected void process(File file) throws IOException, ParseException {
-		
+		InputStream in = new FileInputStream(file);
+		byte[] buf = new byte[in.available()];
+		in.read(buf);
+		IConversionService srv = new ConversionService();
+		SwiftMessage msg = srv.getMessageFromFIN(new String(buf));
+		SwiftBlock4 b4 = msg.getBlock4();
+
+		/*String[] f20CValues = b4.getTagValues(tag);
+		for(int i=0; i<f20CValues.length; i++) {
+			String s = f20CValues[i].replaceAll("\r\n", "");
+			Field20C f20C = new Field20C(s);
+			System.out.println(tag+"---"+s+"---"+f20C.getComponent1()+"---"+f20C.getComponent2());
+		}*/
 	}
 
 	public static void main(String[] args) throws IOException {
