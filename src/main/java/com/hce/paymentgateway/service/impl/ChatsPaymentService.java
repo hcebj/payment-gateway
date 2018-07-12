@@ -47,6 +47,7 @@ public class ChatsPaymentService extends AbstractTransactionService<ChatsPayment
         transfer.setPaymentId(this.getNumberForPK()); //支付流水号
         transfer.setTransactionStatus("SEND");
         tradeRequest.setPaymentId(transfer.getPaymentId());
+        tradeRequest.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
         log.info("[网关支付]数据入库成功, id = {}, transId= {}", transfer.getId(), transfer.getTransId());
