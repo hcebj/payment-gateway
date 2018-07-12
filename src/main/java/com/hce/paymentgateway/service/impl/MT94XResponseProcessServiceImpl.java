@@ -8,21 +8,40 @@ import java.text.ParseException;
 
 import org.springframework.stereotype.Service;
 
+import com.prowidesoftware.swift.io.ConversionService;
+import com.prowidesoftware.swift.io.IConversionService;
+import com.prowidesoftware.swift.model.SwiftBlock4;
+import com.prowidesoftware.swift.model.SwiftMessage;
+import com.prowidesoftware.swift.model.field.Field20C;
 import com.prowidesoftware.swift.model.mt.AbstractMT;
-import com.prowidesoftware.swift.model.mt.mt1xx.MT103;
 
 @Service("mt94xResponseProcessServiceImpl")
 public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
 	@Override
 	protected void process(File file) throws IOException, ParseException {
-		String path = "D:/docs/vareport/Sample_IDEAL Connect_Standardized MT940_HKBRGTS4XXXX.CBHK_MT940.D171025040616.txt";
-		AbstractMT.parse(path);
-//		MT103.parse("");
+		
 	}
 
 	public static void main(String[] args) throws IOException {
-		File file = new File("D:/docs/vareport/mt94x1.txt");
+		String path = "D:/docs/vareport/mt94x1.txt";
+		File file = new File(path);
 		InputStream in = new FileInputStream(file);
+		
+		byte[] buf = new byte[in.available()];
+		in.read(buf);
+		IConversionService srv = new ConversionService();
+		SwiftMessage msg = srv.getMessageFromFIN(new String(buf));
+		SwiftBlock4 b4 = msg.getBlock4();
+		
+		String[] tags = {"20", "25", "28C", "34F", "13D", "61", "86", "90D", "90C"};
+		for(String tag:tags) {
+			String[] f20CValues = b4.getTagValues(tag);
+			for(int i=0; i<f20CValues.length; i++) {
+				String s = f20CValues[i].replaceAll("\r\n", "");
+				Field20C f20C = new Field20C(s);
+				System.out.println(tag+"---"+s+"---"+f20C.getComponent1()+"---"+f20C.getComponent2());
+			}
+		}
 		AbstractMT mt = AbstractMT.parse(file);
 		System.out.println("ApplicationId---------"+mt.getApplicationId());
 		System.out.println("LogicalTerminal---------"+mt.getLogicalTerminal());
@@ -48,7 +67,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		System.out.println("SwiftMessage.UUID---------"+mt.getSwiftMessage().getUUID());
 		System.out.println("SwiftMessage.Id---------"+mt.getSwiftMessage().getId());
 		System.out.println("SwiftMessage.fragmentCount---------"+mt.getSwiftMessage().fragmentCount());
-//		System.out.println("SwiftMessage.fragmentNumber---------"+mt.getSwiftMessage().fragmentNumber());
+		System.out.println("SwiftMessage.fragmentNumber---------"+mt.getSwiftMessage().fragmentNumber());
 		System.out.println("SwiftMessage.toXml---------"+mt.getSwiftMessage().toXml());
 //		System.out.println("json---------"+mt.json());
 //		System.out.println("---------"+mt);

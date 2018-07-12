@@ -3,7 +3,6 @@ package com.hce.paymentgateway.dao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,9 +11,6 @@ import java.util.List;
  * @Date 16:58 2018/6/06
  */
 @Repository
-@Transactional
 public interface AccountInfoDao extends JpaRepository<AccountInfoEntity, Integer> {
-
     List<AccountInfoEntity> findByPaymentOrgIdAndEnabled(String paymentOrgId, boolean enabled);
-
 }
