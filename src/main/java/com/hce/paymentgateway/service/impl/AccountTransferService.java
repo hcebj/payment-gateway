@@ -56,7 +56,7 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
     
     /**
 	 * @描述 java生成流水号 
-	 * 14位时间戳 + 6位随机数
+	 * 14位时间戳 + 4位随机数
 	 * @作者 shaomy
 	 * @时间:2015-1-29 上午10:57:41
 	 * @参数:@return 
@@ -64,10 +64,12 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
 	 */
 	public String getNumberForPK(){
     	String id="";
-    	SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
+    	SimpleDateFormat sf = new SimpleDateFormat("yyMMddHHmmss");
     	String temp = sf.format(new Date());
-		int random=(int) (Math.random()*10000);
+		//int random=(int) (Math.random()*10000);
+		String random = String.format("%04d", (int) (Math.random()*10000));
 		id=temp+random;
+		log.info("[网关支付]支付流水号, id = {}", id ); 
 		return id;
 	}
 }

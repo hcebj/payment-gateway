@@ -23,11 +23,11 @@ public class FileNameGenerator {
         //需要参数化
         if ("9992".equals(request.getPaymentOrgId())){
         	fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
-        	fileName.append(request.getTransId()).append(".");
+        	fileName.append(request.getPaymentId()).append(".");
         	fileName.append("txt.DHBKHKHH.pgp");
         } else {
 	        fileName.append("UFF1.STP.HKHCEH.HKBRHCEC.");
-	        fileName.append(request.getTransId()).append(".");
+	        fileName.append(request.getPaymentId()).append(".");
 	        fileName.append("txt.DBSSHKHH.pgp");
         }
         return fileName.toString();
