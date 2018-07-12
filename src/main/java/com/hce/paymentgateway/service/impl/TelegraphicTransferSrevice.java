@@ -4,6 +4,8 @@ import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
 
 import java.io.IOException;
 import java.security.NoSuchProviderException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -42,6 +44,7 @@ public class TelegraphicTransferSrevice extends AbstractTransactionService<Teleg
         AccountTransferEntity transfer = new AccountTransferEntity();
         BeanUtils.copyProperties(tradeRequest, transfer);
         transfer.setStatus(PROCESSING.getStatus());
+        transfer.setPaymentId(this.getNumberForPK()); //支付流水号
         transfer.setTransactionStatus("SEND");
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
@@ -51,4 +54,21 @@ public class TelegraphicTransferSrevice extends AbstractTransactionService<Teleg
         BeanUtils.copyProperties(tradeRequest, response);
         return response;
     }
+    
+    /**
+	 * @描述 java生成流水号 
+	 * 14位时间戳 + 6位随机数
+	 * @作者 shaomy
+	 * @时间:2015-1-29 上午10:57:41
+	 * @参数:@return 
+	 * @返回值：String
+	 */
+	public String getNumberForPK(){
+    	String id="";
+    	SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
+    	String temp = sf.format(new Date());
+		int random=(int) (Math.random()*10000);
+		id=temp+random;
+		return id;
+	}
 }
