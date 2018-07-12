@@ -48,7 +48,7 @@ public class TelegraphicTransferSrevice extends AbstractTransactionService<Teleg
         transfer.setTransactionStatus("SEND");
         tradeRequest.setPaymentId(transfer.getPaymentId());
         transfer.setBatchId(String.format("%05d", (int) (Math.random()*100000)));//TODO 测试用,此处之后需变动
-        tradeRequest.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
+        transfer.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
         log.info("[网关支付]数据入库成功, id = {}, transId= {}", transfer.getId(), transfer.getTransId());

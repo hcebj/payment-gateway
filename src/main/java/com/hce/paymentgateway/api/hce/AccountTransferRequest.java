@@ -21,8 +21,8 @@ public class AccountTransferRequest extends TradeRequest {
     @DBSData(maxLength = 3, dateType = DataType.A, message = "originatingAccountCurrency 格式不符合规则.")
     private String originatingAccountCurrency;
 
-    @DBSData(maxLength = 16, dateType = DataType.S, canBeNull = true, message = "customerOrBatchReference 格式不符合规则.")
-    private String customerOrBatchReference;
+    /*@DBSData(maxLength = 16, dateType = DataType.S, canBeNull = true, message = "customerOrBatchReference 格式不符合规则.")
+    private String customerOrBatchReference;*/
 
     @DBSData(maxLength = 3, dateType = DataType.A, message = "paymentCurrency 格式不符合规则.")
     private String paymentCurrency;
@@ -33,7 +33,7 @@ public class AccountTransferRequest extends TradeRequest {
     @DBSData(maxLength = 35, dateType = DataType.AN, canBeNull = true, message = "debitAccountForBankCharges 格式不符合规则.")
     private String debitAccountForBankCharges;
 
-    @DBSData(maxLength = 32, dateType = DataType.N, canBeNull = true, message = "transBatchId 格式不符合规则.")
+    @DBSData(maxLength = 5, dateType = DataType.N, canBeNull = true, message = "batchId 格式不符合规则.")
     private String transBatchId;
     
     @DBSData(maxLength = 35, dateType = DataType.ANY, message = "receivingPartyName 格式不符合规则.")
