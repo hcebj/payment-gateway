@@ -3,8 +3,6 @@ package com.hce.paymentgateway.util;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.entity.BaseEntity;
 
-import java.util.UUID;
-
 /**
  * 文件名生成及解析工具类
  * @Author Heling.Yao

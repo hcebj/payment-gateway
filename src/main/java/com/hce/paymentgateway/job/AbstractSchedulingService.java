@@ -1,6 +1,7 @@
 package com.hce.paymentgateway.job;
 
 import com.google.common.base.Charsets;
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.api.dbs.*;
 import com.hce.paymentgateway.entity.BaseEntity;
 import com.hce.paymentgateway.service.ResponseProcessService;
@@ -63,17 +64,17 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     public void processResponse() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt("_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	vasetupResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServer(".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
+    	files = SCPFileUtils.downloadFilesFromServer(Constant.PARENT+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServer(".CBHK_MT942.D");//MT942
+    	files = SCPFileUtils.downloadFilesFromServer(Constant.PARENT+".CBHK_MT942.D");//MT942
     	mt94xResponseProcessService.process(files);
     }
 
     @Scheduled(cron = "0 30 9 * * ?")
     public void processDaily() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
-    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(".CBHK_MT940.D");//MT940
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHK_MT940.D");//MT940
     	mt94xResponseProcessService.process(files);
     }
 
