@@ -182,7 +182,7 @@ public class DispatcherService {
     	path += fileName;
     	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
     	CsvWriter csvWriter = null;
-    	log.info("\r\nVA_SETUP: 0");
+    	log.info("\r\nVA_SETUP: "+fileName);
     	try {
     		csvWriter = new CsvWriter(path);
         	for(JSONObject obj:vasetups) {
