@@ -20,9 +20,16 @@ public class FileNameGenerator {
      */
     public static String generateRequestFileName(TradeRequest request) {
         StringBuilder fileName = new StringBuilder();
-        fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
-        fileName.append(request.getTransId()).append(".");
-        fileName.append("txt.DHBKHKHH.pgp");
+        //需要参数化
+        if ("9992".equals(request.getPaymentOrgId())){
+        	fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
+        	fileName.append(request.getTransId()).append(".");
+        	fileName.append("txt.DHBKHKHH.pgp");
+        } else {
+	        fileName.append("UFF1.STP.HKHCEH.HKBRHCEC.");
+	        fileName.append(request.getTransId()).append(".");
+	        fileName.append("txt.DBSSHKHH.pgp");
+        }
         return fileName.toString();
     }
 
