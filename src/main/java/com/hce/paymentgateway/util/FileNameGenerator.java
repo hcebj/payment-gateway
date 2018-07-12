@@ -21,11 +21,11 @@ public class FileNameGenerator {
         //需要参数化
         if ("9992".equals(request.getPaymentOrgId())){
         	fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
-        	fileName.append(request.getTransId()).append(".");
+        	fileName.append(request.getPaymentId()).append(".");
         	fileName.append("txt.DHBKHKHH.pgp");
         } else {
 	        fileName.append("UFF1.STP.HKHCEH.HKBRHCEC.");
-	        fileName.append(request.getTransId()).append(".");
+	        fileName.append(request.getPaymentId()).append(".");
 	        fileName.append("txt.DBSSHKHH.pgp");
         }
         return fileName.toString();
@@ -45,7 +45,7 @@ public class FileNameGenerator {
      * e.g. UFF1.STP.HKGTSA.HKGTSA.23461.txt.DBSSHKHH.D20150703T160201121.ACK3.pgp
      */
     public static String generateAckFileName(BaseEntity baseEntity) {
-        return baseEntity.getTransId();
+        return baseEntity.getPaymentId();
     }
 
 

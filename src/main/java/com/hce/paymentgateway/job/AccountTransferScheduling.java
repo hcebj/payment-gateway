@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.hce.paymentgateway.util.Constant.MAX_QUERY_COUNT;
 
@@ -58,7 +59,8 @@ public class AccountTransferScheduling extends AbstractSchedulingService<Account
     	if(ackFileType.equals("ACK1")){
     		filName1 = fileName;
     	}else{
-    		filName1 = transfer.getFileName1() + "/" + fileName;
+    		Optional<AccountTransferEntity> transfer1 = accountTransferDao.findById(transfer.getId());
+    		filName1 = transfer1.get().getFileName1() + "|" + fileName;
     	}
     	//= transfer.getFileName1() + "/" + fileName;
     	accountTransferDao.updateFileName1ById(transfer.getId(), filName1, ackFileType, new Date());

@@ -33,8 +33,8 @@ public class TelegraphicTransferRequest extends TradeRequest {
     @DBSData(maxLength = 3, dateType = DataType.A, canBeNull = true, message = "BankCharges 格式不符合规则.")
     private String bankCharges;
 
-    @DBSData(maxLength = 5, dateType = DataType.N, canBeNull = true, message = "batchId 格式不符合规则.")
-    private String batchId;
+    @DBSData(maxLength = 32, dateType = DataType.N, canBeNull = true, message = "transBatchId 格式不符合规则.")
+    private String transBatchId;
     
     @DBSData(maxLength = 35, dateType = DataType.AN, canBeNull = true, message = "debitAccountForBankCharges 格式不符合规则.")
     private String debitAccountForBankCharges;
@@ -139,5 +139,8 @@ public class TelegraphicTransferRequest extends TradeRequest {
     @DBSData(maxLength = 40, dateType = DataType.ANY, canBeNull = true, message = "clientReference4 格式不符合规则.")
     private String clientReference4;
     
+    //中转行行号
+    @DBSData(maxLength = 11, dateType = DataType.ANY, canBeNull = true, message = "intermediaryBankSwiftBic 格式不符合规则.")
+    private String intermediaryBankSwiftBic;
 
 }

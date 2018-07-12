@@ -30,11 +30,11 @@ public class ChatsPaymentRequest extends TradeRequest {
     @Date(formatter = "ddMMyyyy", message = "paymentDate 格式不符合规则.")
     private String paymentDate;
 
-    @DBSData(maxLength = 3, dateType = DataType.A, canBeNull = true, message = "BankCharges 格式不符合规则.")
+    @DBSData(maxLength = 3, dateType = DataType.A, canBeNull = true, enumValue = {"OUR", "BEN","SHA"}, message = "BankCharges 格式不符合规则.")
     private String bankCharges;
     
-    @DBSData(maxLength = 5, dateType = DataType.N, canBeNull = true, message = "batchId 格式不符合规则.")
-    private String batchId;
+    @DBSData(maxLength = 32, dateType = DataType.N, canBeNull = true, message = "transBatchId 格式不符合规则.")
+    private String transBatchId;
     
     @DBSData(maxLength = 35, dateType = DataType.AN, canBeNull = true, message = "debitAccountForBankCharges 格式不符合规则.")
     private String debitAccountForBankCharges;

@@ -35,6 +35,7 @@ public class BaseEntity {
     private Integer status;
     //private String transFileName;
     private String amount;
+    private String transBatchId;//渠道批次号
    
 
 }

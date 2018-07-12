@@ -31,8 +31,11 @@ public class TradeRequest {
     private String productType;
 
     private String recordType = Constant.PAYMENT;
+    
+    private String paymentId;
 
-    @NotNull(message = "付款机构ID")
+    //@NotNull(message = "付款机构ID")
+    @DBSData(maxLength = 4, dateType = DataType.AN, enumValue = {"9991","9992"}, message = "paymentOrgId 付款机构ID.")
     private String paymentOrgId;
 
 }
