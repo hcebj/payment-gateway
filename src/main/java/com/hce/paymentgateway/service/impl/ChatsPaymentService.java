@@ -46,6 +46,7 @@ public class ChatsPaymentService extends AbstractTransactionService<ChatsPayment
         transfer.setStatus(PROCESSING.getStatus());
         transfer.setPaymentId(this.getNumberForPK()); //支付流水号
         transfer.setTransactionStatus("SEND");
+        tradeRequest.setPaymentId(transfer.getPaymentId());
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
         log.info("[网关支付]数据入库成功, id = {}, transId= {}", transfer.getId(), transfer.getTransId());
@@ -64,11 +65,13 @@ public class ChatsPaymentService extends AbstractTransactionService<ChatsPayment
 	 * @返回值：String
 	 */
 	public String getNumberForPK(){
-    	String id="";
-    	SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String id="";
+    	SimpleDateFormat sf = new SimpleDateFormat("yyMMddHHmmss");
     	String temp = sf.format(new Date());
-		int random=(int) (Math.random()*10000);
+		//int random=(int) (Math.random()*10000);
+		String random = String.format("%04d", (int) (Math.random()*10000));
 		id=temp+random;
+		log.info("[网关支付]支付流水号, id = {}", id ); 
 		return id;
 	}
 }

@@ -45,6 +45,7 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
         transfer.setStatus(PROCESSING.getStatus());
         transfer.setPaymentId(this.getNumberForPK()); //支付流水号
         transfer.setTransactionStatus("SEND");
+        tradeRequest.setPaymentId(transfer.getPaymentId());
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
         log.info("[网关支付]数据入库成功, id = {}, transId = {}, paymentId = {}", transfer.getId(), transfer.getTransId(), transfer.getPaymentId());
