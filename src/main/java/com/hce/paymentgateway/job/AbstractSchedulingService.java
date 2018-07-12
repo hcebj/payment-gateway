@@ -100,10 +100,6 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             // 2. 根据文件名查询FTP服务器数据
             String fileName = FileNameGenerator.generateAckFileName(transfer);
             List<File> resultFiles = SCPFileUtils.downloadFilesFromServerAndDecrypt(fileName);
-            if(fileName.equals("201807090012")) {
-            	log.info("wwwwwwwwwww");
-            	resultFiles  = SCPFileUtils.testack(resultFiles);
-            }
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
             log.info(""+!ackResult.isNextHandler());
@@ -120,6 +116,10 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     protected abstract boolean updateQueryCount(T transfer);
 
     protected abstract void updatePaymentStatus(T transfer, PaymentStatus paymentStatus, String errorCode, String errorMsg);
+    
+    protected abstract void updateFileName1(T transfer,String fileName ,String ackFileType);
+    
+    protected abstract void updatePaymentDateById(T transfer, String paymentDate);
 
     private <R>R parseFile(File file, Class headerClass, Class detailsClass, Class<R> responseClass) throws Exception {
         if(file == null) {
@@ -174,14 +174,11 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     	log.info("handleACK1 begin");
         AckResult ackResult = new AckResult();
         File ack1File = getACK(resultFiles, "ACK1");
-        log.info("qqqqqqqqq");
         if(ack1File == null) return ackResult;
-        log.info("sssssssss");
+        log.info(ack1File.getName());
         ACK1Response ack1Response = parseFile(ack1File, ACK1Header.class, null, ACK1Response.class);
-        log.info("aaaaaaaaaa");
         if(ack1Response == null || ack1Response.getAck1Header() == null ||
             StringUtils.isEmpty(ack1Response.getAck1Header().getGroupStatus())) {
-        	log.info("vvvvvvv");
             return ackResult;
         }
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
@@ -189,6 +186,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         	paymentStatus = PaymentStatus.PROCESSING;
         }
         updatePaymentStatus(transfer, paymentStatus, ack1Response.getAck1Header().getGroupStatus(),ack1Response.getAck1Header().getAdditionalInformation());
+        updateFileName1(transfer, ack1File.getName(),"ACK1");
         return ackResult;
     }
 
@@ -197,7 +195,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         AckResult ackResult = new AckResult();
         File ack2File = getACK(resultFiles, "ACK2");
         if(ack2File == null) return ackResult;
-        log.info("handleACK2 continue");
+        log.info(ack2File.getName());
         ACK2Response ack2Response = parseFile(ack2File, ACK2Header.class, ACK2Details.class, ACK2Response.class);
         if(ack2Response == null || ack2Response.getAck2Header() == null
             || StringUtils.isEmpty(ack2Response.getAck2Header().getGroupStatus())
@@ -209,6 +207,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         	paymentStatus = PaymentStatus.PROCESSING;
         }
         updatePaymentStatus(transfer, paymentStatus, ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
+        updateFileName1(transfer, ack2File.getName(),"ACK2");
+        updatePaymentDateById(transfer,ack2Response.getAck2Details().getPaymentDate());
         return ackResult;
     }
 
@@ -217,7 +217,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         AckResult ackResult = new AckResult();
         File ack3File = getACK(resultFiles, "ACK3");
         if(ack3File == null) return ackResult;
-        log.info("there will be assignment!");
+        log.info(ack3File.getName());
         ACK3Response ack3Response = parseFile(ack3File, ACK3Header.class, ACK3Details.class, ACK3Response.class);
         if(ack3Response == null
             || ack3Response.getAck3Header() == null || StringUtils.isEmpty(ack3Response.getAck3Header().getGroupStatus())
@@ -230,6 +230,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         // 成功、失败、处理中 都需要更新数据库状态
         log.info("there will be updatting paymentStatus!");
         updatePaymentStatus(transfer, paymentStatus, ack3Response.getAck3Details().getTransactionStatus(),ack3Response.getAck3Details().getAdditionalInformation());
+        updateFileName1(transfer, ack3File.getName(),"ACK3");
         return ackResult;
     }
 
@@ -298,7 +299,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
 
         if(paymentStatus.equals(PaymentStatus.FAILED)) {
-        	log.info("zzzzzzzzzzzzzzzz");
+        	log.info("ACK call failed!");
             updatePaymentStatus(transfer, paymentStatus,"RJCT",additionalInformation);
             ackResult.setNextHandler(false);
         } else if(paymentStatus.equals(PaymentStatus.PROCESSING)) {

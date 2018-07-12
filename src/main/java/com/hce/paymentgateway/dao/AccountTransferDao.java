@@ -31,5 +31,13 @@ public interface AccountTransferDao extends JpaRepository<AccountTransferEntity,
     @Query(value = "update AccountTransferEntity set status = :status, modifyTime = :modifyTime, transactionStatus = :transactionStatus, additionalInformation = :additionalInformation where id = :id")
     int updateStatusById(@Param("id") Long id, @Param("status") Integer status, @Param("modifyTime") Date modifyTime ,
     		@Param("transactionStatus") String transactionStatus, @Param("additionalInformation") String additionalInformation);
+    
+    @Modifying
+    @Query(value = "update AccountTransferEntity set fileName1 = :fileName1, ackFileType = :ackFileType, modifyTime = :modifyTime where id = :id")
+    int updateFileName1ById(@Param("id") Long id, @Param("fileName1") String fileName1, @Param("ackFileType") String ackFileType, @Param("modifyTime") Date modifyTime);
+    
+    @Modifying
+    @Query(value = "update AccountTransferEntity set paymentDate = :paymentDate, modifyTime = :modifyTime where id = :id")
+    int updatePaymentDateById(@Param("id") Long id, @Param("paymentDate") String paymentDate, @Param("modifyTime") Date modifyTime);
 
 }
