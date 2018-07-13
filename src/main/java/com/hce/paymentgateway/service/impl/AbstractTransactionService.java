@@ -80,8 +80,9 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
         addAccountInfoToHeader(details, header);
         RequestDetails requestDetails = new RequestDetails();
         BeanUtils.copyProperties(details, requestDetails);
-        log.info("PaymentDate-------------"+requestDetails.getPaymentDate());
+        log.info("PaymentDate1-------------"+requestDetails.getPaymentDate());
         requestDetails.setPaymentDate(CommonUtil.getFormatDate(requestDetails.getPaymentDate(), "yyyyMMdd", "ddMMyyyy"));
+        log.info("PaymentDate2-------------"+requestDetails.getPaymentDate());
         Trailer trailer = new Trailer();
         trailer.setTotalTransactionAmount(details.getAmount());
         String headerValue = DBSDataFormat.format(header);
