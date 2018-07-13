@@ -4,7 +4,6 @@ import com.hce.paymentgateway.api.hce.AccountTransferRequest;
 import com.hce.paymentgateway.service.TransactionService;
 import com.hce.paymentgateway.service.impl.AccountTransferService;
 import com.hce.paymentgateway.util.Constant;
-import com.hce.paymentgateway.util.JsonUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -47,7 +46,7 @@ public class SimpleTest {
         request.setProductType("ACT");
 //        request.setPaymentOrgId("123");
 
-        System.out.println(JsonUtil.toJson(request));
+//        System.out.println(JsonUtil.toJson(request));
     }
 
 }
