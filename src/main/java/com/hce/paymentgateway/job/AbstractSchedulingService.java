@@ -62,7 +62,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     @Scheduled(cron = "0 0/5 * * * ?")
     public void processResponse() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
-    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt("_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+"_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer(Constant.PARENT+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);

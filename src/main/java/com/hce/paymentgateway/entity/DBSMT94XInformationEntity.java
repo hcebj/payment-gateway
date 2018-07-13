@@ -24,8 +24,8 @@ public class DBSMT94XInformationEntity {
     private Long id;
 	@Column(name="detail_id")
 	private Long detailId;
-	@Column(name="key")
+	@Column(name="_key")
 	private String key;
-	@Column(name="value")
+	@Column(name="_value")
 	private String value;
 }

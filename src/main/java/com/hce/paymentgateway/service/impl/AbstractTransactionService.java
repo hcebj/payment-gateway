@@ -27,8 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static com.hce.paymentgateway.util.Constant.LINUX_LINE_BREAK;

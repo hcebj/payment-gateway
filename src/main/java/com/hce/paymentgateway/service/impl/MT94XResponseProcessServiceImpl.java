@@ -27,6 +27,9 @@ import com.prowidesoftware.swift.model.SwiftBlock4;
 import com.prowidesoftware.swift.model.SwiftMessage;
 import com.prowidesoftware.swift.model.field.Field20C;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service("mt94xResponseProcessServiceImpl")
 public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
 	@Autowired
@@ -57,6 +60,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		SwiftBlock1 block1 = msg.getBlock1();
 		SwiftBlock2 block2 = msg.getBlock2();
 		DBSMT94XHeaderEntity mt94x = new DBSMT94XHeaderEntity();
+		mt94x.setFileIn(file.getName());
 		mt94x.setApplicationId(block1.getApplicationId());
 		mt94x.setServiceId(block1.getServiceId());
 		mt94x.setSender(msg.getSender());
@@ -66,7 +70,6 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		mt94x.setReceiver(msg.getReceiver());
 		mt94x.setMessagePriority(block2.getMessagePriority());
 		SwiftBlock4 block4 = msg.getBlock4();
-		String[] tagValues86 = null;
 		String[] tagValues = block4.getTagValue("25").split("/");
 		mt94x.setAccountNumber(tagValues[1]);
 		mt94x.setSubsidiarySwiftBic(tagValues[0]);
@@ -74,6 +77,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		mt94x.setStatementNumber(tagValues[0]);
 		mt94x.setDbsSequenceNumber(tagValues[1]);
 		dbsMT94XHeaderDao.save(mt94x);
+		String[] tagValues86 = block4.getTagValues("86");
 		if(msg.getTypeInt()==940) {
 			DBSMT940Entity mt940 = new DBSMT940Entity();
 			mt940.setHeaderId(mt94x.getId());
@@ -95,6 +99,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			mt942.setHeaderId(mt94x.getId());
 			char[] chars = block4.getTagValue("34F").toCharArray();
 			mt942.setFloorLimitIndicatorCurrency(String.valueOf(chars, 0, 3));
+			log.info(mt942.getFloorLimitIndicatorCurrency());
 			mt942.setFloorLimitIndicatorAmount(new BigDecimal(String.valueOf(chars, 3, chars.length-3).replaceAll(",", ".")));
 			chars = block4.getTagValue("13D").toCharArray();
 			mt942.setDateTimeIndicationDate(String.valueOf(chars, 0, 10));
@@ -110,7 +115,6 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			mt942.setNumberAndSumOfCreditEntriesNumber(new BigDecimal(String.valueOf(chars, 0, lastDigitIndex+1).replaceAll(",", ".")));
 			mt942.setNumberAndSumOfCreditEntriesCurrency(String.valueOf(chars, lastDigitIndex+1, 3));
 			mt942.setNumberAndSumOfCreditEntriesAmount(new BigDecimal(String.valueOf(chars, lastDigitIndex+4, chars.length-lastDigitIndex-4).replaceAll(",", ".")));
-			tagValues86 = block4.getTagValues("86");
 			String s = tagValues86[tagValues86.length-1].replaceAll("\r\n", "").replaceAll("\\s+", "");
 			chars = s.toCharArray();
 			int fieldFlagIndex = s.indexOf("OPBL");
@@ -143,7 +147,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			mt94xDetail.setEntryDate(String.valueOf(chars, 6, 4));
 			mt94xDetail.setDebitCreditIndicator(String.valueOf(chars, 10, 1));
 			mt94xDetail.setFundCode(String.valueOf(chars, 11, 1));
-			mt94xDetail.setAmount(new BigDecimal(String.valueOf(chars, 12, lastDigitIndex-11)));
+			mt94xDetail.setAmount(new BigDecimal(String.valueOf(chars, 12, lastDigitIndex-11).replaceAll(",", ".")));
 			mt94xDetail.setTransactionTypeIdentificationCode(String.valueOf(chars, lastDigitIndex+2, 3));
 			mt94xDetail.setReferenceToTheAccountOwner(String.valueOf(chars, lastDigitIndex+5, chars.length-lastDigitIndex-5));
 			String[] component2 = f20C.getComponent2().replaceAll("\r\n", "").replaceAll("\\s+", "").split("\\?");
@@ -152,14 +156,14 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			if(component2.length>2)
 				mt94xDetail.setVaNumber(component2[2]);
 			dbsMT94XDetailDao.save(mt94xDetail);
-			
+
 			String[] tagVal86 = tagValues86[i].replaceAll("\r\n", "").split("\\?");
 			for(int j=0;j<tagVal86.length/2;j++) {
 				int index = j*2;
 				DBSMT94XInformationEntity dbsMT94XInformation = new DBSMT94XInformationEntity();
 				dbsMT94XInformation.setDetailId(mt94xDetail.getId());
 				dbsMT94XInformation.setKey(tagVal86[index]);
-				dbsMT94XInformation.setValue(tagVal86[index]+1);
+				dbsMT94XInformation.setValue(tagVal86[index+1]);
 				dbsMT94XDetailInformationDao.save(dbsMT94XInformation);
 			}
 		}
