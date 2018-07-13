@@ -95,7 +95,7 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
     }
 
     private void addAccountInfoToHeader(BaseEntity details, RequestHeader header) {
-        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByPaymentOrgIdAndEnabled(details.getPaymentOrgId(), true);
+        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByPaymentOrgIdAndEnabled(details.getCorp(), true);
         header.setOrganizationId(accountInfoList.get(0).getOrganizationId());
         header.setSenderName(accountInfoList.get(0).getSenderName());
     }
