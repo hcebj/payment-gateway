@@ -43,6 +43,8 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 	@Autowired
 	private DBSMT94XDetailInformationDao dbsMT94XDetailInformationDao;
 
+	private final String[] MT940_TAG_VALS_60 = {"60F", "60M"};
+
 	@Override
 	protected void process(File file) throws IOException {
 		InputStream in = null;
@@ -83,13 +85,23 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			DBSMT940Entity mt940 = new DBSMT940Entity();
 			mt940.setHeaderId(mt94x.getId());
 			//首次期初余额/中间期初余额
-			char[] chars = block4.getTagValue("60F").toCharArray();
+			String s = null;
+			for(String tagVal:MT940_TAG_VALS_60) {
+				s = block4.getTagValue(tagVal);
+				if(s!=null) {
+					s = s.trim();
+					if(s.length()>0) {
+						break;
+					}
+				}
+			}
+			char[] chars = s.toCharArray();
 			mt940.setFirstOpeningBalanceIndicator(String.valueOf(chars[0]));
 			mt940.setFirstOpeningBalanceDate(String.valueOf(chars, 1, 6));
 			mt940.setFirstOpeningBalanceCurrency(String.valueOf(chars, 7, 3));
 			mt940.setFirstOpeningBalanceAmount(new BigDecimal(String.valueOf(chars, 10, chars.length-10).replaceAll(",", ".")));
 			//期末可用余额
-			String s = block4.getTagValue("64");
+			s = block4.getTagValue("64");
 			if(s!=null) {
 				s = s.trim();
 				if(s.length()>0) {
