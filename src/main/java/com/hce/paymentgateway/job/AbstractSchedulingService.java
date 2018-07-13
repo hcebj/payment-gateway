@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -61,7 +60,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     @Scheduled(cron = "0 0/5 * * * ?")
-    public void processResponse() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
+    public void processResponse() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+"_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServer(Constant.PARENT+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
@@ -71,7 +70,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     }
 
     @Scheduled(cron = "0 30 9 * * ?")
-    public void processDaily() throws JSchException, SftpException, IOException, ParseException, InterruptedException {
+    public void processDaily() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHK_MT940.D");//MT940

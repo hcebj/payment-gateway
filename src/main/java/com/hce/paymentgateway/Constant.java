@@ -1,5 +1,8 @@
 package com.hce.paymentgateway;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constant {
 	public final static String PARENT = "HKHCEH";
 	public final static String CUSTOMERID = "HKHCEHXXXXXX";
@@ -7,6 +10,14 @@ public class Constant {
 	public final static String SUBSIDIARY_HKBRHCEC = "HKBRHCEC";
 	public final static String SUBSIDIARY_SWIFT_BIC_HKHCEH = "DHBKHKHH";
 	public final static String SUBSIDIARY_SWIFT_BIC_HKBRHCEC = "DBSSHKHH";
+	public final static String SUBSIDIARY_INNER_CODE_HKHCEH = "9992";
+	public final static String SUBSIDIARY_INNER_CODE_HKBRHCEC = "9991";
 	public final static String[] SUBSIDIARIES = {SUBSIDIARY_HKHCEH, SUBSIDIARY_HKBRHCEC};
 	public final static String RESULT_FAILURE = "FAILURE";
+	public static Map<String, String> subsidiaryMap;
+	static {
+		subsidiaryMap = new HashMap<String, String>(2);
+		subsidiaryMap.put(SUBSIDIARY_INNER_CODE_HKHCEH, SUBSIDIARY_HKHCEH);
+		subsidiaryMap.put(SUBSIDIARY_INNER_CODE_HKBRHCEC, SUBSIDIARY_HKBRHCEC);
+	}
 }

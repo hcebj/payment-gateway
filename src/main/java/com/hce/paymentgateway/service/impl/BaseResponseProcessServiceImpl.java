@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.service.ResponseProcessService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public abstract class BaseResponseProcessServiceImpl implements ResponseProcessService {
 	@Value("${hce.pgw.dbs.local.file.location}")
@@ -17,14 +20,18 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 
 	protected abstract void process(File file) throws IOException, ParseException;
 
-	public void process(List<File> files) throws IOException, ParseException {
+	public void process(List<File> files) {
 		File historyDir = new File(localTempDir+"/history");
 		if(!historyDir.exists()) {
 			historyDir.mkdirs();
 		}
 		for(File file:files) {
-			process(file);
-			file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+			try {
+				process(file);
+				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+			} catch (Exception e) {
+				log.error("\r\nDBS_RESPONSE_PROCESS_ERROR: "+file.getName(), e);
+			}
 		}
 	}
 }

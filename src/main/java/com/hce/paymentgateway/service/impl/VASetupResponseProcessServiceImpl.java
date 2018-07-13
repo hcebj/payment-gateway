@@ -44,8 +44,9 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 					break;
 				}
 				row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
+				row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
 				String vaNumber = row.getCell(3).getStringCellValue();
-				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), row.getCell(6).getStringCellValue(), row.getCell(7).getStringCellValue());
+				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), row.getCell(6).getStringCellValue(), row.getCell(7).getStringCellValue(), row.getCell(4).getStringCellValue());
 				if(effected==0) {
 					log.error("\r\nVA_SETUP_ERROR_RESPONSE_NOT_FOUND: "+vaNumber+"--------------"+file.getName());
 				}

@@ -2,6 +2,7 @@ package com.hce.paymentgateway.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.csvreader.CsvWriter;
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
 import com.hce.paymentgateway.dao.AccountInfoDao;
@@ -183,12 +184,11 @@ public class DispatcherService {
         	for(JSONObject obj:vasetups) {
         		DBSVASetupEntity vasetup = new DBSVASetupEntity();
         		vasetup.setRequestFile(fileName);
-        		vasetup.setCorp("HKHCEH");
+        		vasetup.setCorp(Constant.subsidiaryMap.get(obj.getString("corp")));
         		vasetup.setAction(obj.getString("action"));
         		vasetup.setCorpCode(obj.getString("corpCode"));
         		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
         		vasetup.setMasterAC(obj.getString("masterAC"));
-        		vasetup.setErpCode(obj.getString("erpCode"));
         		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
         		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
             	dbsVASetupDao.save(vasetup);
