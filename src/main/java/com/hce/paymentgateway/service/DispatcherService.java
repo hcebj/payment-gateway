@@ -107,7 +107,7 @@ public class DispatcherService {
      */
     private ValidatorResult checkPaymentOrgId(TradeRequest actualRequest) {
         ValidatorResult result = new ValidatorResult();
-        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByPaymentOrgIdAndEnabled(actualRequest.getPaymentOrgId(), true);
+        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByPaymentOrgIdAndEnabled(actualRequest.getCorp(), true);
         if(accountInfoList.isEmpty()) {
             result.setAvailable(false);
             result.setMessage("付款机构ID不合法");
