@@ -20,13 +20,13 @@ public class FileNameGenerator {
         StringBuilder fileName = new StringBuilder();
         //需要参数化
         if ("9992".equals(request.getCorp())){
-        	fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
+        	fileName.append("UFF1.STP.").append(PARENT).append(".").append(SUBSIDIARY_HKHCEH).append(".");
         	fileName.append(request.getPaymentId()).append(".");
-        	fileName.append("txt.DHBKHKHH.pgp");
+        	fileName.append("txt.").append(SUBSIDIARY_SWIFT_BIC_HKHCEH).append(".pgp");
         } else {
-	        fileName.append("UFF1.STP.HKHCEH.HKBRHCEC.");
+	        fileName.append("UFF1.STP.").append(PARENT).append(".").append(SUBSIDIARY_HKBRHCEC).append(".");
 	        fileName.append(request.getPaymentId()).append(".");
-	        fileName.append("txt.DBSSHKHH.pgp");
+	        fileName.append("txt.").append(SUBSIDIARY_SWIFT_BIC_HKBRHCEC).append(".pgp");
         }
         return fileName.toString();
     }
