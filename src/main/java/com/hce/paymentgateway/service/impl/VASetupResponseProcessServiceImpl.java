@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import javax.transaction.Transactional;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -22,6 +24,7 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
+	@Transactional
 	@Override
 	protected void process(File file) throws IOException {
 		Workbook workbook = null;

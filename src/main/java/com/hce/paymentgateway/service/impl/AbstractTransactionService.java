@@ -8,6 +8,7 @@ import com.hce.paymentgateway.dao.AccountInfoDao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
 import com.hce.paymentgateway.entity.BaseEntity;
 import com.hce.paymentgateway.service.TransactionService;
+import com.hce.paymentgateway.util.CommonUtil;
 import com.hce.paymentgateway.util.DBSDataFormat;
 import com.hce.paymentgateway.util.FileNameGenerator;
 import com.hce.paymentgateway.util.SCPFileUtils;
@@ -25,6 +26,9 @@ import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static com.hce.paymentgateway.util.Constant.LINUX_LINE_BREAK;
@@ -50,8 +54,9 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
      * @throws IOException 
      * @throws JSchException 
      * @throws NoSuchProviderException 
+     * @throws ParseException 
      */
-    protected void ftpRequestDBS(TradeRequest request, BaseEntity details) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException {
+    protected void ftpRequestDBS(TradeRequest request, BaseEntity details) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException, ParseException {
         String dbsData = assembleData(details);
         String fileName = FileNameGenerator.generateRequestFileName(request);
         log.info("\n[网关支付]组装DBS请求数据, 文件名 {}, 消息体\n{}", fileName, dbsData);
@@ -70,25 +75,23 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
      * 组装DBS数据
      * @param details
      * @return
+     * @throws ParseException 
      */
-    private String assembleData(BaseEntity details) {
+    private String assembleData(BaseEntity details) throws ParseException {
         RequestHeader header = new RequestHeader();
         addAccountInfoToHeader(details, header);
-
         RequestDetails requestDetails = new RequestDetails();
+        log.info("PaymentDate-------------"+requestDetails.getPaymentDate());
+        requestDetails.setPaymentDate(CommonUtil.getFormatDate(requestDetails.getPaymentDate(), "yyyyMMdd", "ddMMyyyy"));
         BeanUtils.copyProperties(details, requestDetails);
-
         Trailer trailer = new Trailer();
         trailer.setTotalTransactionAmount(details.getAmount());
-
         String headerValue = DBSDataFormat.format(header);
         String detailsValue = DBSDataFormat.format(requestDetails);
         String trailerValue = DBSDataFormat.format(trailer);
-
         String dbsData = headerValue + LINUX_LINE_BREAK
             + detailsValue + LINUX_LINE_BREAK
             + trailerValue;
-
         return dbsData;
     }
 

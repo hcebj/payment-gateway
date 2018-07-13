@@ -4,6 +4,7 @@ import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
 
 import java.io.IOException;
 import java.security.NoSuchProviderException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class TelegraphicTransferSrevice extends AbstractTransactionService<Teleg
 
     @Transactional
     @Override
-    public TradeResponse handle(TelegraphicTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException {
+    public TradeResponse handle(TelegraphicTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException, ParseException {
     	//写业务逻辑
         AccountTransferEntity transfer = new AccountTransferEntity();
         BeanUtils.copyProperties(tradeRequest, transfer);

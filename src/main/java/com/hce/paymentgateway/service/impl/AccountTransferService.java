@@ -4,6 +4,7 @@ import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
 
 import java.io.IOException;
 import java.security.NoSuchProviderException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
 
     @Transactional
     @Override
-    public TradeResponse handle(AccountTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException {
+    public TradeResponse handle(AccountTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException, ParseException {
         AccountTransferEntity transfer = new AccountTransferEntity();
         BeanUtils.copyProperties(tradeRequest, transfer);
         transfer.setStatus(PROCESSING.getStatus());

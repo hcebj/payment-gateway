@@ -42,6 +42,8 @@ public class DBSMT94XDetailEntity {
 	private String referenceToTheAccountOwner;//引用帐户所有者
 	@Column(name="account_servicing_institutions_reference")
 	private String accountServicingInstitutionsReference;//账户服务机构的参考
-	@Column(name="supplementary_details")
-	private String supplementaryDetails;//补充细节
+	@Column(name="trade_time")
+	private String tradeTime;//交易过账到账户时的时间戳 - HHMMSS
+	@Column(name="va_number")
+	private String vaNumber;//虚拟账户号，如果有的话
 }
