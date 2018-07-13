@@ -208,7 +208,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
         updatePaymentStatus(transfer, paymentStatus, ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
         updateFileName1(transfer, ack2File.getName(),"ACK2");
-        updatePaymentDateById(transfer,ack2Response.getAck2Details().getPaymentDate());
+        updatePaymentDateById(transfer,CommonUtil.getFormatDate(ack2Response.getAck2Details().getPaymentDate(),"yyyyMMdd","yyyy-MM-dd"));
         return ackResult;
     }
 
