@@ -21,7 +21,7 @@ public class TradeRequest {
     private String transId;
 
     @NotNull(message = "交易时间不能为空")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date transTime;
 
     @NotNull(message = "应用ID")

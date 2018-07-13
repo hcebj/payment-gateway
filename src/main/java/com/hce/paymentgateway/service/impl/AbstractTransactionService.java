@@ -81,7 +81,7 @@ public abstract class AbstractTransactionService<T extends TradeRequest> impleme
         RequestDetails requestDetails = new RequestDetails();
         BeanUtils.copyProperties(details, requestDetails);
         log.info("PaymentDate1-------------"+requestDetails.getPaymentDate());
-        requestDetails.setPaymentDate(CommonUtil.getFormatDate(requestDetails.getPaymentDate(), "yyyyMMdd", "ddMMyyyy"));
+        requestDetails.setPaymentDate(CommonUtil.getFormatDate(requestDetails.getPaymentDate(), "yyyy-MM-dd", "ddMMyyyy"));
         log.info("PaymentDate2-------------"+requestDetails.getPaymentDate());
         Trailer trailer = new Trailer();
         trailer.setTotalTransactionAmount(details.getAmount());
