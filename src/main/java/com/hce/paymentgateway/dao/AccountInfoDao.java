@@ -12,5 +12,5 @@ import java.util.List;
  */
 @Repository
 public interface AccountInfoDao extends JpaRepository<AccountInfoEntity, Integer> {
-    List<AccountInfoEntity> findByPaymentOrgIdAndEnabled(String corp, boolean enabled);
+    List<AccountInfoEntity> findByCorpAndEnabled(String corp, boolean enabled);
 }

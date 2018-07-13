@@ -91,7 +91,7 @@ public class DispatcherService {
      * 动态数据校验
      */
     private ValidatorResult dynamicValidate(TradeRequest actualRequest) {
-        ValidatorResult result = checkPaymentOrgId(actualRequest);
+        ValidatorResult result = checkCorp(actualRequest);
         if(!result.isAvailable()) {
             return result;
         }
@@ -103,11 +103,11 @@ public class DispatcherService {
     }
 
     /**
-     * 通过付款机构ID(paymentOrgId)查找数据库信息
+     * 通过付款机构ID(Corp)查找数据库信息
      */
-    private ValidatorResult checkPaymentOrgId(TradeRequest actualRequest) {
+    private ValidatorResult checkCorp(TradeRequest actualRequest) {
         ValidatorResult result = new ValidatorResult();
-        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByPaymentOrgIdAndEnabled(actualRequest.getCorp(), true);
+        List<AccountInfoEntity> accountInfoList = accountInfoDao.findByCorpAndEnabled(actualRequest.getCorp(), true);
         if(accountInfoList.isEmpty()) {
             result.setAvailable(false);
             result.setMessage("付款机构ID不合法");
