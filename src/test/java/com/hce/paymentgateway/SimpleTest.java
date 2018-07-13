@@ -45,7 +45,7 @@ public class SimpleTest {
         request.setTransTime(new Date());
         //request.setApplicationId("HCE");
         request.setProductType("ACT");
-        request.setPaymentOrgId("123");
+//        request.setPaymentOrgId("123");
 
         System.out.println(JsonUtil.toJson(request));
     }
