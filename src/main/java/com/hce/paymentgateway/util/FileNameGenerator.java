@@ -19,7 +19,7 @@ public class FileNameGenerator {
     public static String generateRequestFileName(TradeRequest request) {
         StringBuilder fileName = new StringBuilder();
         //需要参数化
-        if ("9992".equals(request.getPaymentOrgId())){
+        if ("9992".equals(request.getCorp())){
         	fileName.append("UFF1.STP.HKHCEH.HKHCEH.");
         	fileName.append(request.getPaymentId()).append(".");
         	fileName.append("txt.DHBKHKHH.pgp");

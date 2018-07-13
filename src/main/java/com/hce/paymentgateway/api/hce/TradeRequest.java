@@ -35,7 +35,7 @@ public class TradeRequest {
     private String paymentId;
 
     //@NotNull(message = "付款机构ID")
-    @DBSData(maxLength = 4, dateType = DataType.AN, enumValue = {"9991","9992"}, message = "paymentOrgId 付款机构ID.")
-    private String paymentOrgId;
+    @DBSData(maxLength = 4, dateType = DataType.AN, enumValue = {"9991","9992"}, message = "corp 付款机构ID.")
+    private String corp;
 
 }

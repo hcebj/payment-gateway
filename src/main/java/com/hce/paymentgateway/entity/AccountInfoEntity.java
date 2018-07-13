@@ -23,6 +23,6 @@ public class AccountInfoEntity implements Serializable {
     private String organizationId;
     private String senderName;
     private boolean enabled = true;
-    private String paymentOrgId;
+    private String corp;
 
 }
