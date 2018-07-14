@@ -3,8 +3,8 @@ package com.hce.paymentgateway.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.dao.DBSVASetupDao;
+import com.hce.paymentgateway.entity.vo.DBSVASetupVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,14 +25,14 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
-	@Transactional
 	@Override
-	protected void process(File file) throws IOException {
+	protected Object process(File file) throws IOException {
 		Workbook workbook = null;
 		try {
 			workbook = new HSSFWorkbook(new FileInputStream(file));
 			Sheet sheet = workbook.getSheetAt(0);
 			int cursor = 1;
+			List<DBSVASetupVO> list = new ArrayList<DBSVASetupVO>();
 			while(true) {
 				Row row = sheet.getRow(cursor++);
 				if(row==null)
@@ -46,30 +47,34 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 				row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
 				row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
 				String vaNumber = row.getCell(3).getStringCellValue();
-				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), row.getCell(6).getStringCellValue(), row.getCell(7).getStringCellValue(), row.getCell(4).getStringCellValue());
+				String status = row.getCell(6).getStringCellValue();
+				String failureReason = row.getCell(7).getStringCellValue();
+				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), status, failureReason, row.getCell(4).getStringCellValue());
 				if(effected==0) {
 					log.error("\r\nVA_SETUP_ERROR_RESPONSE_NOT_FOUND: "+vaNumber+"--------------"+file.getName());
+				} else {
+					DBSVASetupVO vo = new DBSVASetupVO();
+					vo.setCorp(dbsVASetupDao.findByMasterAC(vaNumber).getCorp());
+					vo.setMasterAC(vaNumber);
+					vo.setStatus(status);
+					vo.setFailureReason(failureReason);
+					list.add(vo);
 				}
-				/*DBSVASetupEntity vasetup = new DBSVASetupEntity();
-				vasetup.setCorp("HKHCEH");
-				vasetup.setAction(action);
-				row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
-				vasetup.setCorpCode(row.getCell(1).getStringCellValue());
-				vasetup.setRemitterPayerName(row.getCell(2).getStringCellValue());
-				row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
-				vasetup.setMasterAC(row.getCell(3).getStringCellValue());
-				row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
-				vasetup.setErpCode(row.getCell(4).getStringCellValue());
-				row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
-				vasetup.setStaticVASequenceNumber(row.getCell(5).getStringCellValue());
-				vasetup.setResponseFile(file.getName());
-				vasetup.setStatus(row.getCell(6).getStringCellValue());
-				vasetup.setFailureReason(row.getCell(7).getStringCellValue());
-				dbsVASetupDao.save(vasetup);*/
 			}
+			return list;
 		} finally {
 			if(workbook!=null)
 				workbook.close();
 		}
+	}
+
+	@Override
+	protected String getMsgTag() {
+		return "35043";
+	}
+
+	@Override
+	protected String getCorp() {
+		return "9992";
 	}
 }

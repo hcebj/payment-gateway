@@ -46,4 +46,22 @@ public class DBSMT94XDetailEntity {
 	private String tradeTime;//交易过账到账户时的时间戳 - HHMMSS
 	@Column(name="va_number")
 	private String vaNumber;//虚拟账户号，如果有的话
+	@Column(name="beneficiary_name")
+	private String beneficiaryBame;//收款人姓名
+	@Column(name="beneficiary_bank_name")
+	private String beneficiaryBankName;//收款银行名称
+	@Column(name="beneficiary_account_number")
+	private String beneficiaryAccountNumber;//收款人账号
+	@Column(name="remittance_currency")
+	private String remittanceCurrency;//币种
+	@Column(name="remittance_amount")
+	private BigDecimal remittanceAmount;//金额
+	@Column(name="payer_name")
+	private String payerName;//付款人姓名
+	@Column(name="payer_bank_name")
+	private String payerBankName;//付款人银行名称
+	@Column(name="transaction_description")
+	private String transactionDescription;//交易描述
+	@Column(name="payment_details")
+	private String paymentDetails;//付款信息（140个字符）
 }

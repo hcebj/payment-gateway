@@ -5,20 +5,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.dao.DBSMT940Dao;
 import com.hce.paymentgateway.dao.DBSMT942Dao;
 import com.hce.paymentgateway.dao.DBSMT94XDetailDao;
-import com.hce.paymentgateway.dao.DBSMT94XDetailInformationDao;
 import com.hce.paymentgateway.dao.DBSMT94XHeaderDao;
 import com.hce.paymentgateway.entity.DBSMT940Entity;
 import com.hce.paymentgateway.entity.DBSMT942Entity;
 import com.hce.paymentgateway.entity.DBSMT94XDetailEntity;
 import com.hce.paymentgateway.entity.DBSMT94XHeaderEntity;
-import com.hce.paymentgateway.entity.DBSMT94XInformationEntity;
+import com.hce.paymentgateway.entity.vo.DBSMT94XVO;
 import com.prowidesoftware.swift.io.ConversionService;
 import com.prowidesoftware.swift.io.IConversionService;
 import com.prowidesoftware.swift.model.SwiftBlock1;
@@ -40,13 +44,14 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 	private DBSMT942Dao dbsMT942Dao;
 	@Autowired
 	private DBSMT94XDetailDao dbsMT94XDetailDao;
-	@Autowired
-	private DBSMT94XDetailInformationDao dbsMT94XDetailInformationDao;
+
+	private static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
+	private static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
 
 	private final String[] MT940_TAG_VALS_60 = {"60F", "60M"};
 
 	@Override
-	protected void process(File file) throws IOException {
+	protected Object process(File file) throws IOException {
 		InputStream in = null;
 		byte[] buf = null;
 		try {
@@ -75,6 +80,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		String[] tagValues = block4.getTagValue("25").split("/");
 		mt94x.setAccountNumber(tagValues[1]);
 		mt94x.setSubsidiarySwiftBic(tagValues[0]);
+		corpHolder.set(mt94x.getSubsidiarySwiftBic());
 		tagValues = block4.getTagValue("28C").split("/");
 		mt94x.setStatementNumber(tagValues[0]);
 		mt94x.setDbsSequenceNumber(tagValues[1]);
@@ -82,6 +88,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		String[] tagValues61 = block4.getTagValues("61");
 		String[] tagValues86 = block4.getTagValues("86");
 		if(msg.getTypeInt()==940) {
+			tagHolder.set("35041");
 			DBSMT940Entity mt940 = new DBSMT940Entity();
 			mt940.setHeaderId(mt94x.getId());
 			//首次期初余额/中间期初余额
@@ -114,6 +121,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			}
 			dbsMT940Dao.save(mt940);
 		} else if(msg.getTypeInt()==942) {
+			tagHolder.set("35042");
 			DBSMT942Entity mt942 = new DBSMT942Entity();
 			mt942.setHeaderId(mt94x.getId());
 			char[] chars = block4.getTagValue("34F").toCharArray();
@@ -168,6 +176,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			dbsMT942Dao.save(mt942);
 		}
 		if(tagValues61!=null&&tagValues61.length>0) {
+			List<DBSMT94XVO> list = new ArrayList<DBSMT94XVO>();
 			for(int i=0;i<tagValues61.length;i++) {
 				String tagVal61 = tagValues61[i];
 				Field20C f20C = new Field20C(tagVal61);
@@ -188,18 +197,59 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 				mt94xDetail.setTradeTime(component2[1]);
 				if(component2.length>2)
 					mt94xDetail.setVaNumber(component2[2]);
-				dbsMT94XDetailDao.save(mt94xDetail);
 				String[] tagVal86 = tagValues86[i].replaceAll("\r\n", "").split("\\?");
+				Map<String, String> map = new HashMap<String, String>((tagVal86.length/2)+1);
 				for(int j=0;j<tagVal86.length/2;j++) {
 					int index = j*2;
-					DBSMT94XInformationEntity dbsMT94XInformation = new DBSMT94XInformationEntity();
-					dbsMT94XInformation.setDetailId(mt94xDetail.getId());
-					dbsMT94XInformation.setKey(tagVal86[index]);
-					dbsMT94XInformation.setValue(tagVal86[index+1]);
-					dbsMT94XDetailInformationDao.save(dbsMT94XInformation);
+					map.put(tagVal86[index], tagVal86[index+1]);
 				}
+				String s = map.get("RA");
+				if(s!=null) {
+					s = s.trim();
+					if(s.length()>0) {
+						chars = map.get("RA").toCharArray();
+						mt94xDetail.setRemittanceCurrency(String.valueOf(chars, 0, 3));
+						mt94xDetail.setRemittanceAmount(new BigDecimal(String.valueOf(chars, 3, chars.length-3).replaceAll(",", ".")));
+					}
+				}
+				mt94xDetail.setBeneficiaryBame(map.get("BENM"));
+				mt94xDetail.setBeneficiaryBankName(map.get("BB"));
+				mt94xDetail.setBeneficiaryAccountNumber(map.get("BA"));
+				mt94xDetail.setPayerName(map.get("ORDP"));
+				mt94xDetail.setPayerBankName(map.get("OB"));
+				mt94xDetail.setTransactionDescription(map.get("TD"));
+				mt94xDetail.setPaymentDetails(map.get("REMI"));
+				dbsMT94XDetailDao.save(mt94xDetail);
+				DBSMT94XVO vo = new DBSMT94XVO();
+				vo.setFileNm(mt94x.getFileIn());
+				vo.setTrdDt(mt94xDetail.getValueDate());
+				vo.setTlSnCd(mt94x.getDbsSequenceNumber());
+				vo.setCustAcctno("xxx1");
+				vo.setAcctNm("xxx2");
+				vo.setOtherAcctno1("xxx3");
+				vo.setOtherAcctnm1("xxx4");
+				vo.setBrrlndFlg(mt94xDetail.getDebitCreditIndicator());
+				vo.setTrdCurr1(mt94xDetail.getRemittanceCurrency());
+				vo.setTrdAmt(mt94xDetail.getRemittanceAmount().toString());
+				list.add(vo);
 			}
+			return list;
 		}
+		return null;
+	}
+
+	@Override
+	protected String getMsgTag() {
+		String tag = tagHolder.get();
+		tagHolder.remove();
+		return tag;
+	}
+
+	@Override
+	protected String getCorp() {
+		String corp = Constant.subsidiaryMap.get(corpHolder.get());
+		corpHolder.remove();
+		return corp;
 	}
 
 	private final static int DIGIT_ASCII_RANGE_LOWER = 48;

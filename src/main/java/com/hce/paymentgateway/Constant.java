@@ -16,8 +16,12 @@ public class Constant {
 	public final static String RESULT_FAILURE = "FAILURE";
 	public static Map<String, String> subsidiaryMap;
 	static {
-		subsidiaryMap = new HashMap<String, String>(2);
+		subsidiaryMap = new HashMap<String, String>(4);
 		subsidiaryMap.put(SUBSIDIARY_INNER_CODE_HKHCEH, SUBSIDIARY_HKHCEH);
 		subsidiaryMap.put(SUBSIDIARY_INNER_CODE_HKBRHCEC, SUBSIDIARY_HKBRHCEC);
+		subsidiaryMap.put(SUBSIDIARY_HKHCEH, SUBSIDIARY_INNER_CODE_HKHCEH);
+		subsidiaryMap.put(SUBSIDIARY_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
+		subsidiaryMap.put(SUBSIDIARY_SWIFT_BIC_HKHCEH, SUBSIDIARY_INNER_CODE_HKHCEH);
+		subsidiaryMap.put(SUBSIDIARY_SWIFT_BIC_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
 	}
 }

@@ -298,4 +298,14 @@ public class SCPFileUtils {
         }
     	return files;
     }
+
+    public String getTempFileDir() {
+    	String path;
+    	if(File.separator.equals("/")) {//Linux
+    		path = System.getProperty("user.home") + "/tempFile/";
+        } else {//windows
+        	path = System.getProperty("user.home") + "\\tempFile\\";
+        }
+    	return path;
+    }
 }

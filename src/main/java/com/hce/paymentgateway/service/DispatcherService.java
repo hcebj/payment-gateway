@@ -169,12 +169,7 @@ public class DispatcherService {
 
     public void processVASetup(String json) throws IOException, NoSuchProviderException, JSchException, SftpException, PGPException {
     	String fileName = "DSG_VAHKL."+UUID.randomUUID().toString().replace("-", "").toUpperCase()+".csv";
-    	String path;
-    	if(File.separator.equals("/")) {//Linux
-    		path = System.getProperty("user.home") + "/tempFile/";
-        } else {//windows
-        	path = System.getProperty("user.home") + "\\tempFile\\";
-        }
+    	String path = SCPFileUtils.getTempFileDir();
     	path += fileName;//明文csv位置
     	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
     	CsvWriter csvWriter = null;
@@ -184,7 +179,7 @@ public class DispatcherService {
         	for(JSONObject obj:vasetups) {
         		DBSVASetupEntity vasetup = new DBSVASetupEntity();
         		vasetup.setRequestFile(fileName);
-        		vasetup.setCorp(Constant.subsidiaryMap.get(obj.getString("corp")));
+        		vasetup.setCorp(obj.getString("corp"));
         		vasetup.setAction(obj.getString("action"));
         		vasetup.setCorpCode(obj.getString("corpCode"));
         		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));

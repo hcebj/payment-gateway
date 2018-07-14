@@ -13,4 +13,5 @@ public interface DBSVASetupDao extends JpaRepository<DBSVASetupEntity, Long> {
 	@Modifying
 	@Query("UPDATE DBSVASetupEntity t SET t.responseFile=:responseFile,t.status=:status,t.failureReason=:failureReason,t.erpCode=:erpCode WHERE t.masterAC=:vaNumber")
 	public int updateByVANumber(@Param(value="vaNumber")String vaNumber, @Param(value="responseFile")String responseFile, @Param(value="status")String status, @Param(value="failureReason")String failureReason, @Param(value="erpCode")String erpCode);
+	public DBSVASetupEntity findByMasterAC(String masterAC);
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	private DBSVAReportDao dbsVAReportDao;
 
 	@Override
-	protected void process(File file) throws IOException, ParseException {
+	protected Object process(File file) throws IOException, ParseException {
 		String parentId = file.getName().substring(0, file.getName().indexOf("."));
 		CsvReader csvReader = null;
 		try {
@@ -37,6 +39,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 			for(int i=0;i<linesSkipped;i++) {//跳过表头
 				csvReader.readRecord();
 			}
+			List<DBSVAReportEntity> list = new ArrayList<DBSVAReportEntity>();
 			while(csvReader.readRecord()) {
 				String vaNumber = normalize(csvReader.get(1));
 				if(vaNumber!=null&&vaNumber.length()>0) {
@@ -71,12 +74,24 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	                	vareport.setValueDate(valueDate);
 	                vareport.setChannelId(normalize(csvReader.get(17)));
 					dbsVAReportDao.save(vareport);
+					list.add(vareport);
 				}
             }
+			return list;
 		} finally {
 			if(csvReader!=null)
 				csvReader.close();
 		}
+	}
+
+	@Override
+	protected String getMsgTag() {
+		return "35040";
+	}
+
+	@Override
+	protected String getCorp() {
+		return "9992";
 	}
 
 	private String normalize(String s) {
