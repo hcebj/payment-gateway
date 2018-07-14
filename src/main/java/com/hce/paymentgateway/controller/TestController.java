@@ -40,8 +40,8 @@ public class TestController {
 	@ResponseBody
 	public String testMT94X() throws NoSuchProviderException, IOException, ParseException {
 		List<File> files = new ArrayList<File>(2);
-		files.add(new File("D:/docs/vareport/mt940.txt"));
-		files.add(new File("D:/docs/vareport/mt942.txt"));
+		files.add(new File("/home/wsh/tempFile/vasetup/mt940.txt"));
+		files.add(new File("/home/wsh/tempFile/vasetup/mt942.txt"));
 		mt94xResponseProcessService.process(files);
 		return "SUCCESS";
 	}
@@ -50,7 +50,7 @@ public class TestController {
 	@ResponseBody
 	public String testVAReport() throws NoSuchProviderException, IOException, ParseException {
 		List<File> files = new ArrayList<File>(2);
-		files.add(new File("D:/docs/vareport/HKHCEHXXXXXX.VARPT.HK.0248.HKD.TRAN.ENH.D180709T203218.csv"));
+		files.add(new File("/home/wsh/tempFile/vasetup/HKHCEHXXXXXX.VARPT.HK.0248.HKD.TRAN.ENH.D180709T203218.csv"));
 		vareportResponseProcessService.process(files);
 		return "SUCCESS";
 	}
@@ -59,7 +59,7 @@ public class TestController {
 	@ResponseBody
 	public String testVASetup() throws NoSuchProviderException, IOException, ParseException {
 		List<File> files = new ArrayList<File>(2);
-		files.add(new File("D:/docs/vareport/ZZZ_DSG_VAHKL_RESP_20180711123456.xls"));
+		files.add(new File("/home/wsh/tempFile/vasetup/ZZZ_DSG_VAHKL_RESP_20180711123456.xls"));
 		vasetupResponseProcessService.process(files);
 		return "SUCCESS";
 	}
