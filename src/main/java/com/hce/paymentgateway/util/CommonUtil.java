@@ -16,6 +16,7 @@ public class CommonUtil {
 		SimpleDateFormat formatter1  = new SimpleDateFormat(dateForm1);
 	    SimpleDateFormat formatter2  = new SimpleDateFormat(dateForm2);
 	    Date date = formatter1.parse(strDate);
+	    Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(strDate); 
 	    strDate = formatter2.format(date);
 	    return strDate;
     }

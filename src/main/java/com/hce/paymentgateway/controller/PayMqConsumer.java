@@ -46,7 +46,10 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 					Map<String, Object> maps = (Map) JSON.parse(new String(msg.getBody()));
 					log.info("接收到支付消息："+new String(msg.getBody()));
 					log.info("接受到的body" + maps.get("body"));
-					dispatcherService.dispatcher(new String(maps.get("body").toString()));
+					if(maps.get("body")!=null){
+						dispatcherService.dispatcher(new String(maps.get("body").toString()));
+					}
+					log.info("here!");
 					//payMqproducer.sendMsg("35303", "I'm WangShaohua!");
 					
 				}else if(msg.getTags().equals("17012")){
@@ -60,7 +63,7 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 					
 				}else{
 					
-					System.out.println(new Date() + ",########## " + new String(msg.getBody()));
+					//System.out.println(new Date() + ",########## " + new String(msg.getBody()));
 					
 				}
 				
@@ -69,7 +72,7 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 			break;
 		}
 		default: {
-
+			
 		}
 		}
 
