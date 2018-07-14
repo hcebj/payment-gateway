@@ -203,8 +203,11 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
+        	
+        }else{
         	sendMqMsg(transfer, ack1Response.getAck1Header().getAdditionalInformation(), ack1Response.getAck1Header().getGroupStatus(), 
         			(new SimpleDateFormat("yyyy-mm-dd")).format(Calendar.getInstance().getTime()), transfer.getPaymentId());
+        	
         }
         updatePaymentStatus(transfer, paymentStatus, ack1Response.getAck1Header().getGroupStatus(),ack1Response.getAck1Header().getAdditionalInformation());
         updateFileName1(transfer, ack1File.getName(),"ACK1");
@@ -226,6 +229,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
+        	
+        }else{
         	sendMqMsg(transfer, ack2Response.getAck2Details().getAdditionalInformation(), ack2Response.getAck2Details().getTransactionStatus(), 
             		ack2Response.getAck2Details().getPaymentDate(), ack2Response.getAck2Details().getCustomerReference());
         }
