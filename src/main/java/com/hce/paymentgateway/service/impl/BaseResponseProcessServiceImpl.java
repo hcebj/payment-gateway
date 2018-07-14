@@ -49,7 +49,7 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 		for(File file:files) {
 			try {
 				Object obj = process(file);
-				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+//				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 				String tag = getMsgTag();
 				Header header = new Header();
 				header.setBIZBRCH("0101");
