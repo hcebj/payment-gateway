@@ -22,7 +22,7 @@ public class PayMqproducer {
     	 boolean sendResult = false;
     	//String msgInfo="";
     	for(int i = 0;i<tryCount;i++ ){
-    		    Message msg = new Message("CBSPAY", tags, msgInfo.getBytes());
+    		    Message msg = new Message("CBSPAYO", tags, msgInfo.getBytes());
     		    sendResult = producer.sendMsg(msg);
     	        if(!sendResult){
     	        	try {
