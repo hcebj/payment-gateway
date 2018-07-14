@@ -26,6 +26,8 @@
 				<spring.datasource.username>root</spring.datasource.username>
 				<spring.datasource.password>wang123</spring.datasource.password>
 				<spring.activemq.broker-url>tcp://127.0.0.1:61616</spring.activemq.broker-url>
+				<spring.rocketmq.broker-url>172.16.80.12:9876</spring.rocketmq.broker-url>
+				<spring.rocketmq.producer-group>pay_producer_group</spring.rocketmq.producer-group>
 				<hce.pgw.dbs.remote-server.host>172.16.80.12</hce.pgw.dbs.remote-server.host>
 				<hce.pgw.dbs.remote-server.username>pgw</hce.pgw.dbs.remote-server.username>
 				<hce.pgw.dbs.remote-server.port>22</hce.pgw.dbs.remote-server.port>
@@ -47,6 +49,8 @@
 				<spring.datasource.username>payment</spring.datasource.username>
 				<spring.datasource.password>pgw@321</spring.datasource.password>
 				<spring.activemq.broker-url>tcp://172.16.80.12:61616</spring.activemq.broker-url>
+				<spring.rocketmq.broker-url>172.16.80.12:9876</spring.rocketmq.broker-url>
+				<spring.rocketmq.producer-group>pay_producer_group</spring.rocketmq.producer-group>
 				<hce.pgw.dbs.remote-server.host>116.12.252.148</hce.pgw.dbs.remote-server.host>
 				<hce.pgw.dbs.remote-server.username>HKHCEH</hce.pgw.dbs.remote-server.username>
 				<hce.pgw.dbs.remote-server.port>9122</hce.pgw.dbs.remote-server.port>
@@ -160,6 +164,11 @@
     </properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>io.github.rhwayfun</groupId>
+			<artifactId>spring-boot-rocketmq-starter</artifactId>
+			<version>0.0.3.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>

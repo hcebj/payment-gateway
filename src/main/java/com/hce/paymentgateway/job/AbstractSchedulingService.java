@@ -1,8 +1,35 @@
 package com.hce.paymentgateway.job;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
 import com.hce.paymentgateway.Constant;
-import com.hce.paymentgateway.api.dbs.*;
+import com.hce.paymentgateway.api.dbs.ACK1Header;
+import com.hce.paymentgateway.api.dbs.ACK1Response;
+import com.hce.paymentgateway.api.dbs.ACK2Details;
+import com.hce.paymentgateway.api.dbs.ACK2Header;
+import com.hce.paymentgateway.api.dbs.ACK2Response;
+import com.hce.paymentgateway.api.dbs.ACK3Details;
+import com.hce.paymentgateway.api.dbs.ACK3Header;
+import com.hce.paymentgateway.api.dbs.ACK3Response;
+import com.hce.paymentgateway.api.dbs.Trailer;
+import com.hce.paymentgateway.api.hce.PayRocketmqDto;
+import com.hce.paymentgateway.controller.PayMqproducer;
 import com.hce.paymentgateway.entity.BaseEntity;
 import com.hce.paymentgateway.service.ResponseProcessService;
 import com.hce.paymentgateway.util.CommonUtil;
@@ -13,17 +40,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * @Author Heling.Yao
@@ -33,6 +49,8 @@ import java.util.List;
 public abstract class AbstractSchedulingService<T extends BaseEntity> {
     protected int interval = 1;
 
+    @Autowired
+	private PayMqproducer payMqproducer;
     @Resource(name = "SCPFileUtils")
     private com.hce.paymentgateway.util.SCPFileUtils SCPFileUtils;
     @Resource(name = "vaSetupResponseProcessServiceImpl")
@@ -185,6 +203,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
+        	sendMqMsg(transfer, ack1Response.getAck1Header().getAdditionalInformation(), ack1Response.getAck1Header().getGroupStatus(), 
+        			(new SimpleDateFormat("yyyy-mm-dd")).format(Calendar.getInstance().getTime()), transfer.getPaymentId());
         }
         updatePaymentStatus(transfer, paymentStatus, ack1Response.getAck1Header().getGroupStatus(),ack1Response.getAck1Header().getAdditionalInformation());
         updateFileName1(transfer, ack1File.getName(),"ACK1");
@@ -206,6 +226,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
+        	sendMqMsg(transfer, ack2Response.getAck2Details().getAdditionalInformation(), ack2Response.getAck2Details().getTransactionStatus(), 
+            		ack2Response.getAck2Details().getPaymentDate(), ack2Response.getAck2Details().getCustomerReference());
         }
         updatePaymentStatus(transfer, paymentStatus, ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
         updateFileName1(transfer, ack2File.getName(),"ACK2");
@@ -232,6 +254,9 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         log.info("there will be updatting paymentStatus!");
         updatePaymentStatus(transfer, paymentStatus, ack3Response.getAck3Details().getTransactionStatus(),ack3Response.getAck3Details().getAdditionalInformation());
         updateFileName1(transfer, ack3File.getName(),"ACK3");
+        
+        sendMqMsg(transfer, ack3Response.getAck3Details().getAdditionalInformation(), ack3Response.getAck3Details().getTransactionStatus(), 
+        		ack3Response.getAck3Details().getPaymentDate(), ack3Response.getAck3Details().getCustomerReference());
         return ackResult;
     }
 
@@ -313,6 +338,26 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     protected void setInterval(int interval) {
         this.interval = interval;
+    }
+    
+    private void sendMqMsg(T transfer,String additionalInformation,String transactionStatus,String paymentDate,String customerReference){
+    	PayRocketmqDto payRocketmqDto = new PayRocketmqDto();
+        payRocketmqDto.getBody().setAdditionalInformation(additionalInformation);//附加信息
+        payRocketmqDto.getBody().setCorp(transfer.getCorp());//实体代码-法人代码
+        payRocketmqDto.getBody().setStatus(transfer.getStatus());//处理状态
+        payRocketmqDto.getBody().setTransactionStatus(transactionStatus);//文件处理状态
+        
+        //payRocketmqDto.getHeader().setBIZBRCH(transfer);
+        payRocketmqDto.getHeader().setFRTSIDEDT(paymentDate);//前台日期-付款日期
+        payRocketmqDto.getHeader().setFRTSIDESN(customerReference);//前台流水-支付号
+        payRocketmqDto.getHeader().setLGRPCD(transfer.getCorp());//法人代码
+        //payRocketmqDto.getHeader().setTLCD(TLCD);
+        //payRocketmqDto.getHeader().setTRDCD(TRDCD);
+        payRocketmqDto.getHeader().setTRDDT(paymentDate);//付款日期
+        
+        
+        String msgInfo = JSON.toJSONString(payRocketmqDto);
+        payMqproducer.sendMsg("tags", msgInfo);
     }
 
 }
