@@ -201,10 +201,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             return ackResult;
         }
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
+        log.info("paymentStatus:" + paymentStatus);
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
         	
         }else{
+        	log.info("there will be sending error msg!");
         	sendMqMsg(transfer, ack1Response.getAck1Header().getAdditionalInformation(), ack1Response.getAck1Header().getGroupStatus(), 
         			(new SimpleDateFormat("yyyy-mm-dd")).format(Calendar.getInstance().getTime()), transfer.getPaymentId());
         	
@@ -227,10 +229,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             return ackResult;
         }
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
+        log.info("paymentStatus:" + paymentStatus);
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
         	
         }else{
+        	log.info("there will be sending error msg!");
         	sendMqMsg(transfer, ack2Response.getAck2Details().getAdditionalInformation(), ack2Response.getAck2Details().getTransactionStatus(), 
             		ack2Response.getAck2Details().getPaymentDate(), ack2Response.getAck2Details().getCustomerReference());
         }
@@ -362,6 +366,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
+        log.info("will be sending");
         payMqproducer.sendMsg("35033", msgInfo);
         log.info("send msg \"35033\" to hyh finish");
     }
