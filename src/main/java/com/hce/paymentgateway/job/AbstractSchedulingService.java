@@ -201,7 +201,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             return ackResult;
         }
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack1Response.getAck1Header().getGroupStatus(), null,ack1Response.getAck1Header().getAdditionalInformation());
-        log.info("paymentStatus:" + paymentStatus);
+        log.info("paymentStatus:" + paymentStatus.getStatus());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
         	
@@ -229,7 +229,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             return ackResult;
         }
         PaymentStatus paymentStatus = getPaymentStatus(transfer, ackResult, ack2Response.getAck2Header().getGroupStatus(), ack2Response.getAck2Details().getTransactionStatus(),ack2Response.getAck2Details().getAdditionalInformation());
-        log.info("paymentStatus:" + paymentStatus);
+        log.info("paymentStatus:" + paymentStatus.getStatus());
         if(!paymentStatus.equals(PaymentStatus.FAILED)){
         	paymentStatus = PaymentStatus.PROCESSING;
         	
