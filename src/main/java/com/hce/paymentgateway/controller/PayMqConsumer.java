@@ -12,6 +12,7 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.hce.paymentgateway.service.DispatcherService;
 import com.hce.paymentgateway.service.impl.AccountTransferService;
 
@@ -42,10 +43,11 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 			if(msg.getBody()!=null){
 				
 				if(msg.getTags().equals("35031")){
-					
-					log.debug("接收到支付消息："+new String(msg.getBody()));
-					dispatcherService.dispatcher(new String(msg.getBody()));
-					payMqproducer.sendMsg("35303", "I'm WangShaohua!");
+					Map<String, Object> maps = (Map) JSON.parse(new String(msg.getBody()));
+					log.info("接收到支付消息："+new String(msg.getBody()));
+					log.info("接受到的body" + maps.get("body"));
+					dispatcherService.dispatcher(new String(maps.get("body").toString()));
+					//payMqproducer.sendMsg("35303", "I'm WangShaohua!");
 					
 				}else if(msg.getTags().equals("17012")){
 					
