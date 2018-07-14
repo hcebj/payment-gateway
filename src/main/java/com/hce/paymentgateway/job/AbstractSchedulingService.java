@@ -351,7 +351,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         payRocketmqDto.getHeader().setFRTSIDEDT(paymentDate);//前台日期-付款日期
         payRocketmqDto.getHeader().setFRTSIDESN(customerReference);//前台流水-支付号
         payRocketmqDto.getHeader().setLGRPCD(transfer.getCorp());//法人代码
-        payRocketmqDto.getHeader().setTLCD("DBS001");
+        payRocketmqDto.getHeader().setTLCD("DBS002");//柜员号
         payRocketmqDto.getHeader().setTRDCD("35303");
         payRocketmqDto.getHeader().setTRDDT(paymentDate);//付款日期
         
