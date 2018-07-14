@@ -358,6 +358,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
         payMqproducer.sendMsg("35033", msgInfo);
+        log.info("send msg \"35033\" to hyh finish");
     }
 
 }
