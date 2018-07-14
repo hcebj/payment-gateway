@@ -352,12 +352,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         payRocketmqDto.getHeader().setFRTSIDESN(customerReference);//前台流水-支付号
         payRocketmqDto.getHeader().setLGRPCD(transfer.getCorp());//法人代码
         payRocketmqDto.getHeader().setTLCD("DBS002");//柜员号
-        payRocketmqDto.getHeader().setTRDCD("35303");
+        payRocketmqDto.getHeader().setTRDCD("35033");
         payRocketmqDto.getHeader().setTRDDT(paymentDate);//付款日期
         
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
-        payMqproducer.sendMsg("35303", msgInfo);
+        payMqproducer.sendMsg("35033", msgInfo);
     }
 
 }
