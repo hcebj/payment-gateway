@@ -66,9 +66,9 @@ public class DBSVAReportEntity {
 	@Column(name="bank_reference")
 	private String bankReference;//银行参考
 	@Column(name="transaction_date")
-	private Date transactionDate;//交易日期
+	private String transactionDate;//交易日期
 	@Column(name="value_date")
-	private Date valueDate;//价值日期
+	private String valueDate;//价值日期
 	@Column(name="channel_id")
 	private String channelId;//频道ID
 }

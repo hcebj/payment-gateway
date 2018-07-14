@@ -3,9 +3,7 @@ package com.hce.paymentgateway.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 
 	@Override
 	protected void process(File file) throws IOException, ParseException {
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		String parentId = file.getName().substring(0, file.getName().indexOf("."));
 		CsvReader csvReader = null;
 		try {
@@ -69,9 +66,9 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	                String transactionDate = normalize(csvReader.get(15));
 	                String valueDate = normalize(csvReader.get(16));
 	                if(transactionDate.length()>0)
-	                	vareport.setTransactionDate(df.parse(transactionDate));
+	                	vareport.setTransactionDate(transactionDate);
 	                if(valueDate.length()>0)
-	                	vareport.setValueDate(df.parse(valueDate));
+	                	vareport.setValueDate(valueDate);
 	                vareport.setChannelId(normalize(csvReader.get(17)));
 					dbsVAReportDao.save(vareport);
 				}
