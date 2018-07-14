@@ -51,7 +51,7 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
         transfer.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);
-        log.info("[网关支付]数据入库成功, id = {}, transId = {}, paymentId = {}", transfer.getId(), transfer.getTransId(), transfer.getPaymentId());
+        log.info("[网关支付]数据入库成功, id = {},corp = {} transTime = {} transId = {}, paymentId = {}", transfer.getCorp(),transfer.getTransTime(), transfer.getId(), transfer.getTransId(), transfer.getPaymentId());
         ftpRequestDBS(tradeRequest, transfer);
         TradeResponse response = new TradeResponse();
         BeanUtils.copyProperties(tradeRequest, response);

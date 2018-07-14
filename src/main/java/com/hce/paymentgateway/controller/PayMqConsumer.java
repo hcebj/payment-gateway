@@ -12,6 +12,7 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.hce.paymentgateway.service.DispatcherService;
 import com.hce.paymentgateway.service.impl.AccountTransferService;
 
@@ -25,7 +26,7 @@ public class PayMqConsumer
 extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 	  
 	  //消息的topic
-       public static final String CBSPAY = "CBSPAY";
+       public static final String CBSPAY = "CBSPAYI";
    
 	   @Resource
 	   private DispatcherService dispatcherService;
@@ -41,11 +42,12 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 		case CBSPAY: {//核心支付消息
 			if(msg.getBody()!=null){
 				
-				if(msg.getTags().equals("17011")){
-					
-					log.debug("接收到支付消息："+new String(msg.getBody()));
-					dispatcherService.dispatcher(new String(msg.getBody()));
-					payMqproducer.sendMsg("17013", "I'm WangShaohua!");
+				if(msg.getTags().equals("35031")){
+					Map<String, Object> maps = (Map) JSON.parse(new String(msg.getBody()));
+					log.info("接收到支付消息："+new String(msg.getBody()));
+					log.info("接受到的body" + maps.get("body"));
+					dispatcherService.dispatcher(new String(maps.get("body").toString()));
+					//payMqproducer.sendMsg("35303", "I'm WangShaohua!");
 					
 				}else if(msg.getTags().equals("17012")){
 					
@@ -79,7 +81,7 @@ extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
         Map<String, Set<String>> map = new HashMap<>();
         Set<String> tags = new HashSet<>();
         //订阅的消息交易码
-        tags.add("17011");
+        tags.add("35031");
         tags.add("17012");
         //tags.add("17013");
         

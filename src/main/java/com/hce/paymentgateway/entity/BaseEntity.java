@@ -28,7 +28,7 @@ public class BaseEntity {
     
     private String paymentId;
     private String transCode; //渠道代码
-    private Date transTime; //渠道时间
+    private String transTime; //渠道时间
     private String transId; //渠道流水号
     private Integer queryCount = 0;
     private String corp; //机构代码
