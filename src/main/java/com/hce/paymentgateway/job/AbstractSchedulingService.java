@@ -87,7 +87,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBHL_MT942.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT942.D");//MT942
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT942.D");//MT942
     	mt94xResponseProcessService.process(files);
     }
 
