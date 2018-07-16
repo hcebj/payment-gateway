@@ -238,7 +238,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 					dstAccount = "xxx";
 					dstName = mt94xDetail.getPayerName();
 				} else if("D".equals(mt94xDetail.getDebitCreditIndicator())) {
-					srcAccount = "www";
+					srcAccount = mt94x.getAccountNumber();
 					srcName = mt94xDetail.getPayerName();
 					dstAccount = mt94xDetail.getBeneficiaryAccountNumber();
 					dstName = mt94xDetail.getBeneficiaryName();
