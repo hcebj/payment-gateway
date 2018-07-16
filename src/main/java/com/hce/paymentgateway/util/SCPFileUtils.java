@@ -50,8 +50,6 @@ public class SCPFileUtils {
     private String outboxDir;
     @Value("${hce.pgw.dbs.local.file.location}")
     private String localTempDir;
-    @Value("${env}")
-    private String env;
     @Autowired
     private SecretService secretService;
 
@@ -143,13 +141,8 @@ public class SCPFileUtils {
 
     public List<File> downloadFilesFromServerAndDecrypt(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = this.downloadFilesFromServer(filenameRegex);
-    	if(com.hce.paymentgateway.Constant.ENV_TEST.equals(env)) {
-    		return files;
-    	} else if(com.hce.paymentgateway.Constant.ENV_PRO.equals(env)) {
-    		List<File> filesDecode = this.decrypt(files);
-            return filesDecode;
-    	}
-    	return null;
+    	List<File> filesDecode = this.decrypt(files);
+        return filesDecode;
     }
 
     public List<File> decrypt(List<File> files) throws IOException, InterruptedException {

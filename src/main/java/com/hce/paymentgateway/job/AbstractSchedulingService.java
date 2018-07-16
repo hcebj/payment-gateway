@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     private ResponseProcessService vareportResponseProcessService;
     @Resource(name = "mt94xResponseProcessServiceImpl")
     private ResponseProcessService mt94xResponseProcessService;
+    @Value("${env}")
+    private String env;
 
     /**
      * 处理ACK1、ACK2、ACK3
@@ -84,7 +87,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT942.D");//MT942
+    	files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBHL_MT942.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT942.D");//MT942
     	mt94xResponseProcessService.process(files);
     }
 
@@ -93,7 +96,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     public void processDaily() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT940.D");//MT940
+    	files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBHL_MT940.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT940.D");//MT940
     	mt94xResponseProcessService.process(files);
     }
 
