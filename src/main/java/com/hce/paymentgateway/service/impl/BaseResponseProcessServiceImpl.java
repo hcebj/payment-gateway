@@ -47,6 +47,10 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 		String today = df.format(System.currentTimeMillis());
 		for(File file:files) {
 			try {
+				if(file.exists()) {
+					file.delete();
+				}
+				file.createNewFile();
 				Object obj = process(file);
 //				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 				String tag = getMsgTag();
