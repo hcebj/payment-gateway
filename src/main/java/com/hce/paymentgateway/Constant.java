@@ -5,11 +5,12 @@ import java.util.Map;
 
 public class Constant {
 	public final static String PARENTID = "HKHCEH";
-	public final static String CUSTOMERID = "HKHCEHXXXXXX";
 	public final static String SUBSIDIARY_HKHCEH = "HKHCEH";
 	public final static String SUBSIDIARY_HKBRHCEC = "HKBRHCEC";
 	public final static String SUBSIDIARY_SWIFT_BIC_HKHCEH = "DHBKHKHH";
 	public final static String SUBSIDIARY_SWIFT_BIC_HKBRHCEC = "DBSSHKHH";
+	public final static String SUBSIDIARY_CUSTOMERID_HKHCEH = "HKHCEHXXXXXX";
+	public final static String SUBSIDIARY_CUSTOMERID_HKBRHCEC = "HKBRHCECXXXX";
 	public final static String SUBSIDIARY_INNER_CODE_HKHCEH = "9992";
 	public final static String SUBSIDIARY_INNER_CODE_HKBRHCEC = "9991";
 	public final static String[] SUBSIDIARIES = {SUBSIDIARY_HKHCEH, SUBSIDIARY_HKBRHCEC};

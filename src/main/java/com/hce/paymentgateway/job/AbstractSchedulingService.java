@@ -81,28 +81,34 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
     }
 
+    private final static String[] HCE_SUB_CUSTOMER_IDS = {Constant.SUBSIDIARY_CUSTOMERID_HKHCEH, Constant.SUBSIDIARY_CUSTOMERID_HKBRHCEC};
     private final static String[] DBS_SUBS = {"L", "K"};
-
+    
     @Scheduled(cron = "0 0/5 * * * ?")
     public void processResponse() throws JSchException, SftpException, IOException, InterruptedException {
-    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+"_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.SUBSIDIARY_CUSTOMERID_HKHCEH+"_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	vasetupResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.SUBSIDIARY_CUSTOMERID_HKHCEH+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	for(String dbsSub:DBS_SUBS) {
-    		files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBH"+dbsSub+"_MT942.D");//MT942
-        	mt94xResponseProcessService.process(files);
+    	for(String hceSubCustomerId:HCE_SUB_CUSTOMER_IDS) {
+    		for(String dbsSub:DBS_SUBS) {
+        		files = SCPFileUtils.downloadFilesFromServerAndDecrypt(hceSubCustomerId+".CBH"+dbsSub+"_MT942.D");//MT942
+            	mt94xResponseProcessService.process(files);
+        	}
     	}
     }
 
 //    @Scheduled(cron = "0 30 9 * * ?")
     @Scheduled(cron = "0 0/5 * * * ?")
     public void processDaily() throws JSchException, SftpException, IOException, InterruptedException {
-    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
+    	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.SUBSIDIARY_CUSTOMERID_HKHCEH+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
-    	for(String dbsSub:DBS_SUBS) {
-    		files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBH"+dbsSub+"_MT940.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT940.D");//MT940
-        	mt94xResponseProcessService.process(files);
+    	for(String hceSubCustomerId:HCE_SUB_CUSTOMER_IDS) {
+    		for(String dbsSub:DBS_SUBS) {
+    			String fileNamePattern = hceSubCustomerId+".CBH"+dbsSub+"_MT940.D";
+        		files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(fileNamePattern):SCPFileUtils.downloadFilesFromServerAndDecrypt(fileNamePattern);//MT940
+            	mt94xResponseProcessService.process(files);
+        	}
     	}
     }
 
