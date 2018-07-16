@@ -11,11 +11,11 @@ import lombok.Setter;
 public class PayRocketmqDto   {
 	
 	private body body;
-	private header header;
+	private head head;
 	public PayRocketmqDto() {
 		super();
 		body = new body();
-		header = new header();
+		head = new head();
 	}
 	
 	@Getter
@@ -38,7 +38,7 @@ public class PayRocketmqDto   {
 	
 	@Getter
 	@Setter
-	public static class header{
+	public static class head{
 		private String TLCD;//柜员代号
 	    private String TRDCD;//交易码
 	    private String BIZBRCH;//机构
@@ -47,7 +47,7 @@ public class PayRocketmqDto   {
 	    private String FRTSIDEDT;//前台日期
 	    private String CHNL;//渠道
 	    private String TRDDT;//交易日期
-	    public header() {
+	    public head() {
 	    	TLCD = "";
 	    	TRDCD = "";
 	    	BIZBRCH = "";
