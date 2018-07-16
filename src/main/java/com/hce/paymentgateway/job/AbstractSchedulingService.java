@@ -207,6 +207,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         	
         }else{
         	log.info("there will be sending error msg!");
+        	transfer.setStatus(-1);
         	sendMqMsg(transfer, ack1Response.getAck1Header().getAdditionalInformation(), ack1Response.getAck1Header().getGroupStatus(), 
         			(new SimpleDateFormat("yyyy-mm-dd")).format(Calendar.getInstance().getTime()), transfer.getPaymentId());
         	
@@ -235,6 +236,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         	
         }else{
         	log.info("there will be sending error msg!");
+        	transfer.setStatus(-1);
         	sendMqMsg(transfer, ack2Response.getAck2Details().getAdditionalInformation(), ack2Response.getAck2Details().getTransactionStatus(), 
             		ack2Response.getAck2Details().getPaymentDate(), ack2Response.getAck2Details().getCustomerReference());
         }
@@ -263,7 +265,16 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         log.info("there will be updatting paymentStatus!");
         updatePaymentStatus(transfer, paymentStatus, ack3Response.getAck3Details().getTransactionStatus(),ack3Response.getAck3Details().getAdditionalInformation());
         updateFileName1(transfer, ack3File.getName(),"ACK3");
-        
+        if(paymentStatus.equals(PaymentStatus.FAILED)){
+        	transfer.setStatus(-1);
+        	
+        }else if(paymentStatus.equals(PaymentStatus.PROCESSING)){
+        	log.info("there will be sending error msg!");
+        	transfer.setStatus(0);
+        	
+        }else if(paymentStatus.equals(PaymentStatus.SUCCESS)){
+        	transfer.setStatus(1);
+        }
         sendMqMsg(transfer, ack3Response.getAck3Details().getAdditionalInformation(), ack3Response.getAck3Details().getTransactionStatus(), 
         		ack3Response.getAck3Details().getPaymentDate(), ack3Response.getAck3Details().getCustomerReference());
         return ackResult;
