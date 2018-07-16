@@ -73,14 +73,14 @@ public class SecretServiceImpl implements SecretService {
 		return this.dbsPubKey;
 	}
 
-	public String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
+	public static String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
 		File f = new File(filePathDecode);
 		if(f.exists()) {
 			f.delete();
 		}
 		f.createNewFile();
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, System.getProperty("user.home") + "/pgp/12_private.asc", secretPwd.toCharArray(), filePathDecode);
+		KeyBasedLargeFileProcessor.decryptFile(filePathEncod, "D:/dbs/12_private.asc", "12345678".toCharArray(), filePathDecode);
 		InputStream in = null;
 		try {
 			in = new FileInputStream(filePathDecode);
@@ -91,5 +91,9 @@ public class SecretServiceImpl implements SecretService {
 			if(in!=null)
 				in.close();
 		}
+	}
+
+	public static void main(String[] args) throws NoSuchProviderException, IOException {
+		test("D:/dbs/UFF1.STP.HKHCEH.HKHCEH.201807120110.txt.DHBKHKHH.D20180712T143440598.ACK3.pgp", "D:/dbs/decryption.txt");
 	}
 }

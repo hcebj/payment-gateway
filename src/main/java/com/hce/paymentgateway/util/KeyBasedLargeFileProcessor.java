@@ -76,7 +76,11 @@ public class KeyBasedLargeFileProcessor {
             PGPObjectFactory plainFact = new PGPObjectFactory(clear);
             PGPCompressedData cData = (PGPCompressedData) plainFact.nextObject();
             InputStream compressedStream = new BufferedInputStream(cData.getDataStream());
-            PGPObjectFactory pgpFact = new PGPObjectFactory(compressedStream);
+            OutputStream fOut = new BufferedOutputStream(new FileOutputStream(outFileName));
+            Streams.pipeAll(compressedStream, fOut);
+            fOut.flush();
+            fOut.close();
+            /*PGPObjectFactory pgpFact = new PGPObjectFactory(compressedStream);
             Object message = pgpFact.nextObject();
             if (message instanceof PGPLiteralData) {
                 PGPLiteralData ld = (PGPLiteralData) message;
@@ -88,7 +92,7 @@ public class KeyBasedLargeFileProcessor {
                 throw new PGPException("encrypted message contains a signed message - not literal data.");
             } else {
                 throw new PGPException("message is not a simple encrypted file - type unknown.");
-            }
+            }*/
         } catch (PGPException e) {
             System.err.println(e);
             if (e.getUnderlyingException() != null) {
