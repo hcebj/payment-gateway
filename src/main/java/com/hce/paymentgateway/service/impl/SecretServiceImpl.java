@@ -95,5 +95,6 @@ public class SecretServiceImpl implements SecretService {
 
 	public static void main(String[] args) throws NoSuchProviderException, IOException {
 		test("D:/dbs/UFF1.STP.HKHCEH.HKHCEH.201807120110.txt.DHBKHKHH.D20180712T143440598.ACK3.pgp", "D:/dbs/decryption.txt");
+		test("D:/dbs/HKHCEHXXXXXX_DSG_VAHKL_RESP_12072018150721.xls.pgp", "D:/dbs/decryption.xls");
 	}
 }
