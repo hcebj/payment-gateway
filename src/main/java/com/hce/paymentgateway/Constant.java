@@ -14,6 +14,8 @@ public class Constant {
 	public final static String SUBSIDIARY_INNER_CODE_HKBRHCEC = "9991";
 	public final static String[] SUBSIDIARIES = {SUBSIDIARY_HKHCEH, SUBSIDIARY_HKBRHCEC};
 	public final static String RESULT_FAILURE = "FAILURE";
+	public final static String ENV_TEST = "test";
+	public final static String ENV_PRO = "pro";
 	public static Map<String, String> subsidiaryMap;
 	static {
 		subsidiaryMap = new HashMap<String, String>(4);

@@ -22,6 +22,7 @@
 		<profile>
 			<id>dev</id>
 			<properties>
+				<env>dev</env>
 				<spring.datasource.url>jdbc:mysql://127.0.0.1:3306/zf?useUnicode=true&amp;characterEncoding=utf-8</spring.datasource.url>
 				<spring.datasource.username>root</spring.datasource.username>
 				<spring.datasource.password>wang123</spring.datasource.password>
@@ -45,6 +46,7 @@
 		<profile>
 			<id>test</id>
 			<properties>
+				<env>test</env>
 				<spring.datasource.url>jdbc:mysql://172.16.80.12:3306/pgw?useUnicode=true&amp;characterEncoding=utf-8</spring.datasource.url>
 				<spring.datasource.username>payment</spring.datasource.username>
 				<spring.datasource.password>pgw@321</spring.datasource.password>
