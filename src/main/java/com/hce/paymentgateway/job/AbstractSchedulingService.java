@@ -351,7 +351,10 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     
     private void sendMqMsg(T transfer,String additionalInformation,String transactionStatus,String paymentDate,String customerReference){
     	PayRocketmqDto payRocketmqDto = new PayRocketmqDto();
-        payRocketmqDto.getBody().setAdditionalInformation(additionalInformation);//附加信息
+    	if(additionalInformation!=null){
+    		payRocketmqDto.getBody().setAdditionalInformation(additionalInformation);//附加信息
+    	}
+        
         payRocketmqDto.getBody().setCorp(transfer.getCorp());//实体代码-法人代码
         payRocketmqDto.getBody().setStatus(transfer.getStatus());//处理状态
         payRocketmqDto.getBody().setTransactionStatus(transactionStatus);//文件处理状态

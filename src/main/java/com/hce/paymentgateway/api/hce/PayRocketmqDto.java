@@ -12,7 +12,11 @@ public class PayRocketmqDto   {
 	
 	private body body;
 	private header header;
-	
+	public PayRocketmqDto() {
+		super();
+		body = new body();
+		header = new header();
+	}
 	
 	@Getter
 	@Setter
@@ -22,6 +26,13 @@ public class PayRocketmqDto   {
 	    private String transactionStatus;
 	    private String additionalInformation;
 	    private String corp;
+	    public body() {
+	    	transId = "";
+	    	status = 0;
+	    	transactionStatus = "";
+	    	additionalInformation = "";
+	    	corp = "";
+		}
 		
 	}
 	
@@ -36,6 +47,15 @@ public class PayRocketmqDto   {
 	    private String FRTSIDEDT;//前台日期
 	    private String CHNL;//渠道
 	    private String TRDDT;//交易日期
-	    
+	    public header() {
+	    	TLCD = "";
+	    	TRDCD = "";
+	    	BIZBRCH = "";
+	    	LGRPCD = "";
+	    	FRTSIDESN = "";
+	    	FRTSIDEDT = "";
+	    	CHNL = "";
+	    	TRDDT = "";
+		}
 	}
 }
