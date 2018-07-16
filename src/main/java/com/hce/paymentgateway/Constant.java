@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constant {
-	public final static String PARENT = "HKHCEH";
+	public final static String PARENTID = "HKHCEH";
 	public final static String CUSTOMERID = "HKHCEHXXXXXX";
 	public final static String SUBSIDIARY_HKHCEH = "HKHCEH";
 	public final static String SUBSIDIARY_HKBRHCEC = "HKBRHCEC";
