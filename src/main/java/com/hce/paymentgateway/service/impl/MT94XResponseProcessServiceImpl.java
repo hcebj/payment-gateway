@@ -74,12 +74,17 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		mt94x.setSessionNumber(block1.getSessionNumber());
 		mt94x.setSequenceNumber(block1.getSequenceNumber());
 		mt94x.setMessageType(msg.getType());
-		mt94x.setReceiver(msg.getReceiver());
-		mt94x.setMessagePriority(block2.getMessagePriority());
+		String s = block2.getValue();
+		mt94x.setReceiver(s.substring(4, s.length()-1));
+		mt94x.setMessagePriority(s.substring(s.length()-1, s.length()));
 		SwiftBlock4 block4 = msg.getBlock4();
 		String[] tagValues = block4.getTagValue("25").split("/");
-		mt94x.setAccountNumber(tagValues[1]);
-		mt94x.setSubsidiarySwiftBic(tagValues[0]);
+		if(tagValues.length>1) {
+			mt94x.setSubsidiarySwiftBic(tagValues[0]);
+			mt94x.setAccountNumber(tagValues[1]);
+		} else if(tagValues.length==1) {
+			mt94x.setAccountNumber(tagValues[0]);
+		}
 		corpHolder.set(mt94x.getSubsidiarySwiftBic());
 		tagValues = block4.getTagValue("28C").split("/");
 		mt94x.setStatementNumber(tagValues[0]);
@@ -92,7 +97,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			DBSMT940Entity mt940 = new DBSMT940Entity();
 			mt940.setHeaderId(mt94x.getId());
 			//首次期初余额/中间期初余额
-			String s = null;
+			s = null;
 			for(String tagVal:MT940_TAG_VALS_60) {
 				s = block4.getTagValue(tagVal);
 				if(s!=null) {
@@ -132,7 +137,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			mt942.setDateTimeIndicationDate(String.valueOf(chars, 0, 10));
 			mt942.setDateTimeIndicationSign(String.valueOf(chars[10]));
 			mt942.setDateTimeIndicationTimeZone(String.valueOf(chars, 11, 4));
-			String s = block4.getTagValue("90D");
+			s = block4.getTagValue("90D");
 			if(s!=null) {
 				s = s.trim();
 				if(s.length()>0) {
@@ -203,7 +208,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 					int index = j*2;
 					map.put(tagVal86[index], tagVal86[index+1]);
 				}
-				String s = map.get("RA");
+				s = map.get("RA");
 				if(s!=null) {
 					s = s.trim();
 					if(s.length()>0) {

@@ -36,10 +36,10 @@ public class DBSMT940Entity {
 	private BigDecimal firstOpeningBalanceAmount;//首次期初余额/中间期初余额, 量
 	@Column(name="closing_available_balance_indicator")
 	private String closingAvailableBalanceIndicator;//期末可用余额, 借记/贷记余额指示, C：表示贷方余额; D：表示借方余额
-	@Column(name="closing_available_balance_indicator_date")
+	@Column(name="closing_available_balance_date")
 	private String closingAvailableBalanceDate;//期末可用余额, 日期, YYMMDD
-	@Column(name="closing_available_balance_indicator_currency")
+	@Column(name="closing_available_balance_currency")
 	private String closingAvailableBalanceCurrency;//期末可用余额, 货币, 帐户的有效ISO货币代码
-	@Column(name="closing_available_balance_indicator_amount")
+	@Column(name="closing_available_balance_amount")
 	private BigDecimal closingAvailableBalanceAmount;//期末可用余额, 量
 }

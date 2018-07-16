@@ -63,4 +63,13 @@ public class TestController {
 		vasetupResponseProcessService.process(files);
 		return "SUCCESS";
 	}
+
+	@RequestMapping(value = "/test")
+	@ResponseBody
+	public String test() throws NoSuchProviderException, IOException, ParseException {
+		List<File> files = new ArrayList<File>(2);
+		files.add(new File("D:/dbs/HKHCEHXXXXXX.CBHL_MT940.D180707050003.txt"));
+		mt94xResponseProcessService.process(files);
+		return "SUCCESS";
+	}
 }
