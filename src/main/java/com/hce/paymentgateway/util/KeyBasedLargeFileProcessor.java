@@ -34,6 +34,8 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactory
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
 import org.bouncycastle.util.io.Streams;
 
+import com.hce.paymentgateway.api.hce.PayRocketmqDto;
+
 /**
  * A simple utility class that encrypts/decrypts public key based encryption
  * large files.
@@ -129,8 +131,10 @@ public class KeyBasedLargeFileProcessor {
         encryptFile(out, test, encKey, true, false);
         out.close();
         //InputStream inputStream = KeyBasedLargeFileProcessor.class.getClassLoader().getResourceAsStream("private.asc");
-       
-        decryptFile("C:\\Users\\acer\\Desktop\\ceshi\\encode.txt", "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
+        PayRocketmqDto payRocketmqDto = new PayRocketmqDto();
+        payRocketmqDto.getBody().setAdditionalInformation("aaaa");
+        System.out.println("success!" + payRocketmqDto.getBody().getAdditionalInformation());
+        //decryptFile("C:\\Users\\acer\\Desktop\\ceshi\\encode.txt", "C:\\Users\\acer\\Desktop\\ceshi\\HCE-PGP.asc", "HKHCEH-DBS".toCharArray(), "C:\\Users\\acer\\Desktop\\ceshi\\decode.txt");
   
     }*/
 }
