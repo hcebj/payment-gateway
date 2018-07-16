@@ -84,15 +84,16 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHK_MT942.D");//MT942
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHL_MT942.D");//MT942
     	mt94xResponseProcessService.process(files);
     }
 
-    @Scheduled(cron = "0 30 9 * * ?")
+//    @Scheduled(cron = "0 30 9 * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void processDaily() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHK_MT940.D");//MT940
+    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.PARENT+".CBHL_MT940.D");//MT940
     	mt94xResponseProcessService.process(files);
     }
 
