@@ -378,6 +378,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         payRocketmqDto.getHead().setTLCD("DBS002");//柜员号
         payRocketmqDto.getHead().setTRDCD("35033");
         payRocketmqDto.getHead().setTRDDT(paymentDate);//付款日期
+        payRocketmqDto.getHead().setCHNL("00");
         
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
