@@ -47,7 +47,7 @@ public class DBSMT94XDetailEntity {
 	@Column(name="va_number")
 	private String vaNumber;//虚拟账户号，如果有的话
 	@Column(name="beneficiary_name")
-	private String beneficiaryBame;//收款人姓名
+	private String beneficiaryName;//收款人姓名
 	@Column(name="beneficiary_bank_name")
 	private String beneficiaryBankName;//收款银行名称
 	@Column(name="beneficiary_account_number")

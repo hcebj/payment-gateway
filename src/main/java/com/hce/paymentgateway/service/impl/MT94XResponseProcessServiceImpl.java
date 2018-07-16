@@ -212,7 +212,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 						mt94xDetail.setRemittanceAmount(new BigDecimal(String.valueOf(chars, 3, chars.length-3).replaceAll(",", ".")));
 					}
 				}
-				mt94xDetail.setBeneficiaryBame(map.get("BENM"));
+				mt94xDetail.setBeneficiaryName(map.get("BENM"));
 				mt94xDetail.setBeneficiaryBankName(map.get("BB"));
 				mt94xDetail.setBeneficiaryAccountNumber(map.get("BA"));
 				mt94xDetail.setPayerName(map.get("ORDP"));
@@ -223,14 +223,30 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 				DBSMT94XVO vo = new DBSMT94XVO();
 				vo.setFileNm(mt94x.getFileIn());
 				vo.setTrdDt(mt94xDetail.getValueDate());
-				vo.setTlSnCd(mt94x.getDbsSequenceNumber());
-				vo.setCustAcctno("xxx1");
-				vo.setAcctNm("xxx2");
-				vo.setOtherAcctno1("xxx3");
-				vo.setOtherAcctnm1("xxx4");
+				//Franco Chan说: 用交易日，銀行參考加3位交易代碼可以作唯一
+				vo.setTlSnCd(mt94xDetail.getTransactionTypeIdentificationCode()+"-"+mt94xDetail.getAccountServicingInstitutionsReference()+"-"+mt94xDetail.getValueDate());
 				vo.setBrrlndFlg(mt94xDetail.getDebitCreditIndicator());
 				vo.setTrdCurr1(mt94xDetail.getRemittanceCurrency());
 				vo.setTrdAmt(mt94xDetail.getRemittanceAmount().toString());
+				String srcAccount = null;
+				String srcName = null;
+				String dstAccount = null;
+				String dstName = null;
+				if("C".equals(mt94xDetail.getDebitCreditIndicator())) {
+					srcAccount = mt94xDetail.getBeneficiaryAccountNumber();
+					srcName = mt94xDetail.getBeneficiaryName();
+					dstAccount = "xxx";
+					dstName = mt94xDetail.getPayerName();
+				} else if("D".equals(mt94xDetail.getDebitCreditIndicator())) {
+					srcAccount = "www";
+					srcName = mt94xDetail.getPayerName();
+					dstAccount = mt94xDetail.getBeneficiaryAccountNumber();
+					dstName = mt94xDetail.getBeneficiaryName();
+				}
+				vo.setCustAcctno(srcAccount);
+				vo.setAcctNm(srcName);
+				vo.setOtherAcctno1(dstAccount);
+				vo.setOtherAcctnm1(dstName);
 				list.add(vo);
 			}
 			return list;

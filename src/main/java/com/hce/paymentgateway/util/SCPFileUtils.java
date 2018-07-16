@@ -141,6 +141,11 @@ public class SCPFileUtils {
 
     public List<File> downloadFilesFromServerAndDecrypt(String filenameRegex) throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = this.downloadFilesFromServer(filenameRegex);
+    	List<File> filesDecode = this.decrypt(files);
+        return filesDecode;
+    }
+
+    public List<File> decrypt(List<File> files) throws IOException, InterruptedException {
     	List<File> filesDecode = new ArrayList<File>(files.size());
     	log.info("XXX---------size: "+files.size());
         for(File file:files) {
