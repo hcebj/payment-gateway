@@ -81,14 +81,18 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         }
     }
 
+    private final static String[] DBS_SUBS = {"L", "K"};
+
     @Scheduled(cron = "0 0/5 * * * ?")
     public void processResponse() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+"_DSG_VAHKL_RESP_*.xls");//海云汇香港VA Setup
     	vasetupResponseProcessService.process(files);
     	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".HK_*_HKD_EPAYCOL.ENH.001.D*T*.csv");//海云汇香港VA Report (30-min interval)
     	vareportResponseProcessService.process(files);
-    	files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT942.D");//MT942
-    	mt94xResponseProcessService.process(files);
+    	for(String dbsSub:DBS_SUBS) {
+    		files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBH"+dbsSub+"_MT942.D");//MT942
+        	mt94xResponseProcessService.process(files);
+    	}
     }
 
 //    @Scheduled(cron = "0 30 9 * * ?")
@@ -96,8 +100,10 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
     public void processDaily() throws JSchException, SftpException, IOException, InterruptedException {
     	List<File> files = SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".VARPT.HK.*.TRAN.ENH.D*T*.csv");//海云汇香港VA Report (End-Of-Day)
     	vareportResponseProcessService.process(files);
-    	files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBHL_MT940.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT940.D");//MT940
-    	mt94xResponseProcessService.process(files);
+    	for(String dbsSub:DBS_SUBS) {
+    		files = Constant.ENV_TEST.equals(env)?SCPFileUtils.downloadFilesFromServer(Constant.CUSTOMERID+".CBH"+dbsSub+"_MT940.D"):SCPFileUtils.downloadFilesFromServerAndDecrypt(Constant.CUSTOMERID+".CBHL_MT940.D");//MT940
+        	mt94xResponseProcessService.process(files);
+    	}
     }
 
     /**
