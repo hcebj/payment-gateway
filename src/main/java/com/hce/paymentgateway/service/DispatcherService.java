@@ -191,7 +191,7 @@ public class DispatcherService {
     		file.delete();
     	}
     	JSONObject jsonObj = JSONObject.parseObject(json, JSONObject.class);
-    	List<JSONObject> vasetups = (List<JSONObject>)jsonObj.get("body");
+    	List<JSONObject> vasetups = (List<JSONObject>)((JSONObject)jsonObj.get("body")).get("f350391");
     	List<HCEDBSVASetupVO> errorList = new ArrayList<HCEDBSVASetupVO>(vasetups.size());
     	CsvWriter csvWriter = null;
     	log.info("\r\nVA_SETUP_PROCESS: "+fileName);
