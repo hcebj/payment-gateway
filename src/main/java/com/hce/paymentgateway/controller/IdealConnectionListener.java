@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @Author Heling.Yao
  * @Date 15:48 2018/6/6
+ * 前期通过Active MQ的Consumer, 已废弃
  */
 @Slf4j
 @Component

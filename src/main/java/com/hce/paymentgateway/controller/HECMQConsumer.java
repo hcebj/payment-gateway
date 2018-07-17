@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class PayMqConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
+public class HECMQConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqContent> {
 	@Autowired
 	private DispatcherService dispatcherService;
 
