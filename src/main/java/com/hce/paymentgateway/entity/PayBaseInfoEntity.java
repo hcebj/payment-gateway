@@ -27,11 +27,10 @@ public class PayBaseInfoEntity {
 	private String corp;
 	@Column(name="field_name")
 	private String fieldName;
-	@Column(name="field_type")
-	private String fieldType;
 	@Column(name="field_value")
 	private String fieldValue;
 	@Column(name="field_status")
 	private String fieldStatus;
-
+	@Column(name="remark")
+	private String remark;
 }
