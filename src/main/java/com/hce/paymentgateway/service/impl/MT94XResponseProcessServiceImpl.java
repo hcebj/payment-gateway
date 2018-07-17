@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.Constant;
+import com.hce.paymentgateway.dao.AccountTransferDao;
 import com.hce.paymentgateway.dao.DBSMT940Dao;
 import com.hce.paymentgateway.dao.DBSMT942Dao;
 import com.hce.paymentgateway.dao.DBSMT94XDetailDao;
 import com.hce.paymentgateway.dao.DBSMT94XHeaderDao;
+import com.hce.paymentgateway.entity.AccountTransferEntity;
 import com.hce.paymentgateway.entity.DBSMT940Entity;
 import com.hce.paymentgateway.entity.DBSMT942Entity;
 import com.hce.paymentgateway.entity.DBSMT94XDetailEntity;
@@ -44,6 +46,8 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 	private DBSMT942Dao dbsMT942Dao;
 	@Autowired
 	private DBSMT94XDetailDao dbsMT94XDetailDao;
+	@Autowired
+	private AccountTransferDao accountTransferDao;
 
 	private static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
 	private static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
@@ -255,6 +259,27 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 				vo.setAcctNm(srcName);
 				vo.setOtherAcctno1(dstAccount);
 				vo.setOtherAcctnm1(dstName);
+				List<AccountTransferEntity> tranfers = accountTransferDao.findByPaymentId(mt94xDetail.getReferenceToTheAccountOwner());
+				String transId = null;
+				String transTime = null;
+				if(tranfers!=null) {
+					if(tranfers.size()==0) {
+						transId = "0";
+						transTime = "0";
+					} else if(tranfers.size()==1) {
+						AccountTransferEntity transfer = tranfers.get(0);
+						transId = transfer.getTransId();
+						transTime = transfer.getTransTime();
+					} else {
+						transId = "多条记录";
+						transTime = "多条记录";
+					}
+				} else {
+					transId = "null";
+					transTime = "null";
+				}
+				vo.setTransId(transId);
+				vo.setTransTime(transTime);
 				list.add(vo);
 			}
 			return list;

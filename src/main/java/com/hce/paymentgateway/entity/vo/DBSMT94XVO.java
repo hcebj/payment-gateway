@@ -16,4 +16,6 @@ public class DBSMT94XVO {
 	private String brrlndFlg;
 	private String trdCurr1;
 	private String trdAmt;
+	private String transId;
+	private String transTime;
 }

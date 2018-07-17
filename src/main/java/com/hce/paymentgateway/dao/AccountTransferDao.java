@@ -27,6 +27,8 @@ public interface AccountTransferDao extends JpaRepository<AccountTransferEntity,
     
     Optional<AccountTransferEntity> findById(Long id);
 
+    public List<AccountTransferEntity> findByPaymentId(String paymentId);
+
     @Modifying
     @Query(value = "update AccountTransferEntity set queryCount = :newQueryCount, modifyTime = :modifyTime where id = :id and queryCount = :oldQueryCount")
     int updateCountByIdAndCount(@Param("id") Long id, @Param("oldQueryCount") Integer oldQueryCount,
