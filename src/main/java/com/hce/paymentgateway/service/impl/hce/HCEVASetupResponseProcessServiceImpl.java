@@ -20,7 +20,7 @@ public class HCEVASetupResponseProcessServiceImpl extends VASetupResponseProcess
 		vo.setMasterAC(vaNumber);
 		vo.setStatus(status);
 		vo.setFailureReason(failureReason);
-		return null;
+		return vo;
 	}
 
 	@Override
