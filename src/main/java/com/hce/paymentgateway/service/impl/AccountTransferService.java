@@ -5,13 +5,10 @@ import static com.hce.paymentgateway.util.PaymentStatus.PROCESSING;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.annotation.Resource;
 
 import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("accountTransferService")
 @ServiceParameter(productType = Constant.ACCOUNT_TRANSFER)
 public class AccountTransferService extends AbstractTransactionService<AccountTransferRequest> {
-    @Resource(name = "accountTransferDao")
+	@Autowired
     private AccountTransferDao accountTransferDao;
 
     @Transactional

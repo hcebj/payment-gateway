@@ -21,8 +21,6 @@ import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
@@ -37,10 +35,8 @@ import static com.hce.paymentgateway.util.Constant.LINUX_LINE_BREAK;
  */
 @Slf4j
 public abstract class AbstractTransactionService<T extends TradeRequest> implements TransactionService<T>  {
-
-    @Resource(name = "SCPFileUtils")
+    @Autowired
     private SCPFileUtils SCPFileUtils;
-
     @Autowired
     private AccountInfoDao accountInfoDao;
 

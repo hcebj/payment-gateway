@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class BaseResponseProcessServiceImpl implements ResponseProcessService {
 	@Autowired
 	private PayMqproducer payMqproducer;
-	@Resource(name = "SCPFileUtils")
+	@Autowired
     private SCPFileUtils SCPFileUtils;
 
 	protected abstract Object process(File file) throws IOException, ParseException;
