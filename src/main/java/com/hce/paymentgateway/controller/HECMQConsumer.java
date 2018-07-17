@@ -64,7 +64,7 @@ public class HECMQConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqCon
         Set<String> tags = new HashSet<>();
         //订阅的消息交易码
         tags.add("35031");
-        tags.add("17012");
+        tags.add("35039");
         //tags.add("17013");
         map.put(Constant.MQ_NAME_IN_HCE, tags);
         return map;
