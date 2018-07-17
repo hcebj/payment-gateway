@@ -37,6 +37,7 @@ import com.hce.paymentgateway.util.CommonUtil;
 import com.hce.paymentgateway.util.DBSDataFormat;
 import com.hce.paymentgateway.util.FileNameGenerator;
 import com.hce.paymentgateway.util.PaymentStatus;
+import com.hce.paymentgateway.util.SCPFileUtils;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
@@ -52,8 +53,8 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 
     @Autowired
 	private PayMqproducer payMqproducer;
-    @Resource(name = "SCPFileUtils")
-    private com.hce.paymentgateway.util.SCPFileUtils SCPFileUtils;
+    @Autowired
+    private SCPFileUtils SCPFileUtils;
     @Resource(name = "vaSetupResponseProcessServiceImpl")
     private ResponseProcessService vasetupResponseProcessService;
     @Resource(name = "vaReportResponseProcessServiceImpl")

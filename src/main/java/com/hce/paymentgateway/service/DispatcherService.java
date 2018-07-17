@@ -49,7 +49,7 @@ import java.util.UUID;
  * @Date 11:42 2018/5/25
  */
 @Slf4j
-@Service("dispatcherService")
+@Service
 public class DispatcherService {
 	@Autowired
     private ScanService scanService;
@@ -172,7 +172,7 @@ public class DispatcherService {
         return result;
     }
 
-    @Resource(name = "SCPFileUtils")
+    @Autowired
     private SCPFileUtils SCPFileUtils;
     @Autowired
     private DBSVASetupDao dbsVASetupDao;

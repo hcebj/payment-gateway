@@ -30,4 +30,6 @@ public class Constant {
 		subsidiaryMap.put(SUBSIDIARY_CUSTOMERID_HKHCEH, SUBSIDIARY_INNER_CODE_HKHCEH);
 		subsidiaryMap.put(SUBSIDIARY_CUSTOMERID_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
 	}
+	public static final String MQ_NAME_HCE = "HCE_CBSPAYI";
+	public static final String MQ_NAME_DHGATE = "DHGATE_CBSPAYI";
 }
