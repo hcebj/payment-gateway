@@ -5,10 +5,14 @@ import com.csvreader.CsvWriter;
 import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
+import com.hce.paymentgateway.controller.PayMqproducer;
 import com.hce.paymentgateway.dao.AccountInfoDao;
 import com.hce.paymentgateway.dao.DBSVASetupDao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
 import com.hce.paymentgateway.entity.DBSVASetupEntity;
+import com.hce.paymentgateway.entity.vo.DBSVASetupVO;
+import com.hce.paymentgateway.entity.vo.Header;
+import com.hce.paymentgateway.entity.vo.MessageWrapper;
 import com.hce.paymentgateway.util.JsonUtil;
 import com.hce.paymentgateway.util.ResponseCode;
 import com.hce.paymentgateway.util.SCPFileUtils;
@@ -26,12 +30,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.NoSuchProviderException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -39,7 +49,7 @@ import java.util.UUID;
  * @Date 11:42 2018/5/25
  */
 @Slf4j
-@Service("dispatcherService")
+@Service
 public class DispatcherService {
 	@Autowired
     private ScanService scanService;
@@ -162,37 +172,67 @@ public class DispatcherService {
         return result;
     }
 
-    @Resource(name = "SCPFileUtils")
+    @Autowired
     private SCPFileUtils SCPFileUtils;
     @Autowired
     private DBSVASetupDao dbsVASetupDao;
+    @Autowired
+	private PayMqproducer payMqproducer;
+    @Resource(name = "vaSetupResponseProcessServiceImpl")
+    private ResponseProcessService vasetupResponseProcessService;
 
+    @Transactional
     public void processVASetup(String json) throws IOException, NoSuchProviderException, JSchException, SftpException, PGPException {
     	String fileName = "DSG_VAHKL."+UUID.randomUUID().toString().replace("-", "").toUpperCase()+".csv";
     	String path = SCPFileUtils.getTempFileDir();
     	path += fileName;//明文csv位置
-    	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
+    	File file = new File(path);
+    	if(file.exists()) {
+    		file.delete();
+    	}
+    	List<JSONObject> vasetups = JSONObject.parseObject(json, List.class);
+    	List<DBSVASetupVO> errorList = new ArrayList<DBSVASetupVO>(vasetups.size());
     	CsvWriter csvWriter = null;
-    	log.info("\r\nVA_SETUP: "+fileName);
+    	log.info("\r\nVA_SETUP_PROCESS: "+fileName);
     	try {
     		csvWriter = new CsvWriter(path);
         	for(JSONObject obj:vasetups) {
         		DBSVASetupEntity vasetup = new DBSVASetupEntity();
-        		vasetup.setRequestFile(fileName);
-        		vasetup.setCorp(obj.getString("corp"));
-        		vasetup.setAction(obj.getString("action"));
-        		vasetup.setCorpCode(obj.getString("corpCode"));
-        		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
-        		vasetup.setMasterAC(obj.getString("masterAC"));
-        		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
-        		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
-            	dbsVASetupDao.save(vasetup);
-        		csvWriter.writeRecord(row);
+            	try {
+            		vasetup.setRequestFile(fileName);
+            		vasetup.setCorp(obj.getString("corp"));
+            		vasetup.setAction(obj.getString("action"));
+            		vasetup.setCorpCode(obj.getString("corpCode"));
+            		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
+            		vasetup.setMasterAC(obj.getString("masterAC"));
+            		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
+            		dbsVASetupDao.save(vasetup);
+            		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
+            		csvWriter.writeRecord(row);
+            	} catch(Exception e) {
+            		DBSVASetupVO vo = new DBSVASetupVO();
+            		vo.setMasterAC(vasetup.getMasterAC());
+            		vo.setCorp(vasetup.getCorp());
+            		vo.setStatus(Constant.VA_SETUP_STATUS_EXCEPTION);
+            		vo.setFailureReason(e.getMessage());
+            		errorList.add(vo);
+            		log.error("", e);
+            		break;
+            	}
         	}
-        	csvWriter.close();
-        	log.info("\r\nVA_SETUP: 1");
-        	SCPFileUtils.uploadFileFromServer(fileName+".pgp", null, path);
-        	log.info("\r\nVA_SETUP: 2");
+        	if(errorList==null||errorList.size()==0) {//成功
+        		csvWriter.close();
+            	SCPFileUtils.uploadFileFromServer(fileName+".pgp", null, path);
+        	} else {//异常
+        		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        		String today = df.format(System.currentTimeMillis());
+            	Header header = vasetupResponseProcessService.getHeader(today);
+            	Map<String, Object> body = new HashMap<String, Object>(1);
+    			body.put("f"+vasetupResponseProcessService.getMsgTag()+"1", errorList);
+            	MessageWrapper msg = new MessageWrapper(header, body);
+    			String rsJson = JSONObject.toJSONString(msg);
+            	payMqproducer.sendMsg(vasetupResponseProcessService.getMsgTag(), rsJson);
+        	}
     	} finally {
     		if(csvWriter!=null)
     			csvWriter.close();

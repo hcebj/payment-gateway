@@ -8,10 +8,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.annotation.Resource;
-
 import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("chatsPaymentService")
 @ServiceParameter(productType = Constant.CHATS_PAY)
 public class ChatsPaymentService extends AbstractTransactionService<ChatsPaymentRequest> {
-    @Resource(name = "accountTransferDao")
+	@Autowired
     private AccountTransferDao accountTransferDao;
 
     @Transactional

@@ -15,6 +15,7 @@ public class Constant {
 	public final static String SUBSIDIARY_INNER_CODE_HKBRHCEC = "9991";
 	public final static String[] SUBSIDIARIES = {SUBSIDIARY_HKHCEH, SUBSIDIARY_HKBRHCEC};
 	public final static String RESULT_FAILURE = "FAILURE";
+	public final static String VA_SETUP_STATUS_EXCEPTION = "EXCEPTION";
 	public final static String ENV_TEST = "test";
 	public final static String ENV_PRO = "pro";
 	public static Map<String, String> subsidiaryMap;
@@ -26,5 +27,9 @@ public class Constant {
 		subsidiaryMap.put(SUBSIDIARY_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
 		subsidiaryMap.put(SUBSIDIARY_SWIFT_BIC_HKHCEH, SUBSIDIARY_INNER_CODE_HKHCEH);
 		subsidiaryMap.put(SUBSIDIARY_SWIFT_BIC_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
+		subsidiaryMap.put(SUBSIDIARY_CUSTOMERID_HKHCEH, SUBSIDIARY_INNER_CODE_HKHCEH);
+		subsidiaryMap.put(SUBSIDIARY_CUSTOMERID_HKBRHCEC, SUBSIDIARY_INNER_CODE_HKBRHCEC);
 	}
+	public static final String MQ_NAME_HCE = "HCE_CBSPAYI";
+	public static final String MQ_NAME_DHGATE = "DHGATE_CBSPAYI";
 }

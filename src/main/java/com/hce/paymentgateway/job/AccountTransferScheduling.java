@@ -4,10 +4,11 @@ import com.hce.paymentgateway.dao.AccountTransferDao;
 import com.hce.paymentgateway.entity.AccountTransferEntity;
 import com.hce.paymentgateway.util.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +22,7 @@ import static com.hce.paymentgateway.util.Constant.MAX_QUERY_COUNT;
 @Component
 @Slf4j
 public class AccountTransferScheduling extends AbstractSchedulingService<AccountTransferEntity> {
-
-    @Resource(name = "accountTransferDao")
+    @Autowired
     private AccountTransferDao accountTransferDao;
 
     /**

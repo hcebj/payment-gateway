@@ -26,7 +26,7 @@ public class DBSVASetupEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	@Column(name="corp")
-	private String corp;//PARENT ID, 海云汇香港、海云汇国际
+	private String corp;
 	@CreatedDate
 	@Column(name="creation_time")
 	private Date creationTime;//创建创建时间

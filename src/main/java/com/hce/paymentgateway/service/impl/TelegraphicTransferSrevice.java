@@ -8,10 +8,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.annotation.Resource;
-
 import org.bouncycastle.openpgp.PGPException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("telegraphicTransferSrevice")
 @ServiceParameter(productType = Constant.TELEGRAPHIC_TRANSFER)
 public class TelegraphicTransferSrevice extends AbstractTransactionService<TelegraphicTransferRequest> {
-    @Resource(name = "accountTransferDao")
+	@Autowired
     private AccountTransferDao accountTransferDao;
 
     @Transactional

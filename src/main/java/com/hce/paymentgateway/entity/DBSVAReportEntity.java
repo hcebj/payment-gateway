@@ -26,10 +26,10 @@ public class DBSVAReportEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name="response_file")
-	private String responseFile;//响应结果所在文件名
-	@Column(name="parent_id")
-	private String parentId;//PARENT ID, 海云汇香港、海云汇国际
+	@Column(name="file_in")
+	private String fileIn;//响应结果所在文件名
+	@Column(name="corp")
+	private String corp;//corp, 海云汇香港、海云汇国际
 	@Column(name="type")
 	private int type;//1VA Report (End-Of-Day); 2VA Report (30-min interval)
 	@CreatedDate

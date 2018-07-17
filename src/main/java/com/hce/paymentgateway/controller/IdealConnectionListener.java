@@ -4,11 +4,9 @@ import com.hce.paymentgateway.service.DispatcherService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-
 /**
  * @Author Heling.Yao
  * @Date 15:48 2018/6/6
@@ -16,7 +14,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Component
 public class IdealConnectionListener {
-    @Resource
+    @Autowired
     private DispatcherService dispatcherService;
 
     @JmsListener(destination = "pgw_ideal_connect")

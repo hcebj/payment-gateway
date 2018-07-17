@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.csvreader.CsvReader;
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.dao.DBSVAReportDao;
 import com.hce.paymentgateway.entity.DBSVAReportEntity;
 
@@ -21,7 +22,8 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 
 	@Override
 	protected Object process(File file) throws IOException, ParseException {
-		String parentId = file.getName().substring(0, file.getName().indexOf("."));
+		String customerId = file.getName().substring(0, file.getName().indexOf("."));
+		String corp = Constant.subsidiaryMap.get(customerId);
 		CsvReader csvReader = null;
 		try {
 			csvReader = new CsvReader(file.getAbsolutePath());
@@ -44,8 +46,8 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 				String vaNumber = normalize(csvReader.get(1));
 				if(vaNumber!=null&&vaNumber.length()>0) {
 					DBSVAReportEntity vareport = new DBSVAReportEntity();
-					vareport.setResponseFile(file.getName());
-					vareport.setParentId(parentId);
+					vareport.setFileIn(file.getName());
+					vareport.setCorp(corp);
 					vareport.setType(type);
 //	                vareport.setSno(normalize(csvReader.get(0)));
 					vareport.setVaNumber(vaNumber);
@@ -85,7 +87,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	}
 
 	@Override
-	protected String getMsgTag() {
+	public String getMsgTag() {
 		return "35040";
 	}
 

@@ -21,7 +21,7 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.hce.paymentgateway.service.SecretService;
 import com.jcraft.jsch.ChannelSftp;
@@ -34,8 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Created by zonga on 2018/5/24.
  */
-@Service
 @Slf4j
+@Component
 @PropertySource("classpath:application.properties")
 public class SCPFileUtils {
     @Value("${hce.pgw.dbs.remote-server.host}")
