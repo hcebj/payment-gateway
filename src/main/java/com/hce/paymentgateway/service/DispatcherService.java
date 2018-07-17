@@ -231,7 +231,7 @@ public class DispatcherService {
     			body.put("f"+vasetupResponseProcessService.getMsgTag()+"1", errorList);
             	HCEMessageWrapper msg = new HCEMessageWrapper(header, body);
     			String rsJson = JSONObject.toJSONString(msg);
-            	payMqproducer.sendMsg(Constant.MQ_NAME_IN_HCE, vasetupResponseProcessService.getMsgTag(), rsJson);
+            	payMqproducer.sendMsg(Constant.MQ_NAME_OUT_HCE, vasetupResponseProcessService.getMsgTag(), rsJson);
         	}
     	} finally {
     		if(csvWriter!=null)

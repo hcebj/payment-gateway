@@ -405,7 +405,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
         log.info("will be sending");
-        payMqproducer.sendMsg(Constant.MQ_NAME_IN_HCE, "35033", msgInfo);
+        payMqproducer.sendMsg(Constant.MQ_NAME_OUT_HCE, "35033", msgInfo);
         log.info("send msg \"35033\" to hyh finish");
     }
 
