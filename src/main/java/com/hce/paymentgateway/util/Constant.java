@@ -12,7 +12,7 @@ public interface Constant {
     // 交易类型CTS
     String CHATS_PAY = "CTS";
     
- // 交易类型CTS
+    // 交易类型TT
     String TELEGRAPHIC_TRANSFER = "TT";
 
     // recordType
