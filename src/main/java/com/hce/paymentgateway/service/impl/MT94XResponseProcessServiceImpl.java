@@ -11,20 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.Constant;
-import com.hce.paymentgateway.dao.AccountTransferDao;
 import com.hce.paymentgateway.dao.DBSMT940Dao;
 import com.hce.paymentgateway.dao.DBSMT942Dao;
 import com.hce.paymentgateway.dao.DBSMT94XDetailDao;
 import com.hce.paymentgateway.dao.DBSMT94XHeaderDao;
-import com.hce.paymentgateway.entity.AccountTransferEntity;
 import com.hce.paymentgateway.entity.DBSMT940Entity;
 import com.hce.paymentgateway.entity.DBSMT942Entity;
 import com.hce.paymentgateway.entity.DBSMT94XDetailEntity;
 import com.hce.paymentgateway.entity.DBSMT94XHeaderEntity;
-import com.hce.paymentgateway.entity.vo.DBSMT94XVO;
 import com.prowidesoftware.swift.io.ConversionService;
 import com.prowidesoftware.swift.io.IConversionService;
 import com.prowidesoftware.swift.model.SwiftBlock1;
@@ -36,8 +32,9 @@ import com.prowidesoftware.swift.model.field.Field20C;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service("mt94xResponseProcessServiceImpl")
-public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+	protected abstract Object getResponseVO(DBSMT94XHeaderEntity mt94x, DBSMT94XDetailEntity mt94xDetail);
+
 	@Autowired
 	private DBSMT94XHeaderDao dbsMT94XHeaderDao;
 	@Autowired
@@ -46,8 +43,6 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 	private DBSMT942Dao dbsMT942Dao;
 	@Autowired
 	private DBSMT94XDetailDao dbsMT94XDetailDao;
-	@Autowired
-	private AccountTransferDao accountTransferDao;
 
 	private static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
 	private static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
@@ -188,7 +183,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			dbsMT942Dao.save(mt942);
 		}
 		if(tagValues61!=null&&tagValues61.length>0) {
-			List<DBSMT94XVO> list = new ArrayList<DBSMT94XVO>();
+			List<Object> list = new ArrayList<Object>(tagValues61.length);
 			for(int i=0;i<tagValues61.length;i++) {
 				String tagVal61 = tagValues61[i];
 				Field20C f20C = new Field20C(tagVal61);
@@ -232,73 +227,12 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 				mt94xDetail.setTransactionDescription(map.get("TD"));
 				mt94xDetail.setPaymentDetails(map.get("REMI"));
 				dbsMT94XDetailDao.save(mt94xDetail);
-				DBSMT94XVO vo = new DBSMT94XVO();
-				vo.setFileNm(mt94x.getFileIn());
-				vo.setTrdDt(mt94xDetail.getValueDate());
-				//Franco Chan说: 用交易日，銀行參考加3位交易代碼可以作唯一
-				vo.setTlSnCd(mt94xDetail.getTransactionTypeIdentificationCode()+"-"+mt94xDetail.getAccountServicingInstitutionsReference()+"-"+mt94xDetail.getValueDate());
-				vo.setBrrlndFlg(mt94xDetail.getDebitCreditIndicator());
-				vo.setTrdCurr1(mt94xDetail.getRemittanceCurrency());
-				vo.setTrdAmt(mt94xDetail.getRemittanceAmount().toString());
-				String srcAccount = null;
-				String srcName = null;
-				String dstAccount = null;
-				String dstName = null;
-				if("C".equals(mt94xDetail.getDebitCreditIndicator())) {
-					srcAccount = mt94xDetail.getBeneficiaryAccountNumber();
-					srcName = mt94xDetail.getBeneficiaryName();
-					dstAccount = "xxx";
-					dstName = mt94xDetail.getPayerName();
-				} else if("D".equals(mt94xDetail.getDebitCreditIndicator())) {
-					srcAccount = mt94x.getAccountNumber();
-					srcName = mt94xDetail.getPayerName();
-					dstAccount = mt94xDetail.getBeneficiaryAccountNumber();
-					dstName = mt94xDetail.getBeneficiaryName();
-				}
-				vo.setCustAcctno(srcAccount);
-				vo.setAcctNm(srcName);
-				vo.setOtherAcctno1(dstAccount);
-				vo.setOtherAcctnm1(dstName);
-				List<AccountTransferEntity> tranfers = accountTransferDao.findByPaymentId(mt94xDetail.getReferenceToTheAccountOwner());
-				String transId = null;
-				String transTime = null;
-				if(tranfers!=null) {
-					if(tranfers.size()==0) {
-						transId = "0";
-						transTime = "0";
-					} else if(tranfers.size()==1) {
-						AccountTransferEntity transfer = tranfers.get(0);
-						transId = transfer.getTransId();
-						transTime = transfer.getTransTime();
-					} else {
-						transId = "多条记录";
-						transTime = "多条记录";
-					}
-				} else {
-					transId = "null";
-					transTime = "null";
-				}
-				vo.setTransId(transId);
-				vo.setTransTime(transTime);
+				Object vo = getResponseVO(mt94x, mt94xDetail);
 				list.add(vo);
 			}
 			return list;
 		}
 		return null;
-	}
-
-	@Override
-	public String getMsgTag() {
-		String tag = tagHolder.get();
-		tagHolder.remove();
-		return tag;
-	}
-
-	@Override
-	protected String getCorp() {
-		String corp = Constant.subsidiaryMap.get(corpHolder.get());
-		corpHolder.remove();
-		return corp;
 	}
 
 	private final static int DIGIT_ASCII_RANGE_LOWER = 48;
@@ -313,5 +247,19 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 			}
 		}
 		return chars.length-1;
+	}
+
+	@Override
+	public String getMsgTag() {
+		String tag = tagHolder.get();
+		tagHolder.remove();
+		return tag;
+	}
+
+	@Override
+	protected String getCorp() {
+		String corp = Constant.subsidiaryMap.get(corpHolder.get());
+		corpHolder.remove();
+		return corp;
 	}
 }

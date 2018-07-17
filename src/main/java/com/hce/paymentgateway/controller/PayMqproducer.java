@@ -4,8 +4,6 @@ import org.apache.rocketmq.common.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hce.paymentgateway.Constant;
-
 import io.github.rhwayfun.springboot.rocketmq.starter.common.DefaultRocketMqProducer;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +17,13 @@ public class PayMqproducer {
     public PayMqproducer() {
     	
     }
-    
-    private int tries=3;
+   
+    private final static int TRIES = 3;
 
-    public void sendMsg(String tags,String msgInfo) {
+    public void sendMsg(String mqName, String tags,String msgInfo) {
     	boolean sendResult = false;
-    	for(int i = 0;i<tries;i++ ){
-    		Message msg = new Message(Constant.MQ_NAME_OUT_HCE, tags, msgInfo.getBytes());
+    	for(int i = 0;i<TRIES;i++ ){
+    		Message msg = new Message(mqName, tags, msgInfo.getBytes());
     		sendResult = producer.sendMsg(msg);
     		if(!sendResult) {
     			try {

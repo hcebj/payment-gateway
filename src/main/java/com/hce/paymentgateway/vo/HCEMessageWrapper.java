@@ -1,4 +1,4 @@
-package com.hce.paymentgateway.entity.vo;
+package com.hce.paymentgateway.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MessageWrapper {
-	private Header head;
+public class HCEMessageWrapper {
+	private HCEHeader head;
 	private Object body;
 }

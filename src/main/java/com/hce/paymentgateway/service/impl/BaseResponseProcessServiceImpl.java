@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hce.paymentgateway.controller.PayMqproducer;
-import com.hce.paymentgateway.entity.vo.Header;
-import com.hce.paymentgateway.entity.vo.MessageWrapper;
 import com.hce.paymentgateway.service.ResponseProcessService;
 import com.hce.paymentgateway.util.SCPFileUtils;
+import com.hce.paymentgateway.vo.HCEHeader;
+import com.hce.paymentgateway.vo.HCEMessageWrapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,21 +48,21 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 				Object obj = process(file);
 //				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 				String tag = getMsgTag();
-				Header header = getHeader(today);
+				HCEHeader header = getHeader(today);
 				Map<String, Object> body = new HashMap<String, Object>(1);
 				body.put("f"+tag+"1", obj);
-				MessageWrapper msg = new MessageWrapper(header, body);
+				HCEMessageWrapper msg = new HCEMessageWrapper(header, body);
 				String json = JSONObject.toJSONString(msg);
 				log.info("\r\nJSON_TO_MQ: "+json);
-				payMqproducer.sendMsg(tag, json);
+				payMqproducer.sendMsg(this.getMQName(), tag, json);
 			} catch (Exception e) {
 				log.error("\r\nDBS_RESPONSE_PROCESS_ERROR: "+file.getName(), e);
 			}
 		}
 	}
 
-	public Header getHeader(String today) {
-		Header header = new Header();
+	public HCEHeader getHeader(String today) {
+		HCEHeader header = new HCEHeader();
 		header.setBIZBRCH("0101");
 		header.setCHNL("00");
 		header.setFRTSIDEDT(today);

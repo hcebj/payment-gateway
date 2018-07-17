@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.csvreader.CsvReader;
 import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.dao.DBSVAReportDao;
 import com.hce.paymentgateway.entity.DBSVAReportEntity;
 
-@Service("vaReportResponseProcessServiceImpl")
-public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+public abstract class VAReportResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+	protected abstract Object getResponseVO(DBSVAReportEntity vareport);
+
 	@Autowired
 	private DBSVAReportDao dbsVAReportDao;
 
@@ -41,7 +41,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 			for(int i=0;i<linesSkipped;i++) {//跳过表头
 				csvReader.readRecord();
 			}
-			List<DBSVAReportEntity> list = new ArrayList<DBSVAReportEntity>();
+			List<Object> list = new ArrayList<Object>();
 			while(csvReader.readRecord()) {
 				String vaNumber = normalize(csvReader.get(1));
 				if(vaNumber!=null&&vaNumber.length()>0) {
@@ -76,7 +76,8 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	                	vareport.setValueDate(valueDate);
 	                vareport.setChannelId(normalize(csvReader.get(17)));
 					dbsVAReportDao.save(vareport);
-					list.add(vareport);
+					Object vo = this.getResponseVO(vareport);
+					list.add(vo);
 				}
             }
 			return list;
@@ -84,16 +85,6 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 			if(csvReader!=null)
 				csvReader.close();
 		}
-	}
-
-	@Override
-	public String getMsgTag() {
-		return "35040";
-	}
-
-	@Override
-	protected String getCorp() {
-		return "9992";
 	}
 
 	private String normalize(String s) {
@@ -131,5 +122,15 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 			}
 		}
 		return new String(newBuf);
+	}
+
+	@Override
+	public String getMsgTag() {
+		return "35040";
+	}
+
+	@Override
+	protected String getCorp() {
+		return "9992";
 	}
 }

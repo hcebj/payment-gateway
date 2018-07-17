@@ -56,11 +56,11 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
 	private PayMqproducer payMqproducer;
     @Autowired
     private SCPFileUtils SCPFileUtils;
-    @Resource(name = "vaSetupResponseProcessServiceImpl")
+    @Resource(name = "HCEVASetupResponseProcessServiceImpl")
     private ResponseProcessService vasetupResponseProcessService;
-    @Resource(name = "vaReportResponseProcessServiceImpl")
+    @Resource(name = "HCEVAReportResponseProcessServiceImpl")
     private ResponseProcessService vareportResponseProcessService;
-    @Resource(name = "mt94xResponseProcessServiceImpl")
+    @Resource(name = "HCEMT94XResponseServceImpl")
     private ResponseProcessService mt94xResponseProcessService;
     @Value("${env}")
     private String env;
@@ -405,7 +405,7 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
         
         String msgInfo = JSON.toJSONString(payRocketmqDto);
         log.info("will be sending");
-        payMqproducer.sendMsg("35033", msgInfo);
+        payMqproducer.sendMsg(Constant.MQ_NAME_IN_HCE, "35033", msgInfo);
         log.info("send msg \"35033\" to hyh finish");
     }
 

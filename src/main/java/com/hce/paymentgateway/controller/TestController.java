@@ -22,11 +22,11 @@ public class TestController {
 //	private SecretService secretService;
 //	@Autowired
 //	private ResponseProcessService accountingService;
-	@Resource(name = "vaSetupResponseProcessServiceImpl")
+	@Resource(name = "HCEVASetupResponseProcessServiceImpl")
     private ResponseProcessService vasetupResponseProcessService;
-    @Resource(name = "vaReportResponseProcessServiceImpl")
+    @Resource(name = "HCEVAReportResponseProcessServiceImpl")
     private ResponseProcessService vareportResponseProcessService;
-	@Resource(name = "mt94xResponseProcessServiceImpl")
+	@Resource(name = "HCEMT94XResponseServceImpl")
     private ResponseProcessService mt94xResponseProcessService;
 
 	@RequestMapping(value = "/commandline")

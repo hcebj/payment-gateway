@@ -1,4 +1,4 @@
-package com.hce.paymentgateway.entity.vo;
+package com.hce.paymentgateway.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Header {
+public class HCEHeader {
 	@JSONField(name = "BIZBRCH")
 	private String BIZBRCH;
 	@JSONField(name = "CHNL")

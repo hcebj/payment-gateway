@@ -10,9 +10,6 @@ import com.hce.paymentgateway.dao.AccountInfoDao;
 import com.hce.paymentgateway.dao.DBSVASetupDao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
 import com.hce.paymentgateway.entity.DBSVASetupEntity;
-import com.hce.paymentgateway.entity.vo.DBSVASetupVO;
-import com.hce.paymentgateway.entity.vo.Header;
-import com.hce.paymentgateway.entity.vo.MessageWrapper;
 import com.hce.paymentgateway.util.JsonUtil;
 import com.hce.paymentgateway.util.ResponseCode;
 import com.hce.paymentgateway.util.SCPFileUtils;
@@ -20,6 +17,9 @@ import com.hce.paymentgateway.util.ServiceWrapper;
 import com.hce.paymentgateway.validate.ConditionalMandatory;
 import com.hce.paymentgateway.validate.ValidatorResult;
 import com.hce.paymentgateway.validate.ValidatorUtil;
+import com.hce.paymentgateway.vo.HCEDBSVASetupVO;
+import com.hce.paymentgateway.vo.HCEHeader;
+import com.hce.paymentgateway.vo.HCEMessageWrapper;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
@@ -178,7 +178,7 @@ public class DispatcherService {
     private DBSVASetupDao dbsVASetupDao;
     @Autowired
 	private PayMqproducer payMqproducer;
-    @Resource(name = "vaSetupResponseProcessServiceImpl")
+    @Resource(name = "HCEVASetupResponseProcessServiceImpl")
     private ResponseProcessService vasetupResponseProcessService;
 
     @Transactional
@@ -191,7 +191,7 @@ public class DispatcherService {
     		file.delete();
     	}
     	List<JSONObject> vasetups = JSONObject.parseObject(json, List.class);
-    	List<DBSVASetupVO> errorList = new ArrayList<DBSVASetupVO>(vasetups.size());
+    	List<HCEDBSVASetupVO> errorList = new ArrayList<HCEDBSVASetupVO>(vasetups.size());
     	CsvWriter csvWriter = null;
     	log.info("\r\nVA_SETUP_PROCESS: "+fileName);
     	try {
@@ -210,7 +210,7 @@ public class DispatcherService {
             		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
             		csvWriter.writeRecord(row);
             	} catch(Exception e) {
-            		DBSVASetupVO vo = new DBSVASetupVO();
+            		HCEDBSVASetupVO vo = new HCEDBSVASetupVO();
             		vo.setMasterAC(vasetup.getMasterAC());
             		vo.setCorp(vasetup.getCorp());
             		vo.setStatus(Constant.VA_SETUP_STATUS_EXCEPTION);
@@ -226,12 +226,12 @@ public class DispatcherService {
         	} else {//异常
         		DateFormat df = new SimpleDateFormat("yyyyMMdd");
         		String today = df.format(System.currentTimeMillis());
-            	Header header = vasetupResponseProcessService.getHeader(today);
+            	HCEHeader header = vasetupResponseProcessService.getHeader(today);
             	Map<String, Object> body = new HashMap<String, Object>(1);
     			body.put("f"+vasetupResponseProcessService.getMsgTag()+"1", errorList);
-            	MessageWrapper msg = new MessageWrapper(header, body);
+            	HCEMessageWrapper msg = new HCEMessageWrapper(header, body);
     			String rsJson = JSONObject.toJSONString(msg);
-            	payMqproducer.sendMsg(vasetupResponseProcessService.getMsgTag(), rsJson);
+            	payMqproducer.sendMsg(Constant.MQ_NAME_IN_HCE, vasetupResponseProcessService.getMsgTag(), rsJson);
         	}
     	} finally {
     		if(csvWriter!=null)

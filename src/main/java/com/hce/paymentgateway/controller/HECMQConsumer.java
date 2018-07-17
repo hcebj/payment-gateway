@@ -41,7 +41,6 @@ public class HECMQConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqCon
 							dispatcherService.dispatcher(new String(maps.get("body").toString()));
 						}
 						log.info("here!");
-						//payMqproducer.sendMsg("35303", "I'm WangShaohua!");
 					} else if(msg.getTags().equals("17012")) {
 						log.info("接收到VaSetup消息：" + new String(msg.getBody()));
 						try {

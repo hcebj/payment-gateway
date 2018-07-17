@@ -12,16 +12,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.hce.paymentgateway.dao.DBSVASetupDao;
-import com.hce.paymentgateway.entity.vo.DBSVASetupVO;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service("vaSetupResponseProcessServiceImpl")
-public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+public abstract class VASetupResponseProcessServiceImpl extends BaseResponseProcessServiceImpl {
+	protected abstract Object getExceptionVO(String vaNumber, String fileName, String status, String failureReason, String erpCode);
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
@@ -32,7 +30,7 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 			workbook = new HSSFWorkbook(new FileInputStream(file));
 			Sheet sheet = workbook.getSheetAt(0);
 			int cursor = 1;
-			List<DBSVASetupVO> list = new ArrayList<DBSVASetupVO>();
+			List<Object> list = new ArrayList<Object>();
 			while(true) {
 				Row row = sheet.getRow(cursor++);
 				if(row==null)
@@ -49,15 +47,12 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 				String vaNumber = row.getCell(3).getStringCellValue();
 				String status = row.getCell(6).getStringCellValue();
 				String failureReason = row.getCell(7).getStringCellValue();
-				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), status, failureReason, row.getCell(4).getStringCellValue());
+				String erpCode = row.getCell(4).getStringCellValue();
+				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), status, failureReason, erpCode);
 				if(effected==0) {
 					log.error("\r\nVA_SETUP_ERROR_RESPONSE_NOT_FOUND: "+vaNumber+"--------------"+file.getName());
 				} else {
-					DBSVASetupVO vo = new DBSVASetupVO();
-					vo.setCorp(dbsVASetupDao.findByMasterAC(vaNumber).getCorp());
-					vo.setMasterAC(vaNumber);
-					vo.setStatus(status);
-					vo.setFailureReason(failureReason);
+					Object vo = this.getExceptionVO(vaNumber, file.getName(), status, failureReason, erpCode);
 					list.add(vo);
 				}
 			}

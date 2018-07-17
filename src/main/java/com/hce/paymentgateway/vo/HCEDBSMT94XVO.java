@@ -1,11 +1,11 @@
-package com.hce.paymentgateway.entity.vo;
+package com.hce.paymentgateway.vo;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DBSMT94XVO {
+public class HCEDBSMT94XVO {
 	private String fileNm;
 	private String trdDt;
 	private String tlSnCd;
