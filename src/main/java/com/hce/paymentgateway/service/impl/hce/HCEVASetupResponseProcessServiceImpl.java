@@ -25,7 +25,7 @@ public class HCEVASetupResponseProcessServiceImpl extends VASetupResponseProcess
 
 	@Override
 	public String getMQName() {
-		return Constant.MQ_NAME_IN_HCE;
+		return Constant.MQ_NAME_OUT_HCE;
 	}
 
 	@Override

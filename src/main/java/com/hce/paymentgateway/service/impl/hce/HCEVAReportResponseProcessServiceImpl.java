@@ -15,7 +15,7 @@ public class HCEVAReportResponseProcessServiceImpl extends VAReportResponseProce
 
 	@Override
 	public String getMQName() {
-		return Constant.MQ_NAME_IN_HCE;
+		return Constant.MQ_NAME_OUT_HCE;
 	}
 
 	@Override
