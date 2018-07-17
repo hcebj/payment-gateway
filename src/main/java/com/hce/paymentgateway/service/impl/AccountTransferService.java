@@ -46,8 +46,8 @@ public class AccountTransferService extends AbstractTransactionService<AccountTr
         BeanUtils.copyProperties(tradeRequest, transfer);
         transfer.setStatus(PROCESSING.getStatus());
         transfer.setPaymentId(CommonUtil.getNumberForPK()); //支付流水号
-        //transfer.setBatchId(String.format("%05d", (int) (Math.random()*100000)));//TODO 测试用,此处之后需变动
-        transfer.setBatchId(CommonUtil.getRandomString(5)); //支付批次号
+        transfer.setBatchId(String.format("%05d", (int) (Math.random()*100000)));//TODO 测试用,此处之后需变动
+        //transfer.setBatchId(CommonUtil.getRandomString(5)); //支付批次号
         transfer.setTransactionStatus("SEND");
         tradeRequest.setPaymentId(transfer.getPaymentId());
         transfer.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
