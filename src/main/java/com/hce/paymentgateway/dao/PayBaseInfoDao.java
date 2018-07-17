@@ -10,9 +10,9 @@ import com.hce.paymentgateway.entity.PayBaseInfoEntity;
 
 @Repository
 public interface PayBaseInfoDao extends JpaRepository<PayBaseInfoEntity, Long> {
-	@Modifying
-	@Query("UPDATE PayBaseInfoEntity t SET t.fieldValue=:fieldValue WHERE t.id=:id and t.fileStatus=:fileStatus")
-	public  int updateById(@Param(value="id")Long id, @Param(value="fieldValue") String fieldValue, @Param(value="fieldStatus") String fieldStatus);
+//	@Modifying
+//	@Query("UPDATE PayBaseInfoEntity t SET t.fieldValue=:fieldValue WHERE t.id=:id and t.fileStatus=:fileStatus")
+//	public  int updateById(@Param(value="id")Long id, @Param(value="fieldValue") String fieldValue, @Param(value="fieldStatus") String fieldStatus);
 	
 //	public PayBaseInfoEntity findByFieldName(String corp, String fieldName);
 }
