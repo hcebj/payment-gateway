@@ -31,7 +31,7 @@ public class PayMqConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqCon
     public boolean consumeMsg(PayMqContent content, MessageExt msg) {
 		log.info(new Date() + ",########## " + new String(msg.getBody()));
 		switch (msg.getTopic()) {
-			case Constant.MQ_NAME_HCE: {//核心支付消息
+			case Constant.MQ_NAME_IN_HCE: {//核心支付消息
 				if(msg.getBody()!=null) {
 					if(msg.getTags().equals("35031")) {
 						Map<String, Object> maps = (Map)JSON.parse(new String(msg.getBody()));
@@ -67,7 +67,7 @@ public class PayMqConsumer extends AbstractRocketMqConsumer<PayMqTopic, PayMqCon
         tags.add("35031");
         tags.add("17012");
         //tags.add("17013");
-        map.put(Constant.MQ_NAME_HCE, tags);
+        map.put(Constant.MQ_NAME_IN_HCE, tags);
         return map;
     }
 

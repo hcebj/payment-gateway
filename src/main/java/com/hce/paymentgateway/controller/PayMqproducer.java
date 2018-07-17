@@ -25,7 +25,7 @@ public class PayMqproducer {
     public void sendMsg(String tags,String msgInfo) {
     	boolean sendResult = false;
     	for(int i = 0;i<tries;i++ ){
-    		Message msg = new Message(Constant.MQ_NAME_HCE, tags, msgInfo.getBytes());
+    		Message msg = new Message(Constant.MQ_NAME_OUT_HCE, tags, msgInfo.getBytes());
     		sendResult = producer.sendMsg(msg);
     		if(!sendResult) {
     			try {
