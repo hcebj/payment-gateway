@@ -21,7 +21,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 
 	@Override
 	protected Object process(File file) throws IOException, ParseException {
-		String parentId = file.getName().substring(0, file.getName().indexOf("."));
+		String customerId = file.getName().substring(0, file.getName().indexOf("."));
 		CsvReader csvReader = null;
 		try {
 			csvReader = new CsvReader(file.getAbsolutePath());
@@ -45,7 +45,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 				if(vaNumber!=null&&vaNumber.length()>0) {
 					DBSVAReportEntity vareport = new DBSVAReportEntity();
 					vareport.setResponseFile(file.getName());
-					vareport.setParentId(parentId);
+					vareport.setCustomerId(customerId);
 					vareport.setType(type);
 //	                vareport.setSno(normalize(csvReader.get(0)));
 					vareport.setVaNumber(vaNumber);
