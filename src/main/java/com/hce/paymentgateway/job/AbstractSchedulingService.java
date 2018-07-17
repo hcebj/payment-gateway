@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -135,7 +136,12 @@ public abstract class AbstractSchedulingService<T extends BaseEntity> {
             if(!update) continue;
             // 2. 根据文件名查询FTP服务器数据
             String fileName = FileNameGenerator.generateAckFileName(transfer);
-            List<File> resultFiles = SCPFileUtils.downloadFilesFromServerAndDecrypt(fileName);
+            List<File> resultFiles = new ArrayList<>();
+            if(Constant.ENV_TEST.equals(env)){
+            	
+            }else{
+            	resultFiles = SCPFileUtils.downloadFilesFromServerAndDecrypt(fileName);
+            }
             // 3. 文件格式转换
             AckResult ackResult = handleACK1(transfer, resultFiles);
             log.info(""+!ackResult.isNextHandler());
