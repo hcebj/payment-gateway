@@ -21,7 +21,7 @@ public class HCEMT94XResponseServceImpl extends MT94XResponseProcessServiceImpl 
 	protected Object getResponseVO(DBSMT94XHeaderEntity mt94x, DBSMT94XDetailEntity mt94xDetail) {
 		HCEDBSMT94XVO vo = new HCEDBSMT94XVO();
 		vo.setFileNm(mt94x.getFileIn());
-		vo.setTrdDt(mt94xDetail.getValueDate());
+		vo.setTrdDt("20"+mt94xDetail.getValueDate());
 		//Franco Chan说: 用交易日，銀行參考加3位交易代碼可以作唯一
 		vo.setTlSnCd(mt94xDetail.getTransactionTypeIdentificationCode()+"-"+mt94xDetail.getAccountServicingInstitutionsReference()+"-"+mt94xDetail.getValueDate());
 		vo.setBrrlndFlg(mt94xDetail.getDebitCreditIndicator());
