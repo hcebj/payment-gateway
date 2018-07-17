@@ -15,6 +15,7 @@ public class Constant {
 	public final static String SUBSIDIARY_INNER_CODE_HKBRHCEC = "9991";
 	public final static String[] SUBSIDIARIES = {SUBSIDIARY_HKHCEH, SUBSIDIARY_HKBRHCEC};
 	public final static String RESULT_FAILURE = "FAILURE";
+	public final static String VA_SETUP_STATUS_DEFAULT = "IN_PROGRESS";
 	public final static String VA_SETUP_STATUS_EXCEPTION = "EXCEPTION";
 	public final static String ENV_TEST = "test";
 	public final static String ENV_PRO = "pro";

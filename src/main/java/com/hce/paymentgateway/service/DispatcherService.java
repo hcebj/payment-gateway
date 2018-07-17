@@ -207,6 +207,7 @@ public class DispatcherService {
             		vasetup.setRemitterPayerName(obj.getString("remitterPayerName"));
             		vasetup.setMasterAC(obj.getString("masterAC"));
             		vasetup.setStaticVASequenceNumber(obj.getString("staticVASequenceNumber"));
+            		vasetup.setStatus(Constant.VA_SETUP_STATUS_DEFAULT);
             		dbsVASetupDao.save(vasetup);
             		String[] row = {vasetup.getAction(), vasetup.getStaticVASequenceNumber(), vasetup.getCorpCode(), vasetup.getMasterAC(), vasetup.getRemitterPayerName()};
             		csvWriter.writeRecord(row);
