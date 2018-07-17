@@ -27,7 +27,6 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 
 	@Override
 	protected Object process(File file) throws IOException {
-		String customerId = file.getName().substring(0, file.getName().indexOf("_"));
 		Workbook workbook = null;
 		try {
 			workbook = new HSSFWorkbook(new FileInputStream(file));

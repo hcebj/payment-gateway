@@ -190,7 +190,7 @@ public class DispatcherService {
     	if(file.exists()) {
     		file.delete();
     	}
-    	List<JSONObject> vasetups = JsonUtil.parseObject(json, List.class);
+    	List<JSONObject> vasetups = JSONObject.parseObject(json, List.class);
     	List<DBSVASetupVO> errorList = new ArrayList<DBSVASetupVO>(vasetups.size());
     	CsvWriter csvWriter = null;
     	log.info("\r\nVA_SETUP_PROCESS: "+fileName);
