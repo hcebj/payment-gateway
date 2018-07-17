@@ -70,7 +70,6 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		SwiftBlock2 block2 = msg.getBlock2();
 		DBSMT94XHeaderEntity mt94x = new DBSMT94XHeaderEntity();
 		mt94x.setFileIn(file.getName());
-		mt94x.setCustomerId(customerId);
 		mt94x.setCorp(corp);
 		mt94x.setApplicationId(block1.getApplicationId());
 		mt94x.setServiceId(block1.getServiceId());

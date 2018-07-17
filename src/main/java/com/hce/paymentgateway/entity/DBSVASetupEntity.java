@@ -25,8 +25,6 @@ public class DBSVASetupEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name="customer_id")
-	private String customerId;//CUSTOMER ID, 海云汇香港、海云汇国际
 	@Column(name="corp")
 	private String corp;
 	@CreatedDate

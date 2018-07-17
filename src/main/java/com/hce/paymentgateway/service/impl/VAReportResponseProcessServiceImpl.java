@@ -47,7 +47,6 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 				if(vaNumber!=null&&vaNumber.length()>0) {
 					DBSVAReportEntity vareport = new DBSVAReportEntity();
 					vareport.setFileIn(file.getName());
-					vareport.setCustomerId(customerId);
 					vareport.setCorp(corp);
 					vareport.setType(type);
 //	                vareport.setSno(normalize(csvReader.get(0)));

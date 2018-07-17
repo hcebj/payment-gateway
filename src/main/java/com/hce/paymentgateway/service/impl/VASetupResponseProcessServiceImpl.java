@@ -27,7 +27,7 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 
 	@Override
 	protected Object process(File file) throws IOException {
-		String customerId = file.getName().substring(0, file.getName().indexOf("."));
+		String customerId = file.getName().substring(0, file.getName().indexOf("_"));
 		Workbook workbook = null;
 		try {
 			workbook = new HSSFWorkbook(new FileInputStream(file));
@@ -50,7 +50,7 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 				String vaNumber = row.getCell(3).getStringCellValue();
 				String status = row.getCell(6).getStringCellValue();
 				String failureReason = row.getCell(7).getStringCellValue();
-				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), status, failureReason, row.getCell(4).getStringCellValue(), customerId);
+				int effected = dbsVASetupDao.updateByVANumber(vaNumber, file.getName(), status, failureReason, row.getCell(4).getStringCellValue());
 				if(effected==0) {
 					log.error("\r\nVA_SETUP_ERROR_RESPONSE_NOT_FOUND: "+vaNumber+"--------------"+file.getName());
 				} else {

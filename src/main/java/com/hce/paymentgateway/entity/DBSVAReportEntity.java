@@ -28,8 +28,6 @@ public class DBSVAReportEntity {
     private Long id;
 	@Column(name="file_in")
 	private String fileIn;//响应结果所在文件名
-	@Column(name="customer_id")
-	private String customerId;//CUSTOMER ID, 海云汇香港、海云汇国际
 	@Column(name="corp")
 	private String corp;//corp, 海云汇香港、海云汇国际
 	@Column(name="type")
