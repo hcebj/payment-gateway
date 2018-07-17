@@ -52,6 +52,8 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 
 	@Override
 	protected Object process(File file) throws IOException {
+		String customerId = file.getName().substring(0, file.getName().indexOf("."));
+		String corp = Constant.subsidiaryMap.get(customerId);
 		InputStream in = null;
 		byte[] buf = null;
 		try {
@@ -68,6 +70,8 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 		SwiftBlock2 block2 = msg.getBlock2();
 		DBSMT94XHeaderEntity mt94x = new DBSMT94XHeaderEntity();
 		mt94x.setFileIn(file.getName());
+		mt94x.setCustomerId(customerId);
+		mt94x.setCorp(corp);
 		mt94x.setApplicationId(block1.getApplicationId());
 		mt94x.setServiceId(block1.getServiceId());
 		mt94x.setSender(msg.getSender());
