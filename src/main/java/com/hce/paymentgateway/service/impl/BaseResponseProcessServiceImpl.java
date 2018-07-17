@@ -33,7 +33,6 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
     private SCPFileUtils SCPFileUtils;
 
 	protected abstract Object process(File file) throws IOException, ParseException;
-	protected abstract String getMsgTag();
 	protected abstract String getCorp();
 
 	@Transactional
@@ -50,14 +49,7 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 				Object obj = process(file);
 //				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 				String tag = getMsgTag();
-				Header header = new Header();
-				header.setBIZBRCH("0101");
-				header.setCHNL("00");
-				header.setFRTSIDEDT(today);
-				header.setFRTSIDESN(String.valueOf(System.currentTimeMillis()));
-				header.setLGRPCD(getCorp());
-				header.setTLCD("DBS001");
-				header.setTRDCD(tag);
+				Header header = getHeader(today);
 				Map<String, Object> body = new HashMap<String, Object>(1);
 				body.put("f"+tag+"1", obj);
 				MessageWrapper msg = new MessageWrapper(header, body);
@@ -68,5 +60,17 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 				log.error("\r\nDBS_RESPONSE_PROCESS_ERROR: "+file.getName(), e);
 			}
 		}
+	}
+
+	public Header getHeader(String today) {
+		Header header = new Header();
+		header.setBIZBRCH("0101");
+		header.setCHNL("00");
+		header.setFRTSIDEDT(today);
+		header.setFRTSIDESN(String.valueOf(System.currentTimeMillis()));
+		header.setLGRPCD(getCorp());
+		header.setTLCD("DBS001");
+		header.setTRDCD(getMsgTag());
+		return header;
 	}
 }

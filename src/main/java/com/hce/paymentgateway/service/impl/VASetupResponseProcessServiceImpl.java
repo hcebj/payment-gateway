@@ -69,7 +69,7 @@ public class VASetupResponseProcessServiceImpl extends BaseResponseProcessServic
 	}
 
 	@Override
-	protected String getMsgTag() {
+	public String getMsgTag() {
 		return "35043";
 	}
 

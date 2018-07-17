@@ -260,7 +260,7 @@ public class MT94XResponseProcessServiceImpl extends BaseResponseProcessServiceI
 	}
 
 	@Override
-	protected String getMsgTag() {
+	public String getMsgTag() {
 		String tag = tagHolder.get();
 		tagHolder.remove();
 		return tag;

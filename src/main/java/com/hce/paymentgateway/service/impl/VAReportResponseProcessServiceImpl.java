@@ -85,7 +85,7 @@ public class VAReportResponseProcessServiceImpl extends BaseResponseProcessServi
 	}
 
 	@Override
-	protected String getMsgTag() {
+	public String getMsgTag() {
 		return "35040";
 	}
 
