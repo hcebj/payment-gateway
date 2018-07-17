@@ -62,14 +62,4 @@ public abstract class VASetupResponseProcessServiceImpl extends BaseResponseProc
 				workbook.close();
 		}
 	}
-
-	@Override
-	public String getMsgTag() {
-		return "35043";
-	}
-
-	@Override
-	protected String getCorp() {
-		return "9992";
-	}
 }

@@ -44,8 +44,8 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 	@Autowired
 	private DBSMT94XDetailDao dbsMT94XDetailDao;
 
-	private static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
-	private static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
+	protected static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
+	protected static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
 
 	private final String[] MT940_TAG_VALS_60 = {"60F", "60M"};
 
@@ -87,7 +87,7 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 		} else if(tagValues.length==1) {
 			mt94x.setAccountNumber(tagValues[0]);
 		}
-		corpHolder.set(mt94x.getSubsidiarySwiftBic());
+		corpHolder.set(corp);
 		tagValues = block4.getTagValue("28C").split("/");
 		mt94x.setStatementNumber(tagValues[0]);
 		mt94x.setDbsSequenceNumber(tagValues[1]);
@@ -247,19 +247,5 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 			}
 		}
 		return chars.length-1;
-	}
-
-	@Override
-	public String getMsgTag() {
-		String tag = tagHolder.get();
-		tagHolder.remove();
-		return tag;
-	}
-
-	@Override
-	protected String getCorp() {
-		String corp = Constant.subsidiaryMap.get(corpHolder.get());
-		corpHolder.remove();
-		return corp;
 	}
 }

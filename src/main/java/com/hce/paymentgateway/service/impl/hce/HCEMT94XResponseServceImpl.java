@@ -74,4 +74,18 @@ public class HCEMT94XResponseServceImpl extends MT94XResponseProcessServiceImpl 
 	public String getMQName() {
 		return Constant.MQ_NAME_IN_HCE;
 	}
+
+	@Override
+	public String getMsgTag() {
+		String tag = tagHolder.get();
+		tagHolder.remove();
+		return tag;
+	}
+
+	@Override
+	protected String getCorp() {
+		String corp = corpHolder.get();
+		corpHolder.remove();
+		return corp;
+	}
 }

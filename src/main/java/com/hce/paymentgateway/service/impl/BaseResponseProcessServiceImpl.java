@@ -47,8 +47,11 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 			try {
 				Object obj = process(file);
 //				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+				String corp = getCorp();
 				String tag = getMsgTag();
 				HCEHeader header = getHeader(today);
+				header.setLGRPCD(corp);
+				header.setTRDCD(tag);
 				Map<String, Object> body = new HashMap<String, Object>(1);
 				body.put("f"+tag+"1", obj);
 				HCEMessageWrapper msg = new HCEMessageWrapper(header, body);
@@ -67,9 +70,7 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 		header.setCHNL("00");
 		header.setFRTSIDEDT(today);
 		header.setFRTSIDESN(String.valueOf(System.currentTimeMillis()));
-		header.setLGRPCD(getCorp());
 		header.setTLCD("DBS001");
-		header.setTRDCD(getMsgTag());
 		return header;
 	}
 }

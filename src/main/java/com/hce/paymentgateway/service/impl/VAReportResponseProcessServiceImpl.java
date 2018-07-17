@@ -123,14 +123,4 @@ public abstract class VAReportResponseProcessServiceImpl extends BaseResponsePro
 		}
 		return new String(newBuf);
 	}
-
-	@Override
-	public String getMsgTag() {
-		return "35040";
-	}
-
-	@Override
-	protected String getCorp() {
-		return "9992";
-	}
 }
