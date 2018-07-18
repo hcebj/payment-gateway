@@ -51,7 +51,7 @@
 				<spring.datasource.username>payment</spring.datasource.username>
 				<spring.datasource.password>pgw@321</spring.datasource.password>
 				<spring.activemq.broker-url>tcp://172.16.80.12:61616</spring.activemq.broker-url>
-				<spring.rocketmq.broker-url>172.16.80.32:9876</spring.rocketmq.broker-url>
+				<spring.rocketmq.broker-url>172.16.80.12:9876</spring.rocketmq.broker-url>
 				<spring.rocketmq.producer-group>pay_producer_group</spring.rocketmq.producer-group>
 				<hce.pgw.dbs.remote-server.host>116.12.252.148</hce.pgw.dbs.remote-server.host>
 				<hce.pgw.dbs.remote-server.username>HKHCEH</hce.pgw.dbs.remote-server.username>
