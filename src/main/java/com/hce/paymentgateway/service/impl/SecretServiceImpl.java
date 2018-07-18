@@ -25,10 +25,6 @@ public class SecretServiceImpl implements SecretService {
 	private final static int interval = 1000;
 	@Value("${secret.cmd.decrypt}")
 	private String decryptionCmd;
-	@Value("${secret.pgp.pwd}")
-	private String secretPwd;
-	@Value("${secret.pubkey.dbs}")
-	private String dbsPubKey;
 
 	public String pgp(String encryption, String decryption) throws IOException, InterruptedException {
 		String cmd = decryptionCmd+" "+decryption+" "+encryption;
@@ -67,10 +63,6 @@ public class SecretServiceImpl implements SecretService {
         	if(fileIn!=null)
         		fileIn.close();
         }
-	}
-
-	public String getDBSPubKey() {
-		return this.dbsPubKey;
 	}
 
 	public static String test(String filePathEncod, String filePathDecode) throws NoSuchProviderException, IOException {
