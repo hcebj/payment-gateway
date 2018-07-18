@@ -53,6 +53,7 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 	protected Object process(File file) throws IOException {
 		String customerId = file.getName().substring(0, file.getName().indexOf("."));
 		String corp = Constant.subsidiaryMap.get(customerId);
+		corpHolder.set(corp);
 		InputStream in = null;
 		byte[] buf = null;
 		try {
@@ -87,7 +88,6 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 		} else if(tagValues.length==1) {
 			mt94x.setAccountNumber(tagValues[0]);
 		}
-		corpHolder.set(corp);
 		tagValues = block4.getTagValue("28C").split("/");
 		mt94x.setStatementNumber(tagValues[0]);
 		mt94x.setDbsSequenceNumber(tagValues[1]);

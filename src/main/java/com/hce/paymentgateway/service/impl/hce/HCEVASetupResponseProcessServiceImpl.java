@@ -35,6 +35,8 @@ public class HCEVASetupResponseProcessServiceImpl extends VASetupResponseProcess
 
 	@Override
 	protected String getCorp() {
-		return "9992";
+		String corp = corpHolder.get();
+		corpHolder.remove();
+		return corp;
 	}
 }

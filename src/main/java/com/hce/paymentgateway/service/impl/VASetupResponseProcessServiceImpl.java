@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.dao.DBSVASetupDao;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,13 @@ public abstract class VASetupResponseProcessServiceImpl extends BaseResponseProc
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
+	protected static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
+
 	@Override
 	protected Object process(File file) throws IOException {
+		String customerId = file.getName().substring(0, file.getName().indexOf("."));
+		String corp = Constant.subsidiaryMap.get(customerId);
+		corpHolder.set(corp);
 		Workbook workbook = null;
 		try {
 			workbook = new HSSFWorkbook(new FileInputStream(file));
