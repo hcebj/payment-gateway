@@ -12,9 +12,11 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hce.paymentgateway.Constant;
 import com.hce.paymentgateway.controller.PayMqproducer;
 import com.hce.paymentgateway.service.ResponseProcessService;
 import com.hce.paymentgateway.util.SCPFileUtils;
@@ -30,6 +32,8 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 	private PayMqproducer payMqproducer;
 	@Autowired
     private SCPFileUtils SCPFileUtils;
+	@Value("${env}")
+    private String env;
 
 	protected abstract Object process(File file) throws IOException, ParseException;
 	protected abstract String getCorp();
@@ -46,7 +50,9 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 		for(File file:files) {
 			try {
 				Object obj = process(file);
-//				file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+				if(Constant.ENV_PRO.equals(env)) {
+					file.renameTo(new File(localTempDir+"/history/"+file.getName()));
+				}
 				String corp = getCorp();
 				String tag = getMsgTag();
 				HCEHeader header = getHeader(today);
