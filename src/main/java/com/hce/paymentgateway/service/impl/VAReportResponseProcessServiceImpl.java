@@ -20,13 +20,8 @@ public abstract class VAReportResponseProcessServiceImpl extends BaseResponsePro
 	@Autowired
 	private DBSVAReportDao dbsVAReportDao;
 
-	protected static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
-
 	@Override
-	protected Object process(File file) throws IOException, ParseException {
-		String customerId = file.getName().substring(0, file.getName().indexOf("."));
-		String corp = Constant.subsidiaryMap.get(customerId);
-		corpHolder.set(corp);
+	protected Object process(File file, String corp) throws IOException, ParseException {
 		CsvReader csvReader = null;
 		try {
 			csvReader = new CsvReader(file.getAbsolutePath());

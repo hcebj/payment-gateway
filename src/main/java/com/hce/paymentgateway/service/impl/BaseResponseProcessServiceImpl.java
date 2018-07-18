@@ -35,8 +35,7 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 	@Value("${env}")
     private String env;
 
-	protected abstract Object process(File file) throws IOException, ParseException;
-	protected abstract String getCorp();
+	protected abstract Object process(File file, String corp) throws IOException, ParseException;
 
 	@Transactional
 	public void process(List<File> files) {
@@ -49,11 +48,12 @@ public abstract class BaseResponseProcessServiceImpl implements ResponseProcessS
 		String today = df.format(System.currentTimeMillis());
 		for(File file:files) {
 			try {
-				Object obj = process(file);
+				String customerId = file.getName().substring(0, file.getName().indexOf("."));
+				String corp = Constant.subsidiaryMap.get(customerId);
+				Object obj = process(file, corp);
 				if(Constant.ENV_PRO.equals(env)) {
 					file.renameTo(new File(localTempDir+"/history/"+file.getName()));
 				}
-				String corp = getCorp();
 				String tag = getMsgTag();
 				HCEHeader header = getHeader(today);
 				header.setLGRPCD(corp);

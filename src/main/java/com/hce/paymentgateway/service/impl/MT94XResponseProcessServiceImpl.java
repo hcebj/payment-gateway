@@ -45,15 +45,11 @@ public abstract class MT94XResponseProcessServiceImpl extends BaseResponseProces
 	private DBSMT94XDetailDao dbsMT94XDetailDao;
 
 	protected static final ThreadLocal<String> tagHolder = new ThreadLocal<String>();
-	protected static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
 
 	private final String[] MT940_TAG_VALS_60 = {"60F", "60M"};
 
 	@Override
-	protected Object process(File file) throws IOException {
-		String customerId = file.getName().substring(0, file.getName().indexOf("."));
-		String corp = Constant.subsidiaryMap.get(customerId);
-		corpHolder.set(corp);
+	protected Object process(File file, String corp) throws IOException {
 		InputStream in = null;
 		byte[] buf = null;
 		try {

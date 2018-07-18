@@ -24,13 +24,8 @@ public abstract class VASetupResponseProcessServiceImpl extends BaseResponseProc
 	@Autowired
 	private DBSVASetupDao dbsVASetupDao;
 
-	protected static final ThreadLocal<String> corpHolder = new ThreadLocal<String>();
-
 	@Override
-	protected Object process(File file) throws IOException {
-		String customerId = file.getName().substring(0, file.getName().indexOf("."));
-		String corp = Constant.subsidiaryMap.get(customerId);
-		corpHolder.set(corp);
+	protected Object process(File file, String corp) throws IOException {
 		Workbook workbook = null;
 		try {
 			workbook = new HSSFWorkbook(new FileInputStream(file));

@@ -22,11 +22,4 @@ public class HCEVAReportResponseProcessServiceImpl extends VAReportResponseProce
 	public String getMsgTag() {
 		return "35040";
 	}
-
-	@Override
-	protected String getCorp() {
-		String corp = corpHolder.get();
-		corpHolder.remove();
-		return corp;
-	}
 }

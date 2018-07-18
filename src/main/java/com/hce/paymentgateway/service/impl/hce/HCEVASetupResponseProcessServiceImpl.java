@@ -32,11 +32,4 @@ public class HCEVASetupResponseProcessServiceImpl extends VASetupResponseProcess
 	public String getMsgTag() {
 		return "35043";
 	}
-
-	@Override
-	protected String getCorp() {
-		String corp = corpHolder.get();
-		corpHolder.remove();
-		return corp;
-	}
 }

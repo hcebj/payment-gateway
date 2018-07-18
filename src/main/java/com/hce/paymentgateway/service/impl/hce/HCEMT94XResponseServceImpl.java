@@ -81,11 +81,4 @@ public class HCEMT94XResponseServceImpl extends MT94XResponseProcessServiceImpl 
 		tagHolder.remove();
 		return tag;
 	}
-
-	@Override
-	protected String getCorp() {
-		String corp = corpHolder.get();
-		corpHolder.remove();
-		return corp;
-	}
 }
