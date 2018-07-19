@@ -36,7 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TelegraphicTransferSrevice extends AbstractTransactionService<TelegraphicTransferRequest> {
 	@Autowired
     private AccountTransferDao accountTransferDao;
-
+	@Autowired
+    private AccountTransferGetBatchId accountTransferGetBatchId;
     @Transactional
     @Override
     public TradeResponse handle(TelegraphicTransferRequest tradeRequest) throws NoSuchProviderException, JSchException, IOException, SftpException, PGPException, ParseException {
@@ -47,7 +48,8 @@ public class TelegraphicTransferSrevice extends AbstractTransactionService<Teleg
         transfer.setPaymentId(this.getNumberForPK()); //支付流水号
         transfer.setTransactionStatus("SEND");
         tradeRequest.setPaymentId(transfer.getPaymentId());
-        transfer.setBatchId(String.format("%05d", (int) (Math.random()*100000)));//TODO 测试用,此处之后需变动
+        String batchId = accountTransferGetBatchId.getBatcId(transfer.getPaymentDate());
+        transfer.setBatchId(batchId);//TODO 测试用,此处之后需变动
         transfer.setCustomerOrBatchReference(transfer.getPaymentId());//域D05赋值自己产生的流水号
         transfer.setFileName(FileNameGenerator.generateRequestFileName(tradeRequest));
         accountTransferDao.save(transfer);

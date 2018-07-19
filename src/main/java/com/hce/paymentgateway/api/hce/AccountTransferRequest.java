@@ -38,8 +38,17 @@ public class AccountTransferRequest extends TradeRequest {
     
     @DBSData(maxLength = 35, dateType = DataType.ANY, message = "receivingPartyName 格式不符合规则.")
     private String receivingPartyName;
+    
+    @DBSData(maxLength = 35, dateType = DataType.S, canBeNull = true, message = "receivingPartyAddress1 格式不符合规则.")
+    private String receivingPartyAddress1;
+     
+    @DBSData(maxLength = 35, dateType = DataType.S,  canBeNull = true, message = "receivingPartyAddress2 格式不符合规则.")
+    private String receivingPartyAddress2;
+    
+    @DBSData(maxLength = 35, dateType = DataType.S,  canBeNull = true, message = "receivingPartyAddress3 格式不符合规则.")
+    private String receivingPartyAddress3;
 
-    @DBSData(maxLength = 34, dateType = DataType.AN, message = "receivingAccountNumberIBAN 格式不符合规则.")
+    @DBSData(maxLength = 34, dateType = DataType.AND, message = "receivingAccountNumberIBAN 格式不符合规则.")
     private String receivingAccountNumberIBAN;
 
     @DBSData(maxLength = 1, dateType = DataType.N, canBeNull = true, message = "amountCurrency 格式不符合规则.")
