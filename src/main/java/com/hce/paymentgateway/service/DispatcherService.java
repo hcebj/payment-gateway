@@ -1,8 +1,11 @@
 package com.hce.paymentgateway.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.csvreader.CsvWriter;
 import com.hce.paymentgateway.Constant;
+import com.hce.paymentgateway.api.hce.AccountTransferRequest;
+import com.hce.paymentgateway.api.hce.PayRocketmqDto;
 import com.hce.paymentgateway.api.hce.TradeRequest;
 import com.hce.paymentgateway.api.hce.TradeResponse;
 import com.hce.paymentgateway.controller.PayMqproducer;
@@ -10,6 +13,7 @@ import com.hce.paymentgateway.dao.AccountInfoDao;
 import com.hce.paymentgateway.dao.DBSVASetupDao;
 import com.hce.paymentgateway.entity.AccountInfoEntity;
 import com.hce.paymentgateway.entity.DBSVASetupEntity;
+import com.hce.paymentgateway.util.CommonUtil;
 import com.hce.paymentgateway.util.JsonUtil;
 import com.hce.paymentgateway.util.ResponseCode;
 import com.hce.paymentgateway.util.SCPFileUtils;
@@ -23,9 +27,11 @@ import com.hce.paymentgateway.vo.HCEMessageWrapper;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.openpgp.PGPException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,12 +78,18 @@ public class DispatcherService {
         ValidatorResult validatorResult = ValidatorUtil.validate(actualRequest);
         if(!validatorResult.isAvailable()) {
             addError(validatorResult, response);
+            AccountTransferRequest accountTransferRequest = new AccountTransferRequest();
+            BeanUtils.copyProperties(actualRequest, accountTransferRequest);
+            sendMqMsg(actualRequest, "文件格式错误", "RJCT", accountTransferRequest.getPaymentDate(), CommonUtil.getNumberForPK());
             return response;
         }
         // 动态数据校验
         validatorResult = dynamicValidate(actualRequest);
         if(!validatorResult.isAvailable()) {
             addError(validatorResult, response);
+            AccountTransferRequest accountTransferRequest = new AccountTransferRequest();
+            BeanUtils.copyProperties(actualRequest, accountTransferRequest);
+            sendMqMsg(actualRequest, "文件格式错误", "RJCT", accountTransferRequest.getPaymentDate(), CommonUtil.getNumberForPK());
             return response;
         }
         // 处理请求
@@ -87,6 +99,9 @@ public class DispatcherService {
         } catch (Exception e) {
             response.setCode(ResponseCode.FAILED.name());
             log.error("[网关支付]失败, 异常信息如下\r\n"+json+"\r\n", e);
+            AccountTransferRequest accountTransferRequest = new AccountTransferRequest();
+            BeanUtils.copyProperties(actualRequest, accountTransferRequest);
+            sendMqMsg(actualRequest, "文件格式错误", "RJCT", accountTransferRequest.getPaymentDate(), CommonUtil.getNumberForPK());
         }
         return response;
     }
@@ -239,5 +254,31 @@ public class DispatcherService {
     		if(csvWriter!=null)
     			csvWriter.close();
     	}
+    }
+    
+    private void sendMqMsg(TradeRequest transfer,String additionalInformation,String transactionStatus,String paymentDate,String customerReference){
+    	PayRocketmqDto payRocketmqDto = new PayRocketmqDto();
+    	if(additionalInformation!=null){
+    		payRocketmqDto.getBody().setAdditionalInformation(additionalInformation);//附加信息
+    	}
+    	payRocketmqDto.getBody().setTransId(transfer.getTransId());
+        payRocketmqDto.getBody().setCorp(transfer.getCorp());//实体代码-法人代码
+        payRocketmqDto.getBody().setStatus(-1);//处理状态
+        payRocketmqDto.getBody().setTransactionStatus(transactionStatus);//文件处理状态
+        
+        payRocketmqDto.getHead().setBIZBRCH("0101");
+        payRocketmqDto.getHead().setFRTSIDEDT(paymentDate);//前台日期-付款日期
+        payRocketmqDto.getHead().setFRTSIDESN(customerReference);//前台流水-支付号
+        payRocketmqDto.getHead().setLGRPCD(transfer.getCorp());//法人代码
+        payRocketmqDto.getHead().setTLCD("DBS002");//柜员号
+        payRocketmqDto.getHead().setTRDCD("35033");
+        payRocketmqDto.getHead().setTRDDT(paymentDate);//付款日期
+        payRocketmqDto.getHead().setCHNL("00");
+        
+        
+        String msgInfo = JSON.toJSONString(payRocketmqDto);
+        log.info("will be sending");
+        payMqproducer.sendMsg(Constant.MQ_NAME_OUT_HCE, "35033", msgInfo);
+        log.info("send msg \"35033\" to hyh finish");
     }
 }
